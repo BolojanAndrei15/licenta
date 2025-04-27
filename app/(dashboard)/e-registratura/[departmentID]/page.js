@@ -11,11 +11,20 @@ import { useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import AddRegistruModal from '@/components/AddRegistruModal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { Pencil, Trash2 } from 'lucide-react';
 
 export default function ERegistraturaDepartmentPage() {
   const { departmentID } = useParams();
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModal, setEditModal] = useState({ open: false, registru: null });
+  const [deleteModal, setDeleteModal] = useState({ open: false, registru: null });
+  const [editLoading, setEditLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [editError, setEditError] = useState("");
 
   const setPageTitle = useSetAtom(pageTitleAtom);
 
@@ -50,6 +59,50 @@ export default function ERegistraturaDepartmentPage() {
     reg.descriere.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Edit handler
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    setEditError("");
+    setEditLoading(true);
+    const { id, nume, descriere, an, min_val, max_val, departament_id } = editModal.registru;
+    try {
+      await axios.put('/api/registre', {
+        id,
+        nume,
+        descriere,
+        an: Number(an),
+        min_val: Number(min_val),
+        max_val: Number(max_val),
+        departament_id
+      });
+      setEditModal({ open: false, registru: null });
+      toast.success('Registrul a fost actualizat cu succes.');
+      refetch();
+    } catch (err) {
+      setEditError(err.response?.data?.error || err.message || 'Eroare necunoscută');
+      toast.error(err.response?.data?.error || err.message || 'Eroare la editare registru.');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  // Delete handler
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    try {
+      await axios.delete('/api/registre', {
+        data: { id: deleteModal.registru.id }
+      });
+      setDeleteModal({ open: false, registru: null });
+      toast.success('Registrul a fost șters cu succes.');
+      refetch();
+    } catch (err) {
+      toast.error(err.response?.data?.error || err.message || 'Eroare la ștergere registru.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
@@ -70,7 +123,6 @@ export default function ERegistraturaDepartmentPage() {
         onRegistruAdded={() => refetch()}
       />
       <div className="mt-8">
-        <h2 className="text-lg font-semibold mb-4">Registrele departamentului</h2>
         <Table>
           <TableHeader>
             <TableRow>
@@ -98,7 +150,16 @@ export default function ERegistraturaDepartmentPage() {
                   <TableCell><FileText className="text-blue-600" /></TableCell>
                   <TableCell>{registru.nume}</TableCell>
                   <TableCell>{registru.numar_inregistrari}</TableCell>
-                  <TableCell>{/* Butoane acțiuni aici */}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button size="icon" variant="outline" onClick={() => setEditModal({ open: true, registru })} title="Editează">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button size="icon" variant="destructive" onClick={() => setDeleteModal({ open: true, registru })} title="Șterge">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -107,6 +168,104 @@ export default function ERegistraturaDepartmentPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Edit Modal */}
+      <Dialog open={editModal.open} onOpenChange={open => setEditModal({ open, registru: open ? editModal.registru : null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editează registrul</DialogTitle>
+          </DialogHeader>
+          {editModal.registru && (
+            <form onSubmit={handleEdit} className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="edit-nume">Nume registru</Label>
+                <Input
+                  id="edit-nume"
+                  value={editModal.registru.nume}
+                  onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, nume: e.target.value } }))}
+                  required
+                  disabled={editLoading}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="edit-descriere">Descriere</Label>
+                <Input
+                  id="edit-descriere"
+                  value={editModal.registru.descriere}
+                  onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, descriere: e.target.value } }))}
+                  required
+                  disabled={editLoading}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="edit-an">An</Label>
+                <Input
+                  id="edit-an"
+                  type="number"
+                  value={editModal.registru.an}
+                  onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, an: e.target.value } }))}
+                  required
+                  min={1900}
+                  max={2100}
+                  disabled={editLoading}
+                />
+              </div>
+              <div className="flex gap-4 justify-between">
+                <div className="space-y-1 flex-1">
+                  <Label htmlFor="edit-minVal">Valoare minimă</Label>
+                  <Input
+                    id="edit-minVal"
+                    type="number"
+                    value={editModal.registru.min_val}
+                    onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, min_val: e.target.value } }))}
+                    required
+                    min={0}
+                    disabled={editLoading}
+                  />
+                </div>
+                <div className="space-y-1 flex-1">
+                  <Label htmlFor="edit-maxVal">Valoare maximă</Label>
+                  <Input
+                    id="edit-maxVal"
+                    type="number"
+                    value={editModal.registru.max_val}
+                    onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, max_val: e.target.value } }))}
+                    required
+                    min={editModal.registru.min_val}
+                    disabled={editLoading}
+                  />
+                </div>
+              </div>
+              {editError && <div className="text-red-500 text-xs mt-1">{editError}</div>}
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setEditModal({ open: false, registru: null })} disabled={editLoading}>
+                  Anulează
+                </Button>
+                <Button type="submit" disabled={editLoading}>
+                  {editLoading ? "Se salvează..." : "Salvează"}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* Delete Confirm Modal */}
+      <Dialog open={deleteModal.open} onOpenChange={open => setDeleteModal({ open, registru: open ? deleteModal.registru : null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Șterge registrul</DialogTitle>
+          </DialogHeader>
+          <div className="mb-4">Ești sigur că vrei să ștergi registrul <b>{deleteModal.registru?.nume}</b>? Această acțiune este ireversibilă.</div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setDeleteModal({ open: false, registru: null })} disabled={deleteLoading}>
+              Anulează
+            </Button>
+            <Button type="button" variant="destructive" onClick={handleDelete} disabled={deleteLoading}>
+              {deleteLoading ? "Se șterge..." : "Șterge"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

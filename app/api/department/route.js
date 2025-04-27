@@ -45,13 +45,54 @@ export async function POST(request) {
 export async function PUT(request) {
   try {
     const json = await request.json();
-    const { id, ...updateData } = json;
+    const { id, nume, descriere } = json; 
+
+    if (!id || !nume || !descriere) {
+      return new NextResponse(JSON.stringify({ message: 'Id, nume și descriere sunt obligatorii.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     const updatedDepartment = await prisma.departamente.update({
-      where: { id: id },
-      data: updateData,
+      where: { id: id }, // sau where: { id }
+      data: {
+        nume: nume,
+        descriere: descriere,
+      },
     });
 
+    return new NextResponse(JSON.stringify(updatedDepartment), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error(error);
+    return new NextResponse(JSON.stringify({ message: 'Failed to update department' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+
+export async function PATCH(request) {
+  try {
+    const json = await request.json();
+    const { id, nume, descriere } = json;
+    if (!id) {
+      return new NextResponse(JSON.stringify({ message: 'Id este obligatoriu.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    // Construiește obiectul de update doar cu câmpurile trimise
+    const data = {};
+    if (nume !== undefined) data.nume = nume;
+    if (descriere !== undefined) data.descriere = descriere;
+    const updatedDepartment = await prisma.departamente.update({
+      where: { id },
+      data: {nume, descriere},
+    });
     return new NextResponse(JSON.stringify(updatedDepartment), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

@@ -15,6 +15,8 @@ export async function POST(request) {
 export async function PUT(request) {
   const data = await request.json();
   const { id, ...updateData } = data;
+  // Elimină orice cheie care nu există în modelul Prisma
+  delete updateData.key; // elimină cheia invalidă dacă există
   // Nu permite modificarea min_val și max_val
   delete updateData.min_val;
   delete updateData.max_val;
