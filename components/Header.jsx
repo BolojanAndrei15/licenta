@@ -12,6 +12,7 @@ import {
 } from "./ui/breadcrumb";
 import { useAtomValue } from "jotai";
 import { pageTitleAtom } from "@/lib/pageTitleAtom";
+import { Skeleton } from "./ui/skeleton";
 
 const Header = ({ pageTitle, breadcrumbs, departmentName }) => {
   const atomPageTitle = useAtomValue(pageTitleAtom);
@@ -38,26 +39,40 @@ const Header = ({ pageTitle, breadcrumbs, departmentName }) => {
   const crumbs = [homeCrumb, ...(breadcrumbs || autoBreadcrumbs)];
   // Folosește atomPageTitle dacă există, altfel pageTitle sau titlul generat
   const title = atomPageTitle || pageTitle || (crumbs.length > 0 ? crumbs[crumbs.length - 1].label : "Acasă");
+  const isLoading = !atomPageTitle && !pageTitle && (!breadcrumbs || breadcrumbs.length === 0);
   return (
     <header className="bg-white px-4 py-4 border-b w-full flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 className="text-xl font-semibold mb-1">{title}</h1>
-        <Breadcrumb>
-          <BreadcrumbList>
-            {crumbs.map((item, idx) => (
-              <React.Fragment key={item.href || item.label}>
-                <BreadcrumbItem>
-                  {item.href && idx !== crumbs.length - 1 ? (
-                    <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-                {idx < crumbs.length - 1 && <BreadcrumbSeparator />}
-              </React.Fragment>
-            ))}
-          </BreadcrumbList>
-        </Breadcrumb>
+        {isLoading ? (
+          <>
+            <Skeleton className="h-7 w-48 mb-2" />
+            <div className="flex gap-2">
+              <Skeleton className="h-5 w-24" />
+              <Skeleton className="h-5 w-24" />
+              <Skeleton className="h-5 w-24" />
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="text-xl font-semibold mb-1">{title}</h1>
+            <Breadcrumb>
+              <BreadcrumbList>
+                {crumbs.map((item, idx) => (
+                  <React.Fragment key={item.href || item.label}>
+                    <BreadcrumbItem>
+                      {item.href && idx !== crumbs.length - 1 ? (
+                        <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                      ) : (
+                        <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                      )}
+                    </BreadcrumbItem>
+                    {idx < crumbs.length - 1 && <BreadcrumbSeparator />}
+                  </React.Fragment>
+                ))}
+              </BreadcrumbList>
+            </Breadcrumb>
+          </>
+        )}
       </div>
       <div className="flex items-center gap-4 mt-2 md:mt-0">
         <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Notificări">

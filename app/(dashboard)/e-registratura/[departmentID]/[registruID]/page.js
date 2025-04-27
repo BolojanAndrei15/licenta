@@ -1,4 +1,8 @@
-// Registratura registru page
-export default function RegistraturaRegistruPage({ params }) {
-  return <div>Registratura: {params.departmentID} / {params.registruID}</div>;
+export default function RegistruIdPage() {
+  return (
+    <div>
+      <h1>Setări</h1>
+      <p>Aici poți gestiona setările aplicației.</p>
+    </div>
+  );
 }

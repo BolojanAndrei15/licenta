@@ -3,12 +3,20 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import DepartmentCard from '@/components/DepartmentCard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import AddDepartmentModal from '@/components/AddDepartmentModal';
+import { useSetAtom } from "jotai";
+import { pageTitleAtom } from "@/lib/pageTitleAtom";
 
 export default function ERegistraturaPage() {
+  const setPageTitle = useSetAtom(pageTitleAtom);
+  useEffect(() => {
+    setPageTitle("Departamente");
+    return () => setPageTitle("");
+  }, [setPageTitle]);
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['departments'],
     queryFn: async () => {
@@ -18,7 +26,8 @@ export default function ERegistraturaPage() {
   });
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const filteredData = data?.filter(dep =>
+  const departments = data?.departments || [];
+  const filteredData = departments.filter(dep =>
     dep.nume.toLowerCase().includes(search.toLowerCase())
   );
 
