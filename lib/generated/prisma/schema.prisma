@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model audit_logs {
+  id                 String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tabela             String
+  cheie_primara      String
+  actiune            String
+  utilizator_id      String?      @db.Uuid
+  timestamp          DateTime?    @default(now()) @db.Timestamp(6)
+  date_vechi         Json?
+  date_noi           Json?
+  severitate         String       @default("INFO")
+  mesaj              String       @default("")
+  detalii_modificari Json?
+  utilizatori        utilizatori? @relation(fields: [utilizator_id], references: [id], onUpdate: NoAction)
+
+  @@index([tabela], map: "idx_audit_logs_tabela")
+  @@index([timestamp], map: "idx_audit_logs_timestamp")
+  @@index([utilizator_id], map: "idx_audit_logs_utilizator_id")
+}
+
+model backup_logs {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  data_backup    DateTime  @default(now()) @db.Timestamp(6)
+  locatie_fisier String
+  status         String
+  mesaj_eroare   String?
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model departamente {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nume        String        @unique
+  descriere   String
+  documente   documente[]
+  registre    registre[]
+  utilizatori utilizatori[]
+}
+
+model documente {
+  id                                                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  registru_id                                       String           @db.Uuid
+  numar_inregistrare                                Int
+  data                                              DateTime         @default(now()) @db.Timestamp(6)
+  numar_document                                    String
+  data_document                                     DateTime         @db.Date
+  sursa                                             String
+  rezumat                                           String
+  departament_adresat                               String?          @db.Uuid
+  destinatar_id                                     String?          @db.Uuid
+  tip_document_id                                   String           @db.Uuid
+  data_expedierii                                   DateTime         @db.Date
+  creat_la                                          DateTime?        @default(now()) @db.Timestamp(6)
+  inregistrat_de                                    String           @db.Uuid
+  preluat_de                                        String?          @db.Uuid
+  stadiu                                            String           @default("În așteptare")
+  departamente                                      departamente?    @relation(fields: [departament_adresat], references: [id], onUpdate: NoAction)
+  utilizatori_documente_destinatar_idToutilizatori  utilizatori?     @relation("documente_destinatar_idToutilizatori", fields: [destinatar_id], references: [id], onUpdate: NoAction)
+  utilizatori_documente_inregistrat_deToutilizatori utilizatori      @relation("documente_inregistrat_deToutilizatori", fields: [inregistrat_de], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  utilizatori_documente_preluat_deToutilizatori     utilizatori?     @relation("documente_preluat_deToutilizatori", fields: [preluat_de], references: [id], onUpdate: NoAction)
+  registre                                          registre         @relation(fields: [registru_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tipuri_documente                                  tipuri_documente @relation(fields: [tip_document_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  notificari                                        notificari[]
+
+  @@unique([registru_id, numar_inregistrare])
+  @@index([destinatar_id], map: "idx_documente_destinatar_id")
+  @@index([registru_id], map: "idx_documente_registru_id")
+  @@index([stadiu], map: "idx_documente_stadiu")
+}
+
+model notificari {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  document_id   String?     @db.Uuid
+  destinatar_id String      @db.Uuid
+  mesaj         String
+  status        String      @default("neatribuit")
+  created_at    DateTime?   @default(now()) @db.Timestamp(6)
+  citita        Boolean     @default(false)
+  utilizatori   utilizatori @relation(fields: [destinatar_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  documente     documente?  @relation(fields: [document_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model registre {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nume           String
+  descriere      String
+  departament_id String       @db.Uuid
+  min_val        Int
+  max_val        Int
+  an             Int
+  documente      documente[]
+  departamente   departamente @relation(fields: [departament_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([nume, departament_id, an])
+  @@index([an], map: "idx_registre_an")
+}
+
+model roluri {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nume        String        @unique
+  descriere   String
+  utilizatori utilizatori[]
+}
+
+model tipuri_documente {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nume      String      @unique
+  documente documente[]
+}
+
+model utilizatori {
+  id                                              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                                           String       @unique
+  password_hash                                   String
+  session_token                                   String?
+  refresh_token                                   String?
+  session_expires                                 DateTime?    @db.Timestamp(6)
+  nume                                            String
+  departament_id                                  String       @db.Uuid
+  rol_id                                          String       @db.Uuid
+  audit_logs                                      audit_logs[]
+  documente_documente_destinatar_idToutilizatori  documente[]  @relation("documente_destinatar_idToutilizatori")
+  documente_documente_inregistrat_deToutilizatori documente[]  @relation("documente_inregistrat_deToutilizatori")
+  documente_documente_preluat_deToutilizatori     documente[]  @relation("documente_preluat_deToutilizatori")
+  notificari                                      notificari[]
+  departamente                                    departamente @relation(fields: [departament_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  roluri                                          roluri       @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
