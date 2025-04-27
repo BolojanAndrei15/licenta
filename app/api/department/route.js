@@ -92,6 +92,8 @@ export async function DELETE(request) {
 
 export async function GET() {
   try {
+    // Obține numărul total de documente
+    const totalDocumente = await prisma.documente.count();
     const departments = await prisma.departamente.findMany({
       include: {
         _count: {
@@ -109,7 +111,7 @@ export async function GET() {
       registre: dep._count.registre,
       _count: undefined,
     }));
-    return new NextResponse(JSON.stringify(result), {
+    return new NextResponse(JSON.stringify({ departments: result, totalDocumente }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

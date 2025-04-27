@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@/lib/generated/prisma";
+
 const prisma = new PrismaClient();
 
 export async function POST(request) {
@@ -33,6 +34,30 @@ export async function DELETE(request) {
   try {
     await prisma.registre.delete({ where: { id } });
     return Response.json({ success: true });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 400 });
+  }
+}
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const departament_id = searchParams.get("departament_id");
+  const where = departament_id ? { departament_id } : {};
+  try {
+    const registre = await prisma.registre.findMany({
+      where,
+      include: {
+        departamente: true,
+        documente: true,
+      },
+      orderBy: { nume: "asc" },
+    });
+    // Adaugă numărul de înregistrări pentru fiecare registru
+    const result = registre.map(reg => ({
+      ...reg,
+      numar_inregistrari: reg.documente.length,
+    }));
+    return Response.json(result, { status: 200 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
   }
