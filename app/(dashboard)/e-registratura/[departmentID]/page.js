@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { FileText } from 'lucide-react';
+import { Eye, FileText } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSetAtom } from 'jotai';
 import { pageTitleAtom } from '@/lib/pageTitleAtom';
@@ -11,6 +11,7 @@ import { useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import AddRegistruModal from '@/components/AddRegistruModal';
+import EditRegistruModal from '@/components/EditRegistruModal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
@@ -25,6 +26,7 @@ export default function ERegistraturaDepartmentPage() {
   const [editLoading, setEditLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editError, setEditError] = useState("");
+  const [tipuriRegistru, setTipuriRegistru] = useState([]);
 
   const setPageTitle = useSetAtom(pageTitleAtom);
 
@@ -45,18 +47,32 @@ export default function ERegistraturaDepartmentPage() {
   }, [departmentID, setPageTitle]);
 
   // Fetch registre pentru departament
-  const { data: registre, isLoading, error, refetch } = useQuery({
+  const { data: registreData, isLoading, error, refetch } = useQuery({
     queryKey: ['registre', departmentID],
     queryFn: async () => {
       const res = await axios.get(`/api/registre?departament_id=${departmentID}`);
       return res.data;
     },
   });
-  const registreList = Array.isArray(registre) ? registre : [];
+  const registreList = Array.isArray(registreData?.registre) ? registreData.registre : [];
 
+  // Dropdown pentru ani: doar anii existenți în baza de date
+  const aniDisponibili = Array.isArray(registreData?.ani) ? registreData.ani : [];
+  const currentYear = new Date().getFullYear();
+  const [selectedAn, setSelectedAn] = useState(currentYear);
+
+  // Actualizează selectedAn dacă lista de ani se schimbă și anul selectat nu mai există
+  useEffect(() => {
+    if (aniDisponibili.length > 0 && !aniDisponibili.includes(selectedAn)) {
+      setSelectedAn(aniDisponibili[0]);
+    }
+  }, [aniDisponibili, selectedAn]);
+
+  // Filtrare după an
   const filteredRegistre = registreList.filter(reg =>
-    reg.nume.toLowerCase().includes(search.toLowerCase()) ||
-    reg.descriere.toLowerCase().includes(search.toLowerCase())
+    (reg.an === selectedAn) &&
+    (reg.nume.toLowerCase().includes(search.toLowerCase()) ||
+     reg.descriere.toLowerCase().includes(search.toLowerCase()))
   );
 
   // Edit handler
@@ -64,8 +80,16 @@ export default function ERegistraturaDepartmentPage() {
     e.preventDefault();
     setEditError("");
     setEditLoading(true);
-    const { id, nume, descriere, an, min_val, max_val, departament_id } = editModal.registru;
+    const { id, nume, descriere, an, min_val, max_val, departament_id, tip_registru_id } = editModal.registru;
     try {
+      if (!an || isNaN(an) || an < 1992 || an > currentYear) {
+        setEditError(`Anul trebuie să fie între 1992 și ${currentYear}.`);
+        return;
+      }
+      if (!tip_registru_id) {
+        setEditError('Selectează tipul registrului.');
+        return;
+      }
       await axios.put('/api/registre', {
         id,
         nume,
@@ -73,10 +97,13 @@ export default function ERegistraturaDepartmentPage() {
         an: Number(an),
         min_val: Number(min_val),
         max_val: Number(max_val),
-        departament_id
+        departament_id,
+        tip_registru_id
       });
       setEditModal({ open: false, registru: null });
-      toast.success('Registrul a fost actualizat cu succes.');
+      toast.success('Registrul a fost actualizat cu succes.', {
+        style: { background: '#22c55e', color: 'white' }
+      });
       refetch();
     } catch (err) {
       setEditError(err.response?.data?.error || err.message || 'Eroare necunoscută');
@@ -94,7 +121,9 @@ export default function ERegistraturaDepartmentPage() {
         data: { id: deleteModal.registru.id }
       });
       setDeleteModal({ open: false, registru: null });
-      toast.success('Registrul a fost șters cu succes.');
+      toast.success('Registrul a fost șters cu succes.', {
+        style: { background: '#22c55e', color: 'white' }
+      });
       refetch();
     } catch (err) {
       toast.error(err.response?.data?.error || err.message || 'Eroare la ștergere registru.');
@@ -106,12 +135,23 @@ export default function ERegistraturaDepartmentPage() {
   return (
     <>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
-        <Input
-          placeholder="Caută registru..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="max-w-xs"
-        />
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Input
+            placeholder="Caută registru..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="max-w-xs"
+          />
+          <select
+            className="border rounded px-2 py-1"
+            value={selectedAn}
+            onChange={e => setSelectedAn(Number(e.target.value))}
+          >
+            {aniDisponibili.map(anOpt => (
+              <option key={anOpt} value={anOpt}>{anOpt}</option>
+            ))}
+          </select>
+        </div>
         <Button className="w-full sm:w-auto mt-2 sm:mt-0" onClick={() => setModalOpen(true)}>
           Adaugă registru nou
         </Button>
@@ -121,134 +161,123 @@ export default function ERegistraturaDepartmentPage() {
         onOpenChange={setModalOpen}
         departmentId={departmentID}
         onRegistruAdded={() => refetch()}
+        ani={aniDisponibili}
       />
-      <div className="mt-8">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead></TableHead>
-              <TableHead>Nume registru</TableHead>
-              <TableHead>Număr înregistrări</TableHead>
-              <TableHead>Acțiuni</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              [...Array(5)].map((_, idx) => (
-                <TableRow key={idx}>
-                  <TableCell><Skeleton className="h-6 w-6 rounded-full" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-24" /></TableCell>
-                </TableRow>
-              ))
-            ) : error ? (
-              <TableRow><TableCell colSpan={4}>Eroare la încărcare registre.</TableCell></TableRow>
-            ) : filteredRegistre.length > 0 ? (
-              filteredRegistre.map(registru => (
-                <TableRow key={registru.id}>
-                  <TableCell><FileText className="text-blue-600" /></TableCell>
-                  <TableCell>{registru.nume}</TableCell>
-                  <TableCell>{registru.numar_inregistrari}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button size="icon" variant="outline" onClick={() => setEditModal({ open: true, registru })} title="Editează">
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button size="icon" variant="destructive" onClick={() => setDeleteModal({ open: true, registru })} title="Șterge">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow><TableCell colSpan={4}>Nu există registre pentru acest departament.</TableCell></TableRow>
-            )}
-          </TableBody>
-        </Table>
+     <div className="mt-8 space-y-2">
+  {/* Header „tabel” */}
+  <div className="flex items-center px-4 py-2 bg-gray-100 text-gray-600 text-xs font-semibold rounded-md">
+    {/* Icon gol + titlu */}
+    <div className="flex items-center gap-2 flex-1">
+      <div className="w-4" />
+      <span>Nume registru</span>
+    </div>
+    <div className="flex-1 text-center">Tip registru</div>
+    <div className="flex-1 text-center">Număr înregistrări</div>
+    <div className="flex-1 text-center">Valoare minimă</div>
+    <div className="flex-1 text-center">Valoare maximă</div>
+    <div className="w-28 text-right">Acțiuni</div>
+  </div>
+  {/* Conținut */}
+  {isLoading ? (
+    [...Array(5)].map((_, idx) => (
+      <div
+        key={idx}
+        className="flex items-center bg-white p-3 rounded-md shadow-sm border"
+      >
+        <div className="flex items-center gap-2 flex-1">
+          <Skeleton className="h-4 w-4 rounded-full" />
+          <Skeleton className="h-3 w-24" />
+        </div>
+        <Skeleton className="h-3 w-16 flex-1 mx-auto" />
+        <Skeleton className="h-3 w-16 flex-1 mx-auto" />
+        <Skeleton className="h-3 w-16 flex-1 mx-auto" />
+        <div className="flex gap-2 w-28 justify-end">
+          <Skeleton className="h-6 w-6 rounded-md" />
+          <Skeleton className="h-6 w-6 rounded-md" />
+        </div>
       </div>
+    ))
+  ) : error ? (
+    <div className="text-center text-gray-500 py-8 text-xs">
+      Eroare la încărcare registre.
+    </div>
+  ) : filteredRegistre.length > 0 ? (
+    filteredRegistre.map((registru) => (
+      <div
+        key={registru.id}
+        className="flex items-center bg-white p-3 rounded-md shadow-sm border hover:bg-gray-50 transition"
+      >
+        {/* Icon + nume */}
+        <div className="flex items-center gap-2 flex-1">
+          <FileText className="text-blue-600 w-4 h-4" />
+          <span className="font-medium text-gray-800 text-xs">
+            {registru.nume}
+          </span>
+        </div>
+        {/* Tip registru */}
+        <div className="flex-1 text-center text-xs">
+          {registru.tip_registru?.nume || '-'}
+        </div>
+        {/* Număr înregistrări */}
+        <div className="flex-1 text-center">
+          <span className="bg-green-100 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+            {registru.numar_inregistrari} înregistrări
+          </span>
+        </div>
+        {/* Valoare minimă */}
+        <div className="flex-1 text-center text-xs">
+          {registru.min_val}
+        </div>
+
+        {/* Valoare maximă */}
+        <div className="flex-1 text-center text-xs">
+          {registru.max_val}
+        </div>
+
+        {/* Butoane acțiuni */}
+        <div className="flex gap-2 w-28 justify-end">
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => setEditModal({ open: true, registru: { ...registru, tip_registru_id: registru.tip_registru_id || (registru.tip_registru && registru.tip_registru.id) || '' } })}
+            title="Editează"
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="destructive"
+            onClick={() => setDeleteModal({ open: true, registru })}
+            title="Șterge"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="text-center text-gray-500 py-8 text-xs">
+      Nu există registre pentru acest departament.
+    </div>
+  )}
+</div>
+
+
+
+
+
 
       {/* Edit Modal */}
-      <Dialog open={editModal.open} onOpenChange={open => setEditModal({ open, registru: open ? editModal.registru : null })}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editează registrul</DialogTitle>
-          </DialogHeader>
-          {editModal.registru && (
-            <form onSubmit={handleEdit} className="space-y-4">
-              <div className="space-y-1">
-                <Label htmlFor="edit-nume">Nume registru</Label>
-                <Input
-                  id="edit-nume"
-                  value={editModal.registru.nume}
-                  onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, nume: e.target.value } }))}
-                  required
-                  disabled={editLoading}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="edit-descriere">Descriere</Label>
-                <Input
-                  id="edit-descriere"
-                  value={editModal.registru.descriere}
-                  onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, descriere: e.target.value } }))}
-                  required
-                  disabled={editLoading}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="edit-an">An</Label>
-                <Input
-                  id="edit-an"
-                  type="number"
-                  value={editModal.registru.an}
-                  onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, an: e.target.value } }))}
-                  required
-                  min={1900}
-                  max={2100}
-                  disabled={editLoading}
-                />
-              </div>
-              <div className="flex gap-4 justify-between">
-                <div className="space-y-1 flex-1">
-                  <Label htmlFor="edit-minVal">Valoare minimă</Label>
-                  <Input
-                    id="edit-minVal"
-                    type="number"
-                    value={editModal.registru.min_val}
-                    onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, min_val: e.target.value } }))}
-                    required
-                    min={0}
-                    disabled={editLoading}
-                  />
-                </div>
-                <div className="space-y-1 flex-1">
-                  <Label htmlFor="edit-maxVal">Valoare maximă</Label>
-                  <Input
-                    id="edit-maxVal"
-                    type="number"
-                    value={editModal.registru.max_val}
-                    onChange={e => setEditModal(m => ({ ...m, registru: { ...m.registru, max_val: e.target.value } }))}
-                    required
-                    min={editModal.registru.min_val}
-                    disabled={editLoading}
-                  />
-                </div>
-              </div>
-              {editError && <div className="text-red-500 text-xs mt-1">{editError}</div>}
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setEditModal({ open: false, registru: null })} disabled={editLoading}>
-                  Anulează
-                </Button>
-                <Button type="submit" disabled={editLoading}>
-                  {editLoading ? "Se salvează..." : "Salvează"}
-                </Button>
-              </DialogFooter>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
+      <EditRegistruModal
+        open={editModal.open}
+        onOpenChange={open => setEditModal({ open, registru: open ? editModal.registru : null })}
+        registru={editModal.registru}
+        setRegistru={r => setEditModal(m => ({ ...m, registru: r }))}
+        onSubmit={handleEdit}
+        loading={editLoading}
+        error={editError}
+        tipuriRegistru={tipuriRegistru}
+      />
       {/* Delete Confirm Modal */}
       <Dialog open={deleteModal.open} onOpenChange={open => setDeleteModal({ open, registru: open ? deleteModal.registru : null })}>
         <DialogContent>

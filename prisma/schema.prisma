@@ -88,6 +88,12 @@ model notificari {
   documente     documente?  @relation(fields: [document_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
+model tipuri_registru {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nume         String    @unique
+  registre     registre[]
+}
+
 model registre {
   id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nume           String
@@ -98,6 +104,8 @@ model registre {
   an             Int
   documente      documente[]
   departamente   departamente @relation(fields: [departament_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tip_registru_id String      @db.Uuid
+  tip_registru    tipuri_registru @relation(fields: [tip_registru_id], references: [id], onDelete: Restrict)
 
   @@unique([nume, departament_id, an])
   @@index([an], map: "idx_registre_an")

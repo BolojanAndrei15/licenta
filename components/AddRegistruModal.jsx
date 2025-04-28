@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-export default function AddRegistruModal({ open, onOpenChange, departmentId, onRegistruAdded }) {
+export default function AddRegistruModal({ open, onOpenChange, departmentId, onRegistruAdded, ani = [] }) {
   const [nume, setNume] = useState("");
   const [descriere, setDescriere] = useState("");
   const [an, setAn] = useState(new Date().getFullYear());
@@ -13,24 +13,49 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
   const [maxVal, setMaxVal] = useState(999999);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [aniDisponibili, setAniDisponibili] = useState([]);
+  const [tipuriRegistru, setTipuriRegistru] = useState([]);
+  const [tipRegistruId, setTipRegistruId] = useState("");
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    let aniUnici = ani && Array.isArray(ani) ? ani.filter(a => a !== currentYear) : [];
+    const newAniDisponibili = [currentYear, ...aniUnici];
+    // Setează doar dacă s-a schimbat efectiv
+    if (JSON.stringify(newAniDisponibili) !== JSON.stringify(aniDisponibili)) {
+      setAniDisponibili(newAniDisponibili);
+    }
+
+    // Fetch tipuri registru
+    fetch("/api/tipuri_registru")
+      .then(res => res.json())
+      .then(data => {
+        setTipuriRegistru(data);
+        if (data.length > 0 && !tipRegistruId) setTipRegistruId(data[0].id);
+      });
+  }, [ani]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (nume.length < 3) {
-      setError("Numele trebuie să aibă minim 3 caractere.");
+    if (nume.length < 10) {
+      setError("Numele trebuie să aibă minim 10 caractere.");
       return;
     }
-    if (descriere.length < 3) {
-      setError("Descrierea trebuie să aibă minim 3 caractere.");
+    if (descriere.length < 10) {
+      setError("Descrierea trebuie să aibă minim 10 caractere.");
       return;
     }
-    if (!an || isNaN(an) || an < 1900 || an > 2100) {
-      setError("Anul trebuie să fie valid.");
+    if (!an || isNaN(an) || an < 1992 || an > currentYear) {
+      setError(`Anul trebuie să fie între 1992 și ${currentYear}.`);
       return;
     }
     if (!minVal || !maxVal || minVal < 0 || maxVal < minVal) {
       setError("Valorile minime și maxime trebuie să fie valide.");
+      return;
+    }
+    if (!tipRegistruId) {
+      setError("Selectează tipul registrului.");
       return;
     }
     setLoading(true);
@@ -45,6 +70,7 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
           an: Number(an),
           min_val: Number(minVal),
           max_val: Number(maxVal),
+          tip_registru_id: tipRegistruId,
         }),
       });
       if (!res.ok) throw new Error("Eroare la adăugare registru");
@@ -55,7 +81,9 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
       setMaxVal(999999);
       onRegistruAdded && onRegistruAdded();
       onOpenChange(false);
-      toast.success("Registrul a fost adăugat cu succes.");
+      toast.success("Registrul a fost adăugat cu succes.", {
+        style: { background: '#22c55e', color: 'white' }
+      });
     } catch (err) {
       setError(err.message || "Eroare necunoscută");
       toast.error(err.message || "Eroare la adăugare registru.");
@@ -63,6 +91,11 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
       setLoading(false);
     }
   };
+
+  // Limitează anii doar până la anul curent
+  const currentYear = new Date().getFullYear();
+  const minYear = 2000;
+  const aniDisponibiliFiltered = ani.filter(a => a <= currentYear && a >= minYear);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -79,7 +112,11 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
               onChange={e => setNume(e.target.value)}
               required
               disabled={loading}
+              className={error && nume.length < 10 ? "border-red-500" : ""}
             />
+            {error && nume.length < 10 && (
+              <div className="text-red-500 text-xs mt-1">Numele trebuie să aibă minim 10 caractere.</div>
+            )}
           </div>
           <div className="space-y-1">
             <Label htmlFor="descriere">Descriere</Label>
@@ -89,7 +126,11 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
               onChange={e => setDescriere(e.target.value)}
               required
               disabled={loading}
+              className={error && descriere.length < 10 ? "border-red-500" : ""}
             />
+            {error && descriere.length < 10 && (
+              <div className="text-red-500 text-xs mt-1">Descrierea trebuie să aibă minim 10 caractere.</div>
+            )}
           </div>
           <div className="space-y-1">
             <Label htmlFor="an">An</Label>
@@ -97,10 +138,10 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
               id="an"
               type="number"
               value={an}
-              onChange={e => setAn(e.target.value)}
+              onChange={e => setAn(Number(e.target.value))}
               required
-              min={1900}
-              max={2100}
+              min={1992}
+              max={currentYear}
               disabled={loading}
             />
           </div>
@@ -111,7 +152,7 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
                 id="minVal"
                 type="number"
                 value={minVal}
-                onChange={e => setMinVal(e.target.value)}
+                onChange={e => setMinVal(Number(e.target.value))}
                 required
                 min={0}
                 disabled={loading}
@@ -123,12 +164,30 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
                 id="maxVal"
                 type="number"
                 value={maxVal}
-                onChange={e => setMaxVal(e.target.value)}
+                onChange={e => setMaxVal(Number(e.target.value))}
                 required
                 min={minVal}
                 disabled={loading}
               />
             </div>
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="tip-registru">Tip registru</Label>
+            <select
+              id="tip-registru"
+              value={tipRegistruId}
+              onChange={e => setTipRegistruId(e.target.value)}
+              required
+              disabled={loading || tipuriRegistru.length === 0}
+              className="w-full border rounded px-2 py-2"
+            >
+              {tipuriRegistru.map(tip => (
+                <option key={tip.id} value={tip.id}>{tip.nume}</option>
+              ))}
+            </select>
+            {error && !tipRegistruId && (
+              <div className="text-red-500 text-xs mt-1">Selectează tipul registrului.</div>
+            )}
           </div>
           {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
           <DialogFooter>

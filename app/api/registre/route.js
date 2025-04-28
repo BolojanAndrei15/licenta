@@ -5,7 +5,14 @@ const prisma = new PrismaClient();
 export async function POST(request) {
   const data = await request.json();
   try {
-    const registru = await prisma.registre.create({ data });
+    // Asigură-te că tip_registru_id este prezent
+    if (!data.tip_registru_id) {
+      return Response.json({ error: 'tip_registru_id este obligatoriu' }, { status: 400 });
+    }
+    const registru = await prisma.registre.create({
+      data,
+      include: { tip_registru: true },
+    });
     return Response.json(registru, { status: 201 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
@@ -15,15 +22,18 @@ export async function POST(request) {
 export async function PUT(request) {
   const data = await request.json();
   const { id, ...updateData } = data;
-  // Elimină orice cheie care nu există în modelul Prisma
-  delete updateData.key; // elimină cheia invalidă dacă există
-  // Nu permite modificarea min_val și max_val
+  delete updateData.key;
   delete updateData.min_val;
   delete updateData.max_val;
   try {
+    // Asigură-te că tip_registru_id nu lipsește dacă se trimite
+    if (updateData.tip_registru_id === undefined) {
+      return Response.json({ error: 'tip_registru_id este obligatoriu' }, { status: 400 });
+    }
     const registru = await prisma.registre.update({
       where: { id },
       data: updateData,
+      include: { tip_registru: true },
     });
     return Response.json(registru);
   } catch (error) {
@@ -51,15 +61,23 @@ export async function GET(request) {
       include: {
         departamente: true,
         documente: true,
+        tip_registru: true,
       },
       orderBy: { nume: "asc" },
     });
-    // Adaugă numărul de înregistrări pentru fiecare registru
     const result = registre.map(reg => ({
       ...reg,
       numar_inregistrari: reg.documente.length,
+      an: reg.an,
+      tip_registru: reg.tip_registru // include tipul de registru în răspuns
     }));
-    return Response.json(result, { status: 200 });
+    const ani = await prisma.registre.findMany({
+      select: { an: true },
+      distinct: ['an'],
+      orderBy: { an: 'desc' },
+    });
+    const aniUnici = Array.from(new Set(ani.map(a => a.an)));
+    return Response.json({ registre: result, ani: aniUnici }, { status: 200 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
   }

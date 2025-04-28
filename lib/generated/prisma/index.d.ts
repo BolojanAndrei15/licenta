@@ -39,6 +39,11 @@ export type documente = $Result.DefaultSelection<Prisma.$documentePayload>
  */
 export type notificari = $Result.DefaultSelection<Prisma.$notificariPayload>
 /**
+ * Model tipuri_registru
+ * 
+ */
+export type tipuri_registru = $Result.DefaultSelection<Prisma.$tipuri_registruPayload>
+/**
  * Model registre
  * 
  */
@@ -233,6 +238,16 @@ export class PrismaClient<
     * ```
     */
   get notificari(): Prisma.notificariDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tipuri_registru`: Exposes CRUD operations for the **tipuri_registru** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tipuri_registrus
+    * const tipuri_registrus = await prisma.tipuri_registru.findMany()
+    * ```
+    */
+  get tipuri_registru(): Prisma.tipuri_registruDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.registre`: Exposes CRUD operations for the **registre** model.
@@ -718,6 +733,7 @@ export namespace Prisma {
     departamente: 'departamente',
     documente: 'documente',
     notificari: 'notificari',
+    tipuri_registru: 'tipuri_registru',
     registre: 'registre',
     roluri: 'roluri',
     tipuri_documente: 'tipuri_documente',
@@ -740,7 +756,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "audit_logs" | "backup_logs" | "departamente" | "documente" | "notificari" | "registre" | "roluri" | "tipuri_documente" | "utilizatori"
+      modelProps: "audit_logs" | "backup_logs" | "departamente" | "documente" | "notificari" | "tipuri_registru" | "registre" | "roluri" | "tipuri_documente" | "utilizatori"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1111,6 +1127,80 @@ export namespace Prisma {
           count: {
             args: Prisma.notificariCountArgs<ExtArgs>
             result: $Utils.Optional<NotificariCountAggregateOutputType> | number
+          }
+        }
+      }
+      tipuri_registru: {
+        payload: Prisma.$tipuri_registruPayload<ExtArgs>
+        fields: Prisma.tipuri_registruFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.tipuri_registruFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.tipuri_registruFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>
+          }
+          findFirst: {
+            args: Prisma.tipuri_registruFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.tipuri_registruFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>
+          }
+          findMany: {
+            args: Prisma.tipuri_registruFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>[]
+          }
+          create: {
+            args: Prisma.tipuri_registruCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>
+          }
+          createMany: {
+            args: Prisma.tipuri_registruCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.tipuri_registruCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>[]
+          }
+          delete: {
+            args: Prisma.tipuri_registruDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>
+          }
+          update: {
+            args: Prisma.tipuri_registruUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>
+          }
+          deleteMany: {
+            args: Prisma.tipuri_registruDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.tipuri_registruUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.tipuri_registruUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>[]
+          }
+          upsert: {
+            args: Prisma.tipuri_registruUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tipuri_registruPayload>
+          }
+          aggregate: {
+            args: Prisma.Tipuri_registruAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTipuri_registru>
+          }
+          groupBy: {
+            args: Prisma.tipuri_registruGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Tipuri_registruGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.tipuri_registruCountArgs<ExtArgs>
+            result: $Utils.Optional<Tipuri_registruCountAggregateOutputType> | number
           }
         }
       }
@@ -1499,6 +1589,7 @@ export namespace Prisma {
     departamente?: departamenteOmit
     documente?: documenteOmit
     notificari?: notificariOmit
+    tipuri_registru?: tipuri_registruOmit
     registre?: registreOmit
     roluri?: roluriOmit
     tipuri_documente?: tipuri_documenteOmit
@@ -1669,6 +1760,37 @@ export namespace Prisma {
    */
   export type DocumenteCountOutputTypeCountNotificariArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: notificariWhereInput
+  }
+
+
+  /**
+   * Count Type Tipuri_registruCountOutputType
+   */
+
+  export type Tipuri_registruCountOutputType = {
+    registre: number
+  }
+
+  export type Tipuri_registruCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    registre?: boolean | Tipuri_registruCountOutputTypeCountRegistreArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Tipuri_registruCountOutputType without action
+   */
+  export type Tipuri_registruCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tipuri_registruCountOutputType
+     */
+    select?: Tipuri_registruCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Tipuri_registruCountOutputType without action
+   */
+  export type Tipuri_registruCountOutputTypeCountRegistreArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: registreWhereInput
   }
 
 
@@ -7561,6 +7683,1037 @@ export namespace Prisma {
 
 
   /**
+   * Model tipuri_registru
+   */
+
+  export type AggregateTipuri_registru = {
+    _count: Tipuri_registruCountAggregateOutputType | null
+    _min: Tipuri_registruMinAggregateOutputType | null
+    _max: Tipuri_registruMaxAggregateOutputType | null
+  }
+
+  export type Tipuri_registruMinAggregateOutputType = {
+    id: string | null
+    nume: string | null
+  }
+
+  export type Tipuri_registruMaxAggregateOutputType = {
+    id: string | null
+    nume: string | null
+  }
+
+  export type Tipuri_registruCountAggregateOutputType = {
+    id: number
+    nume: number
+    _all: number
+  }
+
+
+  export type Tipuri_registruMinAggregateInputType = {
+    id?: true
+    nume?: true
+  }
+
+  export type Tipuri_registruMaxAggregateInputType = {
+    id?: true
+    nume?: true
+  }
+
+  export type Tipuri_registruCountAggregateInputType = {
+    id?: true
+    nume?: true
+    _all?: true
+  }
+
+  export type Tipuri_registruAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which tipuri_registru to aggregate.
+     */
+    where?: tipuri_registruWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tipuri_registrus to fetch.
+     */
+    orderBy?: tipuri_registruOrderByWithRelationInput | tipuri_registruOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: tipuri_registruWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tipuri_registrus from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tipuri_registrus.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned tipuri_registrus
+    **/
+    _count?: true | Tipuri_registruCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Tipuri_registruMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Tipuri_registruMaxAggregateInputType
+  }
+
+  export type GetTipuri_registruAggregateType<T extends Tipuri_registruAggregateArgs> = {
+        [P in keyof T & keyof AggregateTipuri_registru]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTipuri_registru[P]>
+      : GetScalarType<T[P], AggregateTipuri_registru[P]>
+  }
+
+
+
+
+  export type tipuri_registruGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: tipuri_registruWhereInput
+    orderBy?: tipuri_registruOrderByWithAggregationInput | tipuri_registruOrderByWithAggregationInput[]
+    by: Tipuri_registruScalarFieldEnum[] | Tipuri_registruScalarFieldEnum
+    having?: tipuri_registruScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Tipuri_registruCountAggregateInputType | true
+    _min?: Tipuri_registruMinAggregateInputType
+    _max?: Tipuri_registruMaxAggregateInputType
+  }
+
+  export type Tipuri_registruGroupByOutputType = {
+    id: string
+    nume: string
+    _count: Tipuri_registruCountAggregateOutputType | null
+    _min: Tipuri_registruMinAggregateOutputType | null
+    _max: Tipuri_registruMaxAggregateOutputType | null
+  }
+
+  type GetTipuri_registruGroupByPayload<T extends tipuri_registruGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Tipuri_registruGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Tipuri_registruGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Tipuri_registruGroupByOutputType[P]>
+            : GetScalarType<T[P], Tipuri_registruGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type tipuri_registruSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nume?: boolean
+    registre?: boolean | tipuri_registru$registreArgs<ExtArgs>
+    _count?: boolean | Tipuri_registruCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tipuri_registru"]>
+
+  export type tipuri_registruSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nume?: boolean
+  }, ExtArgs["result"]["tipuri_registru"]>
+
+  export type tipuri_registruSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nume?: boolean
+  }, ExtArgs["result"]["tipuri_registru"]>
+
+  export type tipuri_registruSelectScalar = {
+    id?: boolean
+    nume?: boolean
+  }
+
+  export type tipuri_registruOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nume", ExtArgs["result"]["tipuri_registru"]>
+  export type tipuri_registruInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    registre?: boolean | tipuri_registru$registreArgs<ExtArgs>
+    _count?: boolean | Tipuri_registruCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type tipuri_registruIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type tipuri_registruIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $tipuri_registruPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "tipuri_registru"
+    objects: {
+      registre: Prisma.$registrePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      nume: string
+    }, ExtArgs["result"]["tipuri_registru"]>
+    composites: {}
+  }
+
+  type tipuri_registruGetPayload<S extends boolean | null | undefined | tipuri_registruDefaultArgs> = $Result.GetResult<Prisma.$tipuri_registruPayload, S>
+
+  type tipuri_registruCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<tipuri_registruFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Tipuri_registruCountAggregateInputType | true
+    }
+
+  export interface tipuri_registruDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['tipuri_registru'], meta: { name: 'tipuri_registru' } }
+    /**
+     * Find zero or one Tipuri_registru that matches the filter.
+     * @param {tipuri_registruFindUniqueArgs} args - Arguments to find a Tipuri_registru
+     * @example
+     * // Get one Tipuri_registru
+     * const tipuri_registru = await prisma.tipuri_registru.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends tipuri_registruFindUniqueArgs>(args: SelectSubset<T, tipuri_registruFindUniqueArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Tipuri_registru that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {tipuri_registruFindUniqueOrThrowArgs} args - Arguments to find a Tipuri_registru
+     * @example
+     * // Get one Tipuri_registru
+     * const tipuri_registru = await prisma.tipuri_registru.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends tipuri_registruFindUniqueOrThrowArgs>(args: SelectSubset<T, tipuri_registruFindUniqueOrThrowArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tipuri_registru that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tipuri_registruFindFirstArgs} args - Arguments to find a Tipuri_registru
+     * @example
+     * // Get one Tipuri_registru
+     * const tipuri_registru = await prisma.tipuri_registru.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends tipuri_registruFindFirstArgs>(args?: SelectSubset<T, tipuri_registruFindFirstArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tipuri_registru that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tipuri_registruFindFirstOrThrowArgs} args - Arguments to find a Tipuri_registru
+     * @example
+     * // Get one Tipuri_registru
+     * const tipuri_registru = await prisma.tipuri_registru.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends tipuri_registruFindFirstOrThrowArgs>(args?: SelectSubset<T, tipuri_registruFindFirstOrThrowArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Tipuri_registrus that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tipuri_registruFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tipuri_registrus
+     * const tipuri_registrus = await prisma.tipuri_registru.findMany()
+     * 
+     * // Get first 10 Tipuri_registrus
+     * const tipuri_registrus = await prisma.tipuri_registru.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tipuri_registruWithIdOnly = await prisma.tipuri_registru.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends tipuri_registruFindManyArgs>(args?: SelectSubset<T, tipuri_registruFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Tipuri_registru.
+     * @param {tipuri_registruCreateArgs} args - Arguments to create a Tipuri_registru.
+     * @example
+     * // Create one Tipuri_registru
+     * const Tipuri_registru = await prisma.tipuri_registru.create({
+     *   data: {
+     *     // ... data to create a Tipuri_registru
+     *   }
+     * })
+     * 
+     */
+    create<T extends tipuri_registruCreateArgs>(args: SelectSubset<T, tipuri_registruCreateArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Tipuri_registrus.
+     * @param {tipuri_registruCreateManyArgs} args - Arguments to create many Tipuri_registrus.
+     * @example
+     * // Create many Tipuri_registrus
+     * const tipuri_registru = await prisma.tipuri_registru.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends tipuri_registruCreateManyArgs>(args?: SelectSubset<T, tipuri_registruCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Tipuri_registrus and returns the data saved in the database.
+     * @param {tipuri_registruCreateManyAndReturnArgs} args - Arguments to create many Tipuri_registrus.
+     * @example
+     * // Create many Tipuri_registrus
+     * const tipuri_registru = await prisma.tipuri_registru.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Tipuri_registrus and only return the `id`
+     * const tipuri_registruWithIdOnly = await prisma.tipuri_registru.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends tipuri_registruCreateManyAndReturnArgs>(args?: SelectSubset<T, tipuri_registruCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Tipuri_registru.
+     * @param {tipuri_registruDeleteArgs} args - Arguments to delete one Tipuri_registru.
+     * @example
+     * // Delete one Tipuri_registru
+     * const Tipuri_registru = await prisma.tipuri_registru.delete({
+     *   where: {
+     *     // ... filter to delete one Tipuri_registru
+     *   }
+     * })
+     * 
+     */
+    delete<T extends tipuri_registruDeleteArgs>(args: SelectSubset<T, tipuri_registruDeleteArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Tipuri_registru.
+     * @param {tipuri_registruUpdateArgs} args - Arguments to update one Tipuri_registru.
+     * @example
+     * // Update one Tipuri_registru
+     * const tipuri_registru = await prisma.tipuri_registru.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends tipuri_registruUpdateArgs>(args: SelectSubset<T, tipuri_registruUpdateArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Tipuri_registrus.
+     * @param {tipuri_registruDeleteManyArgs} args - Arguments to filter Tipuri_registrus to delete.
+     * @example
+     * // Delete a few Tipuri_registrus
+     * const { count } = await prisma.tipuri_registru.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends tipuri_registruDeleteManyArgs>(args?: SelectSubset<T, tipuri_registruDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tipuri_registrus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tipuri_registruUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tipuri_registrus
+     * const tipuri_registru = await prisma.tipuri_registru.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends tipuri_registruUpdateManyArgs>(args: SelectSubset<T, tipuri_registruUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tipuri_registrus and returns the data updated in the database.
+     * @param {tipuri_registruUpdateManyAndReturnArgs} args - Arguments to update many Tipuri_registrus.
+     * @example
+     * // Update many Tipuri_registrus
+     * const tipuri_registru = await prisma.tipuri_registru.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Tipuri_registrus and only return the `id`
+     * const tipuri_registruWithIdOnly = await prisma.tipuri_registru.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends tipuri_registruUpdateManyAndReturnArgs>(args: SelectSubset<T, tipuri_registruUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Tipuri_registru.
+     * @param {tipuri_registruUpsertArgs} args - Arguments to update or create a Tipuri_registru.
+     * @example
+     * // Update or create a Tipuri_registru
+     * const tipuri_registru = await prisma.tipuri_registru.upsert({
+     *   create: {
+     *     // ... data to create a Tipuri_registru
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Tipuri_registru we want to update
+     *   }
+     * })
+     */
+    upsert<T extends tipuri_registruUpsertArgs>(args: SelectSubset<T, tipuri_registruUpsertArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Tipuri_registrus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tipuri_registruCountArgs} args - Arguments to filter Tipuri_registrus to count.
+     * @example
+     * // Count the number of Tipuri_registrus
+     * const count = await prisma.tipuri_registru.count({
+     *   where: {
+     *     // ... the filter for the Tipuri_registrus we want to count
+     *   }
+     * })
+    **/
+    count<T extends tipuri_registruCountArgs>(
+      args?: Subset<T, tipuri_registruCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Tipuri_registruCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Tipuri_registru.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Tipuri_registruAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Tipuri_registruAggregateArgs>(args: Subset<T, Tipuri_registruAggregateArgs>): Prisma.PrismaPromise<GetTipuri_registruAggregateType<T>>
+
+    /**
+     * Group by Tipuri_registru.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tipuri_registruGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends tipuri_registruGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: tipuri_registruGroupByArgs['orderBy'] }
+        : { orderBy?: tipuri_registruGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, tipuri_registruGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTipuri_registruGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the tipuri_registru model
+   */
+  readonly fields: tipuri_registruFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for tipuri_registru.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__tipuri_registruClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    registre<T extends tipuri_registru$registreArgs<ExtArgs> = {}>(args?: Subset<T, tipuri_registru$registreArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$registrePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the tipuri_registru model
+   */
+  interface tipuri_registruFieldRefs {
+    readonly id: FieldRef<"tipuri_registru", 'String'>
+    readonly nume: FieldRef<"tipuri_registru", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * tipuri_registru findUnique
+   */
+  export type tipuri_registruFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * Filter, which tipuri_registru to fetch.
+     */
+    where: tipuri_registruWhereUniqueInput
+  }
+
+  /**
+   * tipuri_registru findUniqueOrThrow
+   */
+  export type tipuri_registruFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * Filter, which tipuri_registru to fetch.
+     */
+    where: tipuri_registruWhereUniqueInput
+  }
+
+  /**
+   * tipuri_registru findFirst
+   */
+  export type tipuri_registruFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * Filter, which tipuri_registru to fetch.
+     */
+    where?: tipuri_registruWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tipuri_registrus to fetch.
+     */
+    orderBy?: tipuri_registruOrderByWithRelationInput | tipuri_registruOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for tipuri_registrus.
+     */
+    cursor?: tipuri_registruWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tipuri_registrus from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tipuri_registrus.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of tipuri_registrus.
+     */
+    distinct?: Tipuri_registruScalarFieldEnum | Tipuri_registruScalarFieldEnum[]
+  }
+
+  /**
+   * tipuri_registru findFirstOrThrow
+   */
+  export type tipuri_registruFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * Filter, which tipuri_registru to fetch.
+     */
+    where?: tipuri_registruWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tipuri_registrus to fetch.
+     */
+    orderBy?: tipuri_registruOrderByWithRelationInput | tipuri_registruOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for tipuri_registrus.
+     */
+    cursor?: tipuri_registruWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tipuri_registrus from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tipuri_registrus.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of tipuri_registrus.
+     */
+    distinct?: Tipuri_registruScalarFieldEnum | Tipuri_registruScalarFieldEnum[]
+  }
+
+  /**
+   * tipuri_registru findMany
+   */
+  export type tipuri_registruFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * Filter, which tipuri_registrus to fetch.
+     */
+    where?: tipuri_registruWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tipuri_registrus to fetch.
+     */
+    orderBy?: tipuri_registruOrderByWithRelationInput | tipuri_registruOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing tipuri_registrus.
+     */
+    cursor?: tipuri_registruWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tipuri_registrus from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tipuri_registrus.
+     */
+    skip?: number
+    distinct?: Tipuri_registruScalarFieldEnum | Tipuri_registruScalarFieldEnum[]
+  }
+
+  /**
+   * tipuri_registru create
+   */
+  export type tipuri_registruCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * The data needed to create a tipuri_registru.
+     */
+    data: XOR<tipuri_registruCreateInput, tipuri_registruUncheckedCreateInput>
+  }
+
+  /**
+   * tipuri_registru createMany
+   */
+  export type tipuri_registruCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many tipuri_registrus.
+     */
+    data: tipuri_registruCreateManyInput | tipuri_registruCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * tipuri_registru createManyAndReturn
+   */
+  export type tipuri_registruCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * The data used to create many tipuri_registrus.
+     */
+    data: tipuri_registruCreateManyInput | tipuri_registruCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * tipuri_registru update
+   */
+  export type tipuri_registruUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * The data needed to update a tipuri_registru.
+     */
+    data: XOR<tipuri_registruUpdateInput, tipuri_registruUncheckedUpdateInput>
+    /**
+     * Choose, which tipuri_registru to update.
+     */
+    where: tipuri_registruWhereUniqueInput
+  }
+
+  /**
+   * tipuri_registru updateMany
+   */
+  export type tipuri_registruUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update tipuri_registrus.
+     */
+    data: XOR<tipuri_registruUpdateManyMutationInput, tipuri_registruUncheckedUpdateManyInput>
+    /**
+     * Filter which tipuri_registrus to update
+     */
+    where?: tipuri_registruWhereInput
+    /**
+     * Limit how many tipuri_registrus to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * tipuri_registru updateManyAndReturn
+   */
+  export type tipuri_registruUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * The data used to update tipuri_registrus.
+     */
+    data: XOR<tipuri_registruUpdateManyMutationInput, tipuri_registruUncheckedUpdateManyInput>
+    /**
+     * Filter which tipuri_registrus to update
+     */
+    where?: tipuri_registruWhereInput
+    /**
+     * Limit how many tipuri_registrus to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * tipuri_registru upsert
+   */
+  export type tipuri_registruUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * The filter to search for the tipuri_registru to update in case it exists.
+     */
+    where: tipuri_registruWhereUniqueInput
+    /**
+     * In case the tipuri_registru found by the `where` argument doesn't exist, create a new tipuri_registru with this data.
+     */
+    create: XOR<tipuri_registruCreateInput, tipuri_registruUncheckedCreateInput>
+    /**
+     * In case the tipuri_registru was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<tipuri_registruUpdateInput, tipuri_registruUncheckedUpdateInput>
+  }
+
+  /**
+   * tipuri_registru delete
+   */
+  export type tipuri_registruDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+    /**
+     * Filter which tipuri_registru to delete.
+     */
+    where: tipuri_registruWhereUniqueInput
+  }
+
+  /**
+   * tipuri_registru deleteMany
+   */
+  export type tipuri_registruDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which tipuri_registrus to delete
+     */
+    where?: tipuri_registruWhereInput
+    /**
+     * Limit how many tipuri_registrus to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * tipuri_registru.registre
+   */
+  export type tipuri_registru$registreArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the registre
+     */
+    select?: registreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the registre
+     */
+    omit?: registreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: registreInclude<ExtArgs> | null
+    where?: registreWhereInput
+    orderBy?: registreOrderByWithRelationInput | registreOrderByWithRelationInput[]
+    cursor?: registreWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RegistreScalarFieldEnum | RegistreScalarFieldEnum[]
+  }
+
+  /**
+   * tipuri_registru without action
+   */
+  export type tipuri_registruDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tipuri_registru
+     */
+    select?: tipuri_registruSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tipuri_registru
+     */
+    omit?: tipuri_registruOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tipuri_registruInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model registre
    */
 
@@ -7592,6 +8745,7 @@ export namespace Prisma {
     min_val: number | null
     max_val: number | null
     an: number | null
+    tip_registru_id: string | null
   }
 
   export type RegistreMaxAggregateOutputType = {
@@ -7602,6 +8756,7 @@ export namespace Prisma {
     min_val: number | null
     max_val: number | null
     an: number | null
+    tip_registru_id: string | null
   }
 
   export type RegistreCountAggregateOutputType = {
@@ -7612,6 +8767,7 @@ export namespace Prisma {
     min_val: number
     max_val: number
     an: number
+    tip_registru_id: number
     _all: number
   }
 
@@ -7636,6 +8792,7 @@ export namespace Prisma {
     min_val?: true
     max_val?: true
     an?: true
+    tip_registru_id?: true
   }
 
   export type RegistreMaxAggregateInputType = {
@@ -7646,6 +8803,7 @@ export namespace Prisma {
     min_val?: true
     max_val?: true
     an?: true
+    tip_registru_id?: true
   }
 
   export type RegistreCountAggregateInputType = {
@@ -7656,6 +8814,7 @@ export namespace Prisma {
     min_val?: true
     max_val?: true
     an?: true
+    tip_registru_id?: true
     _all?: true
   }
 
@@ -7753,6 +8912,7 @@ export namespace Prisma {
     min_val: number
     max_val: number
     an: number
+    tip_registru_id: string
     _count: RegistreCountAggregateOutputType | null
     _avg: RegistreAvgAggregateOutputType | null
     _sum: RegistreSumAggregateOutputType | null
@@ -7782,8 +8942,10 @@ export namespace Prisma {
     min_val?: boolean
     max_val?: boolean
     an?: boolean
+    tip_registru_id?: boolean
     documente?: boolean | registre$documenteArgs<ExtArgs>
     departamente?: boolean | departamenteDefaultArgs<ExtArgs>
+    tip_registru?: boolean | tipuri_registruDefaultArgs<ExtArgs>
     _count?: boolean | RegistreCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["registre"]>
 
@@ -7795,7 +8957,9 @@ export namespace Prisma {
     min_val?: boolean
     max_val?: boolean
     an?: boolean
+    tip_registru_id?: boolean
     departamente?: boolean | departamenteDefaultArgs<ExtArgs>
+    tip_registru?: boolean | tipuri_registruDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["registre"]>
 
   export type registreSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -7806,7 +8970,9 @@ export namespace Prisma {
     min_val?: boolean
     max_val?: boolean
     an?: boolean
+    tip_registru_id?: boolean
     departamente?: boolean | departamenteDefaultArgs<ExtArgs>
+    tip_registru?: boolean | tipuri_registruDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["registre"]>
 
   export type registreSelectScalar = {
@@ -7817,19 +8983,23 @@ export namespace Prisma {
     min_val?: boolean
     max_val?: boolean
     an?: boolean
+    tip_registru_id?: boolean
   }
 
-  export type registreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nume" | "descriere" | "departament_id" | "min_val" | "max_val" | "an", ExtArgs["result"]["registre"]>
+  export type registreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nume" | "descriere" | "departament_id" | "min_val" | "max_val" | "an" | "tip_registru_id", ExtArgs["result"]["registre"]>
   export type registreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documente?: boolean | registre$documenteArgs<ExtArgs>
     departamente?: boolean | departamenteDefaultArgs<ExtArgs>
+    tip_registru?: boolean | tipuri_registruDefaultArgs<ExtArgs>
     _count?: boolean | RegistreCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type registreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     departamente?: boolean | departamenteDefaultArgs<ExtArgs>
+    tip_registru?: boolean | tipuri_registruDefaultArgs<ExtArgs>
   }
   export type registreIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     departamente?: boolean | departamenteDefaultArgs<ExtArgs>
+    tip_registru?: boolean | tipuri_registruDefaultArgs<ExtArgs>
   }
 
   export type $registrePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7837,6 +9007,7 @@ export namespace Prisma {
     objects: {
       documente: Prisma.$documentePayload<ExtArgs>[]
       departamente: Prisma.$departamentePayload<ExtArgs>
+      tip_registru: Prisma.$tipuri_registruPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7846,6 +9017,7 @@ export namespace Prisma {
       min_val: number
       max_val: number
       an: number
+      tip_registru_id: string
     }, ExtArgs["result"]["registre"]>
     composites: {}
   }
@@ -8242,6 +9414,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     documente<T extends registre$documenteArgs<ExtArgs> = {}>(args?: Subset<T, registre$documenteArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$documentePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     departamente<T extends departamenteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, departamenteDefaultArgs<ExtArgs>>): Prisma__departamenteClient<$Result.GetResult<Prisma.$departamentePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tip_registru<T extends tipuri_registruDefaultArgs<ExtArgs> = {}>(args?: Subset<T, tipuri_registruDefaultArgs<ExtArgs>>): Prisma__tipuri_registruClient<$Result.GetResult<Prisma.$tipuri_registruPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8278,6 +9451,7 @@ export namespace Prisma {
     readonly min_val: FieldRef<"registre", 'Int'>
     readonly max_val: FieldRef<"registre", 'Int'>
     readonly an: FieldRef<"registre", 'Int'>
+    readonly tip_registru_id: FieldRef<"registre", 'String'>
   }
     
 
@@ -12138,6 +13312,14 @@ export namespace Prisma {
   export type NotificariScalarFieldEnum = (typeof NotificariScalarFieldEnum)[keyof typeof NotificariScalarFieldEnum]
 
 
+  export const Tipuri_registruScalarFieldEnum: {
+    id: 'id',
+    nume: 'nume'
+  };
+
+  export type Tipuri_registruScalarFieldEnum = (typeof Tipuri_registruScalarFieldEnum)[keyof typeof Tipuri_registruScalarFieldEnum]
+
+
   export const RegistreScalarFieldEnum: {
     id: 'id',
     nume: 'nume',
@@ -12145,7 +13327,8 @@ export namespace Prisma {
     departament_id: 'departament_id',
     min_val: 'min_val',
     max_val: 'max_val',
-    an: 'an'
+    an: 'an',
+    tip_registru_id: 'tip_registru_id'
   };
 
   export type RegistreScalarFieldEnum = (typeof RegistreScalarFieldEnum)[keyof typeof RegistreScalarFieldEnum]
@@ -12701,6 +13884,46 @@ export namespace Prisma {
     citita?: BoolWithAggregatesFilter<"notificari"> | boolean
   }
 
+  export type tipuri_registruWhereInput = {
+    AND?: tipuri_registruWhereInput | tipuri_registruWhereInput[]
+    OR?: tipuri_registruWhereInput[]
+    NOT?: tipuri_registruWhereInput | tipuri_registruWhereInput[]
+    id?: UuidFilter<"tipuri_registru"> | string
+    nume?: StringFilter<"tipuri_registru"> | string
+    registre?: RegistreListRelationFilter
+  }
+
+  export type tipuri_registruOrderByWithRelationInput = {
+    id?: SortOrder
+    nume?: SortOrder
+    registre?: registreOrderByRelationAggregateInput
+  }
+
+  export type tipuri_registruWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    nume?: string
+    AND?: tipuri_registruWhereInput | tipuri_registruWhereInput[]
+    OR?: tipuri_registruWhereInput[]
+    NOT?: tipuri_registruWhereInput | tipuri_registruWhereInput[]
+    registre?: RegistreListRelationFilter
+  }, "id" | "nume">
+
+  export type tipuri_registruOrderByWithAggregationInput = {
+    id?: SortOrder
+    nume?: SortOrder
+    _count?: tipuri_registruCountOrderByAggregateInput
+    _max?: tipuri_registruMaxOrderByAggregateInput
+    _min?: tipuri_registruMinOrderByAggregateInput
+  }
+
+  export type tipuri_registruScalarWhereWithAggregatesInput = {
+    AND?: tipuri_registruScalarWhereWithAggregatesInput | tipuri_registruScalarWhereWithAggregatesInput[]
+    OR?: tipuri_registruScalarWhereWithAggregatesInput[]
+    NOT?: tipuri_registruScalarWhereWithAggregatesInput | tipuri_registruScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"tipuri_registru"> | string
+    nume?: StringWithAggregatesFilter<"tipuri_registru"> | string
+  }
+
   export type registreWhereInput = {
     AND?: registreWhereInput | registreWhereInput[]
     OR?: registreWhereInput[]
@@ -12712,8 +13935,10 @@ export namespace Prisma {
     min_val?: IntFilter<"registre"> | number
     max_val?: IntFilter<"registre"> | number
     an?: IntFilter<"registre"> | number
+    tip_registru_id?: UuidFilter<"registre"> | string
     documente?: DocumenteListRelationFilter
     departamente?: XOR<DepartamenteScalarRelationFilter, departamenteWhereInput>
+    tip_registru?: XOR<Tipuri_registruScalarRelationFilter, tipuri_registruWhereInput>
   }
 
   export type registreOrderByWithRelationInput = {
@@ -12724,8 +13949,10 @@ export namespace Prisma {
     min_val?: SortOrder
     max_val?: SortOrder
     an?: SortOrder
+    tip_registru_id?: SortOrder
     documente?: documenteOrderByRelationAggregateInput
     departamente?: departamenteOrderByWithRelationInput
+    tip_registru?: tipuri_registruOrderByWithRelationInput
   }
 
   export type registreWhereUniqueInput = Prisma.AtLeast<{
@@ -12740,8 +13967,10 @@ export namespace Prisma {
     min_val?: IntFilter<"registre"> | number
     max_val?: IntFilter<"registre"> | number
     an?: IntFilter<"registre"> | number
+    tip_registru_id?: UuidFilter<"registre"> | string
     documente?: DocumenteListRelationFilter
     departamente?: XOR<DepartamenteScalarRelationFilter, departamenteWhereInput>
+    tip_registru?: XOR<Tipuri_registruScalarRelationFilter, tipuri_registruWhereInput>
   }, "id" | "nume_departament_id_an">
 
   export type registreOrderByWithAggregationInput = {
@@ -12752,6 +13981,7 @@ export namespace Prisma {
     min_val?: SortOrder
     max_val?: SortOrder
     an?: SortOrder
+    tip_registru_id?: SortOrder
     _count?: registreCountOrderByAggregateInput
     _avg?: registreAvgOrderByAggregateInput
     _max?: registreMaxOrderByAggregateInput
@@ -12770,6 +14000,7 @@ export namespace Prisma {
     min_val?: IntWithAggregatesFilter<"registre"> | number
     max_val?: IntWithAggregatesFilter<"registre"> | number
     an?: IntWithAggregatesFilter<"registre"> | number
+    tip_registru_id?: UuidWithAggregatesFilter<"registre"> | string
   }
 
   export type roluriWhereInput = {
@@ -13363,6 +14594,45 @@ export namespace Prisma {
     citita?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type tipuri_registruCreateInput = {
+    id?: string
+    nume: string
+    registre?: registreCreateNestedManyWithoutTip_registruInput
+  }
+
+  export type tipuri_registruUncheckedCreateInput = {
+    id?: string
+    nume: string
+    registre?: registreUncheckedCreateNestedManyWithoutTip_registruInput
+  }
+
+  export type tipuri_registruUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+    registre?: registreUpdateManyWithoutTip_registruNestedInput
+  }
+
+  export type tipuri_registruUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+    registre?: registreUncheckedUpdateManyWithoutTip_registruNestedInput
+  }
+
+  export type tipuri_registruCreateManyInput = {
+    id?: string
+    nume: string
+  }
+
+  export type tipuri_registruUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type tipuri_registruUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+  }
+
   export type registreCreateInput = {
     id?: string
     nume: string
@@ -13372,6 +14642,7 @@ export namespace Prisma {
     an: number
     documente?: documenteCreateNestedManyWithoutRegistreInput
     departamente: departamenteCreateNestedOneWithoutRegistreInput
+    tip_registru: tipuri_registruCreateNestedOneWithoutRegistreInput
   }
 
   export type registreUncheckedCreateInput = {
@@ -13382,6 +14653,7 @@ export namespace Prisma {
     min_val: number
     max_val: number
     an: number
+    tip_registru_id: string
     documente?: documenteUncheckedCreateNestedManyWithoutRegistreInput
   }
 
@@ -13394,6 +14666,7 @@ export namespace Prisma {
     an?: IntFieldUpdateOperationsInput | number
     documente?: documenteUpdateManyWithoutRegistreNestedInput
     departamente?: departamenteUpdateOneRequiredWithoutRegistreNestedInput
+    tip_registru?: tipuri_registruUpdateOneRequiredWithoutRegistreNestedInput
   }
 
   export type registreUncheckedUpdateInput = {
@@ -13404,6 +14677,7 @@ export namespace Prisma {
     min_val?: IntFieldUpdateOperationsInput | number
     max_val?: IntFieldUpdateOperationsInput | number
     an?: IntFieldUpdateOperationsInput | number
+    tip_registru_id?: StringFieldUpdateOperationsInput | string
     documente?: documenteUncheckedUpdateManyWithoutRegistreNestedInput
   }
 
@@ -13415,6 +14689,7 @@ export namespace Prisma {
     min_val: number
     max_val: number
     an: number
+    tip_registru_id: string
   }
 
   export type registreUpdateManyMutationInput = {
@@ -13434,6 +14709,7 @@ export namespace Prisma {
     min_val?: IntFieldUpdateOperationsInput | number
     max_val?: IntFieldUpdateOperationsInput | number
     an?: IntFieldUpdateOperationsInput | number
+    tip_registru_id?: StringFieldUpdateOperationsInput | string
   }
 
   export type roluriCreateInput = {
@@ -14138,9 +15414,29 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type tipuri_registruCountOrderByAggregateInput = {
+    id?: SortOrder
+    nume?: SortOrder
+  }
+
+  export type tipuri_registruMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nume?: SortOrder
+  }
+
+  export type tipuri_registruMinOrderByAggregateInput = {
+    id?: SortOrder
+    nume?: SortOrder
+  }
+
   export type DepartamenteScalarRelationFilter = {
     is?: departamenteWhereInput
     isNot?: departamenteWhereInput
+  }
+
+  export type Tipuri_registruScalarRelationFilter = {
+    is?: tipuri_registruWhereInput
+    isNot?: tipuri_registruWhereInput
   }
 
   export type registreNumeDepartament_idAnCompoundUniqueInput = {
@@ -14157,6 +15453,7 @@ export namespace Prisma {
     min_val?: SortOrder
     max_val?: SortOrder
     an?: SortOrder
+    tip_registru_id?: SortOrder
   }
 
   export type registreAvgOrderByAggregateInput = {
@@ -14173,6 +15470,7 @@ export namespace Prisma {
     min_val?: SortOrder
     max_val?: SortOrder
     an?: SortOrder
+    tip_registru_id?: SortOrder
   }
 
   export type registreMinOrderByAggregateInput = {
@@ -14183,6 +15481,7 @@ export namespace Prisma {
     min_val?: SortOrder
     max_val?: SortOrder
     an?: SortOrder
+    tip_registru_id?: SortOrder
   }
 
   export type registreSumOrderByAggregateInput = {
@@ -14607,6 +15906,48 @@ export namespace Prisma {
     update?: XOR<XOR<documenteUpdateToOneWithWhereWithoutNotificariInput, documenteUpdateWithoutNotificariInput>, documenteUncheckedUpdateWithoutNotificariInput>
   }
 
+  export type registreCreateNestedManyWithoutTip_registruInput = {
+    create?: XOR<registreCreateWithoutTip_registruInput, registreUncheckedCreateWithoutTip_registruInput> | registreCreateWithoutTip_registruInput[] | registreUncheckedCreateWithoutTip_registruInput[]
+    connectOrCreate?: registreCreateOrConnectWithoutTip_registruInput | registreCreateOrConnectWithoutTip_registruInput[]
+    createMany?: registreCreateManyTip_registruInputEnvelope
+    connect?: registreWhereUniqueInput | registreWhereUniqueInput[]
+  }
+
+  export type registreUncheckedCreateNestedManyWithoutTip_registruInput = {
+    create?: XOR<registreCreateWithoutTip_registruInput, registreUncheckedCreateWithoutTip_registruInput> | registreCreateWithoutTip_registruInput[] | registreUncheckedCreateWithoutTip_registruInput[]
+    connectOrCreate?: registreCreateOrConnectWithoutTip_registruInput | registreCreateOrConnectWithoutTip_registruInput[]
+    createMany?: registreCreateManyTip_registruInputEnvelope
+    connect?: registreWhereUniqueInput | registreWhereUniqueInput[]
+  }
+
+  export type registreUpdateManyWithoutTip_registruNestedInput = {
+    create?: XOR<registreCreateWithoutTip_registruInput, registreUncheckedCreateWithoutTip_registruInput> | registreCreateWithoutTip_registruInput[] | registreUncheckedCreateWithoutTip_registruInput[]
+    connectOrCreate?: registreCreateOrConnectWithoutTip_registruInput | registreCreateOrConnectWithoutTip_registruInput[]
+    upsert?: registreUpsertWithWhereUniqueWithoutTip_registruInput | registreUpsertWithWhereUniqueWithoutTip_registruInput[]
+    createMany?: registreCreateManyTip_registruInputEnvelope
+    set?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    disconnect?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    delete?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    connect?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    update?: registreUpdateWithWhereUniqueWithoutTip_registruInput | registreUpdateWithWhereUniqueWithoutTip_registruInput[]
+    updateMany?: registreUpdateManyWithWhereWithoutTip_registruInput | registreUpdateManyWithWhereWithoutTip_registruInput[]
+    deleteMany?: registreScalarWhereInput | registreScalarWhereInput[]
+  }
+
+  export type registreUncheckedUpdateManyWithoutTip_registruNestedInput = {
+    create?: XOR<registreCreateWithoutTip_registruInput, registreUncheckedCreateWithoutTip_registruInput> | registreCreateWithoutTip_registruInput[] | registreUncheckedCreateWithoutTip_registruInput[]
+    connectOrCreate?: registreCreateOrConnectWithoutTip_registruInput | registreCreateOrConnectWithoutTip_registruInput[]
+    upsert?: registreUpsertWithWhereUniqueWithoutTip_registruInput | registreUpsertWithWhereUniqueWithoutTip_registruInput[]
+    createMany?: registreCreateManyTip_registruInputEnvelope
+    set?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    disconnect?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    delete?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    connect?: registreWhereUniqueInput | registreWhereUniqueInput[]
+    update?: registreUpdateWithWhereUniqueWithoutTip_registruInput | registreUpdateWithWhereUniqueWithoutTip_registruInput[]
+    updateMany?: registreUpdateManyWithWhereWithoutTip_registruInput | registreUpdateManyWithWhereWithoutTip_registruInput[]
+    deleteMany?: registreScalarWhereInput | registreScalarWhereInput[]
+  }
+
   export type documenteCreateNestedManyWithoutRegistreInput = {
     create?: XOR<documenteCreateWithoutRegistreInput, documenteUncheckedCreateWithoutRegistreInput> | documenteCreateWithoutRegistreInput[] | documenteUncheckedCreateWithoutRegistreInput[]
     connectOrCreate?: documenteCreateOrConnectWithoutRegistreInput | documenteCreateOrConnectWithoutRegistreInput[]
@@ -14618,6 +15959,12 @@ export namespace Prisma {
     create?: XOR<departamenteCreateWithoutRegistreInput, departamenteUncheckedCreateWithoutRegistreInput>
     connectOrCreate?: departamenteCreateOrConnectWithoutRegistreInput
     connect?: departamenteWhereUniqueInput
+  }
+
+  export type tipuri_registruCreateNestedOneWithoutRegistreInput = {
+    create?: XOR<tipuri_registruCreateWithoutRegistreInput, tipuri_registruUncheckedCreateWithoutRegistreInput>
+    connectOrCreate?: tipuri_registruCreateOrConnectWithoutRegistreInput
+    connect?: tipuri_registruWhereUniqueInput
   }
 
   export type documenteUncheckedCreateNestedManyWithoutRegistreInput = {
@@ -14647,6 +15994,14 @@ export namespace Prisma {
     upsert?: departamenteUpsertWithoutRegistreInput
     connect?: departamenteWhereUniqueInput
     update?: XOR<XOR<departamenteUpdateToOneWithWhereWithoutRegistreInput, departamenteUpdateWithoutRegistreInput>, departamenteUncheckedUpdateWithoutRegistreInput>
+  }
+
+  export type tipuri_registruUpdateOneRequiredWithoutRegistreNestedInput = {
+    create?: XOR<tipuri_registruCreateWithoutRegistreInput, tipuri_registruUncheckedCreateWithoutRegistreInput>
+    connectOrCreate?: tipuri_registruCreateOrConnectWithoutRegistreInput
+    upsert?: tipuri_registruUpsertWithoutRegistreInput
+    connect?: tipuri_registruWhereUniqueInput
+    update?: XOR<XOR<tipuri_registruUpdateToOneWithWhereWithoutRegistreInput, tipuri_registruUpdateWithoutRegistreInput>, tipuri_registruUncheckedUpdateWithoutRegistreInput>
   }
 
   export type documenteUncheckedUpdateManyWithoutRegistreNestedInput = {
@@ -15368,6 +16723,7 @@ export namespace Prisma {
     max_val: number
     an: number
     documente?: documenteCreateNestedManyWithoutRegistreInput
+    tip_registru: tipuri_registruCreateNestedOneWithoutRegistreInput
   }
 
   export type registreUncheckedCreateWithoutDepartamenteInput = {
@@ -15377,6 +16733,7 @@ export namespace Prisma {
     min_val: number
     max_val: number
     an: number
+    tip_registru_id: string
     documente?: documenteUncheckedCreateNestedManyWithoutRegistreInput
   }
 
@@ -15497,6 +16854,7 @@ export namespace Prisma {
     min_val?: IntFilter<"registre"> | number
     max_val?: IntFilter<"registre"> | number
     an?: IntFilter<"registre"> | number
+    tip_registru_id?: UuidFilter<"registre"> | string
   }
 
   export type utilizatoriUpsertWithWhereUniqueWithoutDepartamenteInput = {
@@ -15670,6 +17028,7 @@ export namespace Prisma {
     max_val: number
     an: number
     departamente: departamenteCreateNestedOneWithoutRegistreInput
+    tip_registru: tipuri_registruCreateNestedOneWithoutRegistreInput
   }
 
   export type registreUncheckedCreateWithoutDocumenteInput = {
@@ -15680,6 +17039,7 @@ export namespace Prisma {
     min_val: number
     max_val: number
     an: number
+    tip_registru_id: string
   }
 
   export type registreCreateOrConnectWithoutDocumenteInput = {
@@ -15905,6 +17265,7 @@ export namespace Prisma {
     max_val?: IntFieldUpdateOperationsInput | number
     an?: IntFieldUpdateOperationsInput | number
     departamente?: departamenteUpdateOneRequiredWithoutRegistreNestedInput
+    tip_registru?: tipuri_registruUpdateOneRequiredWithoutRegistreNestedInput
   }
 
   export type registreUncheckedUpdateWithoutDocumenteInput = {
@@ -15915,6 +17276,7 @@ export namespace Prisma {
     min_val?: IntFieldUpdateOperationsInput | number
     max_val?: IntFieldUpdateOperationsInput | number
     an?: IntFieldUpdateOperationsInput | number
+    tip_registru_id?: StringFieldUpdateOperationsInput | string
   }
 
   export type tipuri_documenteUpsertWithoutDocumenteInput = {
@@ -16139,6 +17501,54 @@ export namespace Prisma {
     stadiu?: StringFieldUpdateOperationsInput | string
   }
 
+  export type registreCreateWithoutTip_registruInput = {
+    id?: string
+    nume: string
+    descriere: string
+    min_val: number
+    max_val: number
+    an: number
+    documente?: documenteCreateNestedManyWithoutRegistreInput
+    departamente: departamenteCreateNestedOneWithoutRegistreInput
+  }
+
+  export type registreUncheckedCreateWithoutTip_registruInput = {
+    id?: string
+    nume: string
+    descriere: string
+    departament_id: string
+    min_val: number
+    max_val: number
+    an: number
+    documente?: documenteUncheckedCreateNestedManyWithoutRegistreInput
+  }
+
+  export type registreCreateOrConnectWithoutTip_registruInput = {
+    where: registreWhereUniqueInput
+    create: XOR<registreCreateWithoutTip_registruInput, registreUncheckedCreateWithoutTip_registruInput>
+  }
+
+  export type registreCreateManyTip_registruInputEnvelope = {
+    data: registreCreateManyTip_registruInput | registreCreateManyTip_registruInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type registreUpsertWithWhereUniqueWithoutTip_registruInput = {
+    where: registreWhereUniqueInput
+    update: XOR<registreUpdateWithoutTip_registruInput, registreUncheckedUpdateWithoutTip_registruInput>
+    create: XOR<registreCreateWithoutTip_registruInput, registreUncheckedCreateWithoutTip_registruInput>
+  }
+
+  export type registreUpdateWithWhereUniqueWithoutTip_registruInput = {
+    where: registreWhereUniqueInput
+    data: XOR<registreUpdateWithoutTip_registruInput, registreUncheckedUpdateWithoutTip_registruInput>
+  }
+
+  export type registreUpdateManyWithWhereWithoutTip_registruInput = {
+    where: registreScalarWhereInput
+    data: XOR<registreUpdateManyMutationInput, registreUncheckedUpdateManyWithoutTip_registruInput>
+  }
+
   export type documenteCreateWithoutRegistreInput = {
     id?: string
     numar_inregistrare: number
@@ -16208,6 +17618,21 @@ export namespace Prisma {
     create: XOR<departamenteCreateWithoutRegistreInput, departamenteUncheckedCreateWithoutRegistreInput>
   }
 
+  export type tipuri_registruCreateWithoutRegistreInput = {
+    id?: string
+    nume: string
+  }
+
+  export type tipuri_registruUncheckedCreateWithoutRegistreInput = {
+    id?: string
+    nume: string
+  }
+
+  export type tipuri_registruCreateOrConnectWithoutRegistreInput = {
+    where: tipuri_registruWhereUniqueInput
+    create: XOR<tipuri_registruCreateWithoutRegistreInput, tipuri_registruUncheckedCreateWithoutRegistreInput>
+  }
+
   export type documenteUpsertWithWhereUniqueWithoutRegistreInput = {
     where: documenteWhereUniqueInput
     update: XOR<documenteUpdateWithoutRegistreInput, documenteUncheckedUpdateWithoutRegistreInput>
@@ -16249,6 +17674,27 @@ export namespace Prisma {
     descriere?: StringFieldUpdateOperationsInput | string
     documente?: documenteUncheckedUpdateManyWithoutDepartamenteNestedInput
     utilizatori?: utilizatoriUncheckedUpdateManyWithoutDepartamenteNestedInput
+  }
+
+  export type tipuri_registruUpsertWithoutRegistreInput = {
+    update: XOR<tipuri_registruUpdateWithoutRegistreInput, tipuri_registruUncheckedUpdateWithoutRegistreInput>
+    create: XOR<tipuri_registruCreateWithoutRegistreInput, tipuri_registruUncheckedCreateWithoutRegistreInput>
+    where?: tipuri_registruWhereInput
+  }
+
+  export type tipuri_registruUpdateToOneWithWhereWithoutRegistreInput = {
+    where?: tipuri_registruWhereInput
+    data: XOR<tipuri_registruUpdateWithoutRegistreInput, tipuri_registruUncheckedUpdateWithoutRegistreInput>
+  }
+
+  export type tipuri_registruUpdateWithoutRegistreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type tipuri_registruUncheckedUpdateWithoutRegistreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
   }
 
   export type utilizatoriCreateWithoutRoluriInput = {
@@ -16791,6 +18237,7 @@ export namespace Prisma {
     min_val: number
     max_val: number
     an: number
+    tip_registru_id: string
   }
 
   export type utilizatoriCreateManyDepartamenteInput = {
@@ -16868,6 +18315,7 @@ export namespace Prisma {
     max_val?: IntFieldUpdateOperationsInput | number
     an?: IntFieldUpdateOperationsInput | number
     documente?: documenteUpdateManyWithoutRegistreNestedInput
+    tip_registru?: tipuri_registruUpdateOneRequiredWithoutRegistreNestedInput
   }
 
   export type registreUncheckedUpdateWithoutDepartamenteInput = {
@@ -16877,6 +18325,7 @@ export namespace Prisma {
     min_val?: IntFieldUpdateOperationsInput | number
     max_val?: IntFieldUpdateOperationsInput | number
     an?: IntFieldUpdateOperationsInput | number
+    tip_registru_id?: StringFieldUpdateOperationsInput | string
     documente?: documenteUncheckedUpdateManyWithoutRegistreNestedInput
   }
 
@@ -16887,6 +18336,7 @@ export namespace Prisma {
     min_val?: IntFieldUpdateOperationsInput | number
     max_val?: IntFieldUpdateOperationsInput | number
     an?: IntFieldUpdateOperationsInput | number
+    tip_registru_id?: StringFieldUpdateOperationsInput | string
   }
 
   export type utilizatoriUpdateWithoutDepartamenteInput = {
@@ -16966,6 +18416,48 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     citita?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type registreCreateManyTip_registruInput = {
+    id?: string
+    nume: string
+    descriere: string
+    departament_id: string
+    min_val: number
+    max_val: number
+    an: number
+  }
+
+  export type registreUpdateWithoutTip_registruInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+    descriere?: StringFieldUpdateOperationsInput | string
+    min_val?: IntFieldUpdateOperationsInput | number
+    max_val?: IntFieldUpdateOperationsInput | number
+    an?: IntFieldUpdateOperationsInput | number
+    documente?: documenteUpdateManyWithoutRegistreNestedInput
+    departamente?: departamenteUpdateOneRequiredWithoutRegistreNestedInput
+  }
+
+  export type registreUncheckedUpdateWithoutTip_registruInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+    descriere?: StringFieldUpdateOperationsInput | string
+    departament_id?: StringFieldUpdateOperationsInput | string
+    min_val?: IntFieldUpdateOperationsInput | number
+    max_val?: IntFieldUpdateOperationsInput | number
+    an?: IntFieldUpdateOperationsInput | number
+    documente?: documenteUncheckedUpdateManyWithoutRegistreNestedInput
+  }
+
+  export type registreUncheckedUpdateManyWithoutTip_registruInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nume?: StringFieldUpdateOperationsInput | string
+    descriere?: StringFieldUpdateOperationsInput | string
+    departament_id?: StringFieldUpdateOperationsInput | string
+    min_val?: IntFieldUpdateOperationsInput | number
+    max_val?: IntFieldUpdateOperationsInput | number
+    an?: IntFieldUpdateOperationsInput | number
   }
 
   export type documenteCreateManyRegistreInput = {
