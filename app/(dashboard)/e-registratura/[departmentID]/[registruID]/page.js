@@ -1,8 +1,8 @@
 export default function RegistruIdPage() {
   return (
     <div>
-      <h1>Setări</h1>
-      <p>Aici poți gestiona setările aplicației.</p>
+      <h1>Registru in sine</h1>
+      <p>sadasdsadasdsadsadsa.</p>
     </div>
   );
 }

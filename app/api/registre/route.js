@@ -30,6 +30,10 @@ export async function PUT(request) {
     if (updateData.tip_registru_id === undefined) {
       return Response.json({ error: 'tip_registru_id este obligatoriu' }, { status: 400 });
     }
+    // Conversie sigură pentru an (dacă există)
+    if (updateData.an !== undefined) {
+      updateData.an = Number(updateData.an);
+    }
     const registru = await prisma.registre.update({
       where: { id },
       data: updateData,

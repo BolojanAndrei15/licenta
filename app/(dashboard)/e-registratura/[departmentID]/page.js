@@ -1,313 +1,369 @@
 "use client";
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { Eye, FileText } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useSetAtom } from 'jotai';
-import { pageTitleAtom } from '@/lib/pageTitleAtom';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import AddRegistruModal from '@/components/AddRegistruModal';
-import EditRegistruModal from '@/components/EditRegistruModal';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { Pencil, Trash2 } from 'lucide-react';
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import { useParams } from "next/navigation";
+import { useSetAtom } from "jotai";
+import { pageTitleAtom } from "@/lib/pageTitleAtom";
+import AddRegistruModal from "@/components/AddRegistruModal";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import Link from "next/link";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 
-export default function ERegistraturaDepartmentPage() {
+export default function Registre() {
   const { departmentID } = useParams();
+  const [registre, setRegistre] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editModal, setEditModal] = useState({ open: false, registru: null });
-  const [deleteModal, setDeleteModal] = useState({ open: false, registru: null });
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedRegistru, setSelectedRegistru] = useState(null);
+  const [editData, setEditData] = useState({ nume: "", descriere: "", an: "", tip_registru_id: "" });
   const [editLoading, setEditLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editError, setEditError] = useState("");
-  const [tipuriRegistru, setTipuriRegistru] = useState([]);
-
+  const [tipuriRegistre, setTipuriRegistre] = useState([]);
   const setPageTitle = useSetAtom(pageTitleAtom);
 
-  // Setează numele departamentului în atom pentru breadcrumb
-  useEffect(() => {
-    async function fetchDepartmentName() {
-      try {
-        const res = await axios.get('/api/department');
-        const departments = res.data?.departments || [];
-        const department = departments.find(dep => String(dep.id) === String(departmentID));
-        setPageTitle(department ? department.nume : '');
-      } catch {
-        setPageTitle('');
+  // Funcție pentru încărcarea registrelor
+  const fetchRegistre = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`/api/registre?departament_id=${departmentID}`);
+      setRegistre(res.data.registre || []);
+      setError("");
+      if (res.data.registre && res.data.registre.length > 0 && res.data.registre[0].departamente?.nume) {
+        setPageTitle(res.data.registre[0].departamente.nume);
+      } else {
+        setPageTitle("Registre departament");
       }
+    } catch (err) {
+      setError("Eroare la încărcarea registrelor");
+      setPageTitle("Registre departament");
+      toast.error("Eroare la încărcarea registrelor");
+    } finally {
+      setLoading(false);
     }
-    fetchDepartmentName();
-    return () => setPageTitle('');
   }, [departmentID, setPageTitle]);
 
-  // Fetch registre pentru departament
-  const { data: registreData, isLoading, error, refetch } = useQuery({
-    queryKey: ['registre', departmentID],
-    queryFn: async () => {
-      const res = await axios.get(`/api/registre?departament_id=${departmentID}`);
-      return res.data;
-    },
-  });
-  const registreList = Array.isArray(registreData?.registre) ? registreData.registre : [];
-
-  // Setează tipurile de registru când datele sunt încărcate
+  // Încărcare inițială a registrelor
   useEffect(() => {
-    if (registreData?.tipuri_registru && Array.isArray(registreData.tipuri_registru)) {
-      setTipuriRegistru(registreData.tipuri_registru);
-    }
-  }, [registreData]);
+    if (!departmentID) return;
+    fetchRegistre();
+  }, [departmentID, fetchRegistre]);
 
-  // Dropdown pentru ani: doar anii existenți în baza de date
-  const aniDisponibili = Array.isArray(registreData?.ani) ? registreData.ani : [];
-  const currentYear = new Date().getFullYear();
-  const [selectedAn, setSelectedAn] = useState(currentYear);
-
-  // Actualizează selectedAn dacă lista de ani se schimbă și anul selectat nu mai există
+  // Încărcare tipuri de registre o singură dată
   useEffect(() => {
-    if (aniDisponibili.length > 0 && !aniDisponibili.includes(selectedAn)) {
-      setSelectedAn(aniDisponibili[0]);
-    }
-  }, [aniDisponibili, selectedAn]);
+    axios
+      .get("/api/tipuri_registru")
+      .then((res) => setTipuriRegistre(res.data || []))
+      .catch(() => {
+        setTipuriRegistre([]);
+        toast.error("Eroare la încărcarea tipurilor de registre");
+      });
+  }, []);
 
-  // Filtrare după an
-  const filteredRegistre = registreList.filter(reg =>
-    (reg.an === selectedAn) &&
-    (reg.nume.toLowerCase().includes(search.toLowerCase()) ||
-     reg.descriere.toLowerCase().includes(search.toLowerCase()))
+  // Filtrare registre bazată pe căutare
+  const filteredRegistre = registre.filter((reg) =>
+    reg.nume.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Edit handler
-  const handleEdit = async (e) => {
-    e.preventDefault();
+  if (loading) return <div>Se încarcă registrele...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
+  const handleEditClick = (registru) => {
+    let tipId = registru.tip_registru_id || registru.tip_registru?.id || "";
+    if (!tipId && tipuriRegistre.length > 0) {
+      tipId = tipuriRegistre[0].id;
+    }
+    setSelectedRegistru(registru);
+    setEditData({
+      nume: registru.nume,
+      descriere: registru.descriere,
+      an: registru.an,
+      tip_registru_id: tipId,
+    });
     setEditError("");
+    setEditModalOpen(true);
+  };
+
+  const handleEditSave = async (e) => {
+    e.preventDefault();
     setEditLoading(true);
-    const { id, nume, descriere, an, min_val, max_val, departament_id, tip_registru_id } = editModal.registru;
+    setEditError("");
     try {
-      if (!an || isNaN(an) || an < 1992 || an > currentYear) {
-        setEditError(`Anul trebuie să fie între 1992 și ${currentYear}.`);
-        setEditLoading(false);
-        return;
+      const an = Number(editData.an);
+      if (isNaN(an) || an <= 0) {
+        throw new Error("Anul trebuie să fie un număr pozitiv.");
       }
+      const tip_registru_id = editData.tip_registru_id;
       if (!tip_registru_id) {
-        setEditError('Selectează tipul registrului.');
-        setEditLoading(false);
-        return;
+        throw new Error("Tipul de registru este obligatoriu.");
       }
-      await axios.put('/api/registre', {
-        id,
-        nume,
-        descriere,
-        an: Number(an),
-        min_val: Number(min_val),
-        max_val: Number(max_val),
-        departament_id,
-        tip_registru_id
+      const res = await axios.put("/api/registre", {
+        id: selectedRegistru.id,
+        nume: editData.nume,
+        descriere: editData.descriere,
+        an: an,
+        tip_registru_id: tip_registru_id,
       });
-      setEditModal({ open: false, registru: null });
-      toast.success('Registrul a fost actualizat cu succes.', {
-        style: { background: '#22c55e', color: 'white' }
-      });
-      refetch();
+      if (res.status !== 200) throw new Error("Eroare la editare registru");
+      toast.success("Registrul a fost actualizat.");
+      setEditModalOpen(false);
+      // Actualizare locală a registrului
+      setRegistre((prev) =>
+        prev.map((r) =>
+          r.id === selectedRegistru.id
+            ? { ...r, ...editData, an: an, tip_registru_id: tip_registru_id }
+            : r
+        )
+      );
     } catch (err) {
-      setEditError(err.response?.data?.error || err.message || 'Eroare necunoscută');
-      toast.error(err.response?.data?.error || err.message || 'Eroare la editare registru.');
+      const errorMessage = err.message || "Eroare necunoscută";
+      setEditError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setEditLoading(false);
     }
   };
 
-  // Delete handler
-  const handleDelete = async () => {
+  const handleDeleteClick = (registru) => {
+    setSelectedRegistru(registru);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     setDeleteLoading(true);
     try {
-      await axios.delete('/api/registre', {
-        data: { id: deleteModal.registru.id }
-      });
-      setDeleteModal({ open: false, registru: null });
-      toast.success('Registrul a fost șters cu succes.', {
-        style: { background: '#22c55e', color: 'white' }
-      });
-      refetch();
+      const res = await axios.delete("/api/registre", { data: { id: selectedRegistru.id } });
+      if (res.status !== 200) throw new Error("Eroare la ștergere registru");
+      toast.success("Registrul a fost șters.");
+      setDeleteModalOpen(false);
+      // Eliminare locală a registrului
+      setRegistre((prev) => prev.filter((r) => r.id !== selectedRegistru.id));
     } catch (err) {
-      toast.error(err.response?.data?.error || err.message || 'Eroare la ștergere registru.');
+      toast.error(err.message || "Eroare necunoscută");
     } finally {
       setDeleteLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
-        <div className="flex gap-2 w-full sm:w-auto">
+    <div className="p-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+        <h1 className="text-2xl font-bold">Registre departament</h1>
+        <div className="flex gap-2 items-center w-full md:w-auto">
           <Input
-            placeholder="Caută registru..."
+            placeholder="Caută registre..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className="max-w-xs"
           />
-          <select
-            className="border rounded px-2 py-1"
-            value={selectedAn}
-            onChange={e => setSelectedAn(Number(e.target.value))}
-          >
-            {aniDisponibili.map(anOpt => (
-              <option key={anOpt} value={anOpt}>{anOpt}</option>
-            ))}
-          </select>
+          <Button onClick={() => setAddModalOpen(true)} variant="default">
+            Adaugă registru
+          </Button>
         </div>
-        <Button className="w-full sm:w-auto mt-2 sm:mt-0" onClick={() => setModalOpen(true)}>
-          Adaugă registru nou
-        </Button>
       </div>
       <AddRegistruModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
+        open={addModalOpen}
+        onOpenChange={setAddModalOpen}
         departmentId={departmentID}
-        onRegistruAdded={() => refetch()}
-        ani={aniDisponibili}
+        onRegistruAdded={() => {
+          fetchRegistre();
+          toast.success("Registrul a fost adăugat.");
+        }}
+        ani={[]}
       />
-     <div className="mt-8 space-y-2">
-  {/* Header „tabel" */}
-  <div className="flex items-center px-4 py-2 bg-gray-100 text-gray-600 text-xs font-semibold rounded-md">
-    {/* Icon gol + titlu */}
-    <div className="flex items-center gap-2 flex-1">
-      <div className="w-4" />
-      <span>Nume registru</span>
-    </div>
-    <div className="flex-1 text-center">Tip registru</div>
-    <div className="flex-1 text-center">Număr înregistrări</div>
-    <div className="flex-1 text-center">Valoare minimă</div>
-    <div className="flex-1 text-center">Valoare maximă</div>
-    <div className="w-28 text-right">Acțiuni</div>
-  </div>
-  {/* Conținut */}
-  {isLoading ? (
-    [...Array(5)].map((_, idx) => (
-      <div
-        key={idx}
-        className="flex items-center bg-white p-3 rounded-md shadow-sm border"
-      >
-        <div className="flex items-center gap-2 flex-1">
-          <Skeleton className="h-4 w-4 rounded-full" />
-          <Skeleton className="h-3 w-24" />
+      {filteredRegistre.length === 0 ? (
+        <div>Nu există registre pentru acest departament.</div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border bg-white">
+          <table className="min-w-full text-sm align-middle">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left font-semibold text-xs text-gray-500">NUME REGISTRU</th>
+                <th className="px-4 py-3 text-left font-semibold text-xs text-gray-500">TIP REGISTRU</th>
+                <th className="px-4 py-3 text-left font-semibold text-xs text-gray-500">DATA CREĂRII</th>
+                <th className="px-4 py-3 text-left font-semibold text-xs text-gray-500">ÎNREGISTRĂRI</th>
+                <th className="px-4 py-3 text-left font-semibold text-xs text-gray-500">ACȚIUNI</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredRegistre.map((reg) => (
+                <tr key={reg.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 whitespace-nowrap flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-4 h-4 text-blue-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    <span className="font-medium text-sm text-blue-900">{reg.nume}</span>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-gray-700">{reg.tip_registru?.nume || "-"}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-gray-700">
+                    {reg.data_creare ? new Date(reg.data_creare).toLocaleDateString("ro-RO") : "-"}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-semibold">
+                      {reg.numar_inregistrari} înregistrări
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap flex gap-2 items-center">
+                    <Link href={`/e-registratura/${departmentID}/${reg.id}`}>
+                      <Button size="icon" variant="ghost" title="Vezi detalii">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4 text-blue-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      </Button>
+                    </Link>
+                    <Button size="icon" variant="ghost" onClick={() => handleEditClick(reg)} title="Editează">
+                      <Pencil className="w-4 h-4 text-gray-700" />
+                    </Button>
+                    <Button size="icon" variant="ghost" onClick={() => handleDeleteClick(reg)} title="Șterge">
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <Skeleton className="h-3 w-16 flex-1 mx-auto" />
-        <Skeleton className="h-3 w-16 flex-1 mx-auto" />
-        <Skeleton className="h-3 w-16 flex-1 mx-auto" />
-        <div className="flex gap-2 w-28 justify-end">
-          <Skeleton className="h-6 w-6 rounded-md" />
-          <Skeleton className="h-6 w-6 rounded-md" />
-        </div>
-      </div>
-    ))
-  ) : error ? (
-    <div className="text-center text-gray-500 py-8 text-xs">
-      Eroare la încărcare registre.
-    </div>
-  ) : filteredRegistre.length > 0 ? (
-    filteredRegistre.map((registru) => (
-      <div
-        key={registru.id}
-        className="flex items-center bg-white p-3 rounded-md shadow-sm border hover:bg-gray-50 transition"
-      >
-        {/* Icon + nume */}
-        <div className="flex items-center gap-2 flex-1">
-          <FileText className="text-blue-600 w-4 h-4" />
-          <span className="font-medium text-gray-800 text-xs">
-            {registru.nume}
-          </span>
-        </div>
-        {/* Tip registru */}
-        <div className="flex-1 text-center text-xs">
-          {registru.tip_registru?.nume || '-'}
-        </div>
-        {/* Număr înregistrări */}
-        <div className="flex-1 text-center">
-          <span className="bg-green-100 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-            {registru.numar_inregistrari} înregistrări
-          </span>
-        </div>
-        {/* Valoare minimă */}
-        <div className="flex-1 text-center text-xs">
-          {registru.min_val}
-        </div>
-
-        {/* Valoare maximă */}
-        <div className="flex-1 text-center text-xs">
-          {registru.max_val}
-        </div>
-
-        {/* Butoane acțiuni */}
-        <div className="flex gap-2 w-28 justify-end">
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => {
-              const tipRegistruId = registru.tip_registru_id || (registru.tip_registru && registru.tip_registru.id) || '';
-              setEditModal({ 
-                open: true, 
-                registru: { 
-                  ...registru, 
-                  tip_registru_id: tipRegistruId
-                } 
-              });
-            }}
-            title="Editează"
-          >
-            <Pencil className="w-4 h-4" />
-          </Button>
-          <Button
-            size="icon"
-            variant="destructive"
-            onClick={() => setDeleteModal({ open: true, registru })}
-            title="Șterge"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="text-center text-gray-500 py-8 text-xs">
-      Nu există registre pentru acest departament.
-    </div>
-  )}
-</div>
-
+      )}
       {/* Edit Modal */}
-      <EditRegistruModal
-        open={editModal.open}
-        onOpenChange={open => setEditModal({ open, registru: open ? editModal.registru : null })}
-        registru={editModal.registru}
-        setRegistru={r => setEditModal(m => ({ ...m, registru: r }))}
-        onSubmit={handleEdit}
-        loading={editLoading}
-        error={editError}
-        tipuriRegistru={tipuriRegistru}
-      />
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editează registrul</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditSave} className="space-y-4">
+            <div className="space-y-1">
+              <Label htmlFor="edit-nume">Nume registru</Label>
+              <Input
+                id="edit-nume"
+                value={editData.nume}
+                onChange={(e) => setEditData({ ...editData, nume: e.target.value })}
+                required
+                disabled={editLoading}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="edit-descriere">Descriere</Label>
+              <Input
+                id="edit-descriere"
+                value={editData.descriere}
+                onChange={(e) => setEditData({ ...editData, descriere: e.target.value })}
+                required
+                disabled={editLoading}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="edit-an">An</Label>
+              <Input
+                id="edit-an"
+                type="number"
+                value={editData.an}
+                onChange={(e) => setEditData({ ...editData, an: e.target.value })}
+                required
+                disabled={editLoading}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="edit-tip">Tip registru</Label>
+              <Select
+                value={editData.tip_registru_id?.toString()}
+                onValueChange={(value) => setEditData({ ...editData, tip_registru_id: value })}
+                disabled={editLoading}
+                required
+              >
+                <SelectTrigger className="w-full" id="edit-tip">
+                  <SelectValue placeholder="Alege tipul de registru" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tipuriRegistre.map((tip) => (
+                    <SelectItem key={tip.id} value={tip.id.toString()}>{tip.nume}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {editError && <div className="text-red-500 text-xs mt-1">{editError}</div>}
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditModalOpen(false)}
+                disabled={editLoading}
+              >
+                Anulează
+              </Button>
+              <Button type="submit" disabled={editLoading}>
+                {editLoading ? "Se salvează..." : "Salvează"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
       {/* Delete Confirm Modal */}
-      <Dialog open={deleteModal.open} onOpenChange={open => setDeleteModal({ open, registru: open ? deleteModal.registru : null })}>
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Șterge registrul</DialogTitle>
           </DialogHeader>
-          <div className="mb-4">Ești sigur că vrei să ștergi registrul <b>{deleteModal.registru?.nume}</b>? Această acțiune este ireversibilă.</div>
+          <div className="mb-4">
+            Ești sigur că vrei să ștergi registrul <b>{selectedRegistru?.nume}</b>? Această acțiune este
+            ireversibilă.
+          </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setDeleteModal({ open: false, registru: null })} disabled={deleteLoading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteModalOpen(false)}
+              disabled={deleteLoading}
+            >
               Anulează
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDelete} disabled={deleteLoading}>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={deleteLoading}
+            >
               {deleteLoading ? "Se șterge..." : "Șterge"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
