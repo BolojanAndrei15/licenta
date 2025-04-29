@@ -4,11 +4,17 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import { useSetAtom } from "jotai";
 import { pageTitleAtom } from "@/lib/pageTitleAtom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AddDocumentModal from "@/components/AddDocumentModal";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export default function RegistruIdPage() {
   const { registruID } = useParams();
   const setPageTitle = useSetAtom(pageTitleAtom);
+  const [modalOpen, setModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
 
   // Fetch detalii registru pentru titlu
   const { data: registruData, isLoading: loadingRegistru } = useQuery({
@@ -37,6 +43,12 @@ export default function RegistruIdPage() {
 
   return (
     <div className="bg-[#fafbfc] min-h-screen p-6">
+      <AddDocumentModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        registruID={registruID}
+        onSuccess={() => queryClient.invalidateQueries(['documente', registruID])}
+      />
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-3">
           <input
@@ -49,7 +61,10 @@ export default function RegistruIdPage() {
             <option>Toate tipurile</option>
           </select>
         </div>
-        <button className="bg-blue-600 text-white rounded-md px-5 py-2 font-medium text-base flex items-center gap-2 hover:bg-blue-700 transition">
+        <button
+          className="bg-blue-600 text-white rounded-md px-5 py-2 font-medium text-base flex items-center gap-2 hover:bg-blue-700 transition"
+          onClick={() => setModalOpen(true)}
+        >
           + Adaugă înregistrare
         </button>
       </div>
