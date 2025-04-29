@@ -4,31 +4,32 @@ import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 import axios from "axios";
 import { pageTitleAtom } from "@/lib/pageTitleAtom";
+import { useQuery } from '@tanstack/react-query';
 
 export default function RegistruIdPage() {
-  const { departmentID } = useParams();
-  const setPageTitle = useSetAtom(pageTitleAtom);
+  const { registruID } = useParams();
 
-  useEffect(() => {
-    async function fetchDepartmentName() {
-      try {
-        const res = await axios.get(`/api/department?departament_id=${departmentID}`);
-        console.log("[DEBUG] API response:", res.data);
-        setPageTitle(res.data?.departament?.nume || "");
-      } catch (err) {
-        console.log("[DEBUG] API error:", err);
-        setPageTitle("");
-      }
-    }
-    console.log("[DEBUG] useEffect triggered, departmentID:", departmentID);
-    fetchDepartmentName();
-    return () => setPageTitle("");
-  }, [departmentID, setPageTitle]);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['documente', registruID],
+    queryFn: async () => {
+      const res = await axios.get(`/api/document?registru_id=${registruID}`);
+      return res.data.documente;
+    },
+    enabled: !!registruID,
+  });
 
   return (
     <div>
       <h1>Registru in sine</h1>
-      <p>sadasdsadasdsadsadsa.</p>
+      {isLoading && <p>Se încarcă documentele...</p>}
+      {error && <p>Eroare la încărcare!</p>}
+      {data && (
+        <ul>
+          {data.map((doc) => (
+            <li key={doc.id}>{doc.numar_document} - {doc.rezumat}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
