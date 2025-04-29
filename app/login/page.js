@@ -23,7 +23,7 @@ export default function LoginPage() {
     if (res?.error) {
       setError("Email sau parolă incorectă!");
     } else {
-      window.location.href = "/";
+      window.location.href = "/e-registratura";
     }
   };
 

@@ -18,7 +18,7 @@ export default function ERegistraturaPage() {
 
   useEffect(() => {
     if (status === "loading") return;
-    if (!session || !["administrator", "primar", "secretar general"].includes(session.user?.rol)) {
+    if (!session || !["Administrator", "primar", "secretar general"].includes(session.user?.rol)) {
       router.replace(`/e-registratura/${session.user?.departament_id}`)
     }
   }, [session, status, router]);
@@ -43,6 +43,8 @@ export default function ERegistraturaPage() {
     dep.nume.toLowerCase().includes(search.toLowerCase())
   );
 
+  const canAddDepartment = session && ["Administrator", "Primar", "Secretar General"].includes(session.user?.rol);
+
   if (isLoading) return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(6)].map((_, idx) => (
@@ -59,11 +61,13 @@ export default function ERegistraturaPage() {
 
   return (
     <>
-      <AddDepartmentModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        onDepartmentAdded={() => refetch()}
-      />
+      {canAddDepartment && (
+        <AddDepartmentModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          onDepartmentAdded={() => refetch()}
+        />
+      )}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
         <Input
           placeholder="Caută departament..."
@@ -71,9 +75,11 @@ export default function ERegistraturaPage() {
           onChange={e => setSearch(e.target.value)}
           className="max-w-xs"
         />
-        <Button className="w-full sm:w-auto mt-2 sm:mt-0" onClick={() => setModalOpen(true)}>
-          Adaugă departament nou
-        </Button>
+        {canAddDepartment && (
+          <Button className="w-full sm:w-auto mt-2 sm:mt-0" onClick={() => setModalOpen(true)}>
+            Adaugă departament nou
+          </Button>
+        )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredData && filteredData.length > 0 ? (
@@ -88,6 +94,7 @@ export default function ERegistraturaPage() {
               onVeziRegistre={() => {}}
               onEditare={refetch}
               onStergere={refetch}
+              canEdit={canAddDepartment}
             />
           ))
         ) : (

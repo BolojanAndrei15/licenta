@@ -11,18 +11,20 @@ import {
   SidebarMenuButton,
   SidebarSeparator
   } from "./ui/sidebar";
+import { useSession, signOut } from "next-auth/react";
   
   // Example sidebar content, you can customize this
   const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const user = session?.user || {
+    nume: "Utilizator",
+    rol: "-",
+    avatar: "/window.svg"
+  };
   // Exemplu static pentru notificări și user (poți integra date reale din context/session)
   const notificariCount = 3;
-  const user = {
-    name: "Alexandru Popescu",
-    role: "Administrator",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg"
-  };
   return (
     <Sidebar className="flex flex-col h-full w-[250px] border-r bg-white justify-between p-0">
       {/* Logo și titlu */}
@@ -69,13 +71,13 @@ import {
       {/* Footer user info */}
       <SidebarFooter className="px-4 pb-4 pt-2 border-t bg-white">
         <div className="flex items-center gap-3">
-          <img src={user.avatar} alt="avatar" className="w-9 h-9 rounded-full border object-cover" />
+          <img src={user.avatar || "/window.svg"} alt="avatar" className="w-9 h-9 rounded-full border object-cover" />
           <div className="flex flex-col">
-            <span className="font-medium text-sm text-gray-900 leading-tight">{user.name}</span>
-            <span className="text-xs text-gray-500">{user.role}</span>
+            <span className="font-medium text-sm text-gray-900 leading-tight">{user.nume}</span>
+            <span className="text-xs text-gray-500">{user.rol}</span>
           </div>
         </div>
-        <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-blue-600 mt-2" onClick={() => {/* logout logic */}}>
+        <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-blue-600 mt-2" onClick={() => signOut({ callbackUrl: "/login" })}>
           <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
           Deconectare
         </button>

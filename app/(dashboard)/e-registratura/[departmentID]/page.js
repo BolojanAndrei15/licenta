@@ -26,9 +26,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export default function Registre() {
   const { departmentID } = useParams();
+  const { data: session } = useSession();
+  const userRole = session?.user?.rol;
+  const canEdit = ["Administrator", "Primar", "Secretar General"].includes(userRole);
+
   const [search, setSearch] = useState("");
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -141,18 +146,21 @@ export default function Registre() {
   if (isLoading) return <div>Se încarcă...</div>;
   if (error) return <div className="text-red-500">Eroare la încărcare: {error.message}</div>;
 
+
   return (
     <div className="p-6">
       {/* Header și Search */}
       <div className="flex w-full justify-between md:w-auto mb-6">
-  <Input
-    placeholder="Caută registre..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="max-w-xs"
-  />
-  <Button onClick={() => setAddModalOpen(true)}>Adaugă registru</Button>
-</div>
+        <Input
+          placeholder="Caută registre..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-xs"
+        />
+        {canEdit && (
+          <Button onClick={() => setAddModalOpen(true)}>Adaugă registru</Button>
+        )}
+      </div>
 
 
       {/* Add Registru Modal */}
@@ -212,23 +220,27 @@ export default function Registre() {
                         <Eye className="w-4 h-4" />
                       </Button>
                     </Link>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleEditClick(reg)}
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setSelectedRegistru(reg);
-                        setDeleteModalOpen(true);
-                      }}
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </Button>
+                    {canEdit && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditClick(reg)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedRegistru(reg);
+                            setDeleteModalOpen(true);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -16,6 +16,7 @@ const DepartmentCard = ({
   departmentId,
   onEditare,
   onStergere,
+  canEdit,
 }) => {
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
@@ -78,26 +79,28 @@ const DepartmentCard = ({
           <h2 className="text-lg font-semibold text-gray-900 truncate">{titluDepartament}</h2>
           <div className="text-gray-500 text-sm mt-1 line-clamp-2">{descriere}</div>
         </div>
-        <div className="flex gap-1.5">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setEditOpen(true)}
-            title="Editează"
-            className="h-8 w-8 border-gray-200"
-          >
-            <Pencil className="h-4 w-4 text-gray-500" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setDeleteOpen(true)}
-            title="Șterge"
-            className="h-8 w-8 border-gray-200 hover:bg-red-50 hover:text-red-600"
-          >
-            <Trash2 className="h-4 w-4 text-gray-500" />
-          </Button>
-        </div>
+        {canEdit && (
+          <div className="flex gap-1.5">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setEditOpen(true)}
+              title="Editează"
+              className="h-8 w-8 border-gray-200"
+            >
+              <Pencil className="h-4 w-4 text-gray-500" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setDeleteOpen(true)}
+              title="Șterge"
+              className="h-8 w-8 border-gray-200 hover:bg-red-50 hover:text-red-600"
+            >
+              <Trash2 className="h-4 w-4 text-gray-500" />
+            </Button>
+          </div>
+        )}
       </div>
       {/* Metrics Section */}
       <div className="flex gap-6 mt-2">
