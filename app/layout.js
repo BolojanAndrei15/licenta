@@ -1,7 +1,6 @@
-import Header from "@/components/Header";
+import NextAuthSessionProvider from "@/components/NextAuthSessionProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SidebarProvider, AppSidebar } from "@/components/Sidebar";
 import QueryProvider from "@/components/QueryProvider";
 import { Toaster } from "@/components/ui/sonner"
 import { Provider as JotaiProvider } from "jotai";
@@ -22,37 +21,18 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const defaultTitle = "Dashboard";
-  const defaultBreadcrumbs = [
-    { label: "Acasă", href: "/" },
-    { label: defaultTitle },
-  ];
-
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <JotaiProvider>
-          <QueryProvider>
-            <SidebarProvider>
-              <div className="flex min-h-screen w-full">
-                {/* Sidebar with fixed width */}
-                <div className="w-64 bg-gray-100">
-                  <AppSidebar />
-                </div>
-                {/* Main content area */}
-                <div className="flex-1 flex flex-col">
-                  {/* Header full width of remaining page, sticky at the top of main area */}
-                  <Header  />
-                  <div className="flex-1 p-6 bg-white">
-                    {children}
-                    <Toaster />
-                  </div>
-                </div>
-              </div>
-            </SidebarProvider>
-          </QueryProvider>
-        </JotaiProvider>
-      </body>
-    </html>
+    <NextAuthSessionProvider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <JotaiProvider>
+            <QueryProvider>
+              {children}
+              <Toaster />
+            </QueryProvider>
+          </JotaiProvider>
+        </body>
+      </html>
+    </NextAuthSessionProvider>
   );
 }

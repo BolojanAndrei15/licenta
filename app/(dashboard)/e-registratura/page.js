@@ -9,8 +9,20 @@ import { Button } from '@/components/ui/button';
 import AddDepartmentModal from '@/components/AddDepartmentModal';
 import { useSetAtom } from "jotai";
 import { pageTitleAtom } from "@/lib/pageTitleAtom";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function ERegistraturaPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session || !["administrator", "primar", "secretar general"].includes(session.user?.rol)) {
+      router.replace(`/e-registratura/${session.user?.departament_id}`)
+    }
+  }, [session, status, router]);
+
   const setPageTitle = useSetAtom(pageTitleAtom);
   useEffect(() => {
     setPageTitle("Departamente");
