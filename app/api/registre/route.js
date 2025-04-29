@@ -9,6 +9,9 @@ export async function POST(request) {
     if (!data.tip_registru_id) {
       return Response.json({ error: 'tip_registru_id este obligatoriu' }, { status: 400 });
     }
+    // Setează valori implicite pentru min_val și max_val dacă lipsesc
+    if (data.min_val === undefined) data.min_val = 1;
+    if (data.max_val === undefined) data.max_val = 999999;
     const registru = await prisma.registre.create({
       data,
       include: { tip_registru: true },

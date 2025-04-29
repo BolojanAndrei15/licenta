@@ -4,6 +4,7 @@ import "./globals.css";
 import { SidebarProvider, AppSidebar } from "@/components/Sidebar";
 import QueryProvider from "@/components/QueryProvider";
 import { Toaster } from "@/components/ui/sonner"
+import { Provider as JotaiProvider } from "jotai";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,26 +31,27 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <QueryProvider>
-          <SidebarProvider>
-            <div className="flex min-h-screen w-full">
-              {/* Sidebar with fixed width */}
-              <div className="w-64 bg-gray-100">
-                <AppSidebar />
-              </div>
-              {/* Main content area */}
-              <div className="flex-1 flex flex-col">
-                {/* Header full width of remaining page, sticky at the top of main area */}
-                <Header  />
-                <div className="flex-1 p-6 bg-white">
-                  {children}
-                  <Toaster />
-
+        <JotaiProvider>
+          <QueryProvider>
+            <SidebarProvider>
+              <div className="flex min-h-screen w-full">
+                {/* Sidebar with fixed width */}
+                <div className="w-64 bg-gray-100">
+                  <AppSidebar />
+                </div>
+                {/* Main content area */}
+                <div className="flex-1 flex flex-col">
+                  {/* Header full width of remaining page, sticky at the top of main area */}
+                  <Header  />
+                  <div className="flex-1 p-6 bg-white">
+                    {children}
+                    <Toaster />
+                  </div>
                 </div>
               </div>
-            </div>
-          </SidebarProvider>
-        </QueryProvider>
+            </SidebarProvider>
+          </QueryProvider>
+        </JotaiProvider>
       </body>
     </html>
   );

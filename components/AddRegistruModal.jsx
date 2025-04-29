@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AddRegistruModal({ open, onOpenChange, departmentId, onRegistruAdded, ani = [] }) {
   const [nume, setNume] = useState("");
@@ -16,24 +17,26 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
   const [aniDisponibili, setAniDisponibili] = useState([]);
   const [tipuriRegistru, setTipuriRegistru] = useState([]);
   const [tipRegistruId, setTipRegistruId] = useState("");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const currentYear = new Date().getFullYear();
     let aniUnici = ani && Array.isArray(ani) ? ani.filter(a => a !== currentYear) : [];
     const newAniDisponibili = [currentYear, ...aniUnici];
-    // Setează doar dacă s-a schimbat efectiv
     if (JSON.stringify(newAniDisponibili) !== JSON.stringify(aniDisponibili)) {
       setAniDisponibili(newAniDisponibili);
     }
+  }, [ani]);
 
-    // Fetch tipuri registru
+  // Fetch tipuri registru only once when modal mounts
+  useEffect(() => {
     fetch("/api/tipuri_registru")
       .then(res => res.json())
       .then(data => {
         setTipuriRegistru(data);
         if (data.length > 0 && !tipRegistruId) setTipRegistruId(data[0].id);
       });
-  }, [ani]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +82,18 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
       setAn(new Date().getFullYear());
       setMinVal(1);
       setMaxVal(999999);
-      onRegistruAdded && onRegistruAdded();
+      // Trimite datele noului registru către onRegistruAdded
+      onRegistruAdded && onRegistruAdded({
+        nume,
+        descriere,
+        departament_id: departmentId,
+        an: Number(an),
+        min_val: Number(minVal),
+        max_val: Number(maxVal),
+        tip_registru_id: tipRegistruId,
+      });
+      // Invalidate registre query so UI updates
+      queryClient.invalidateQueries(["registre", departmentId]);
       onOpenChange(false);
       toast.success("Registrul a fost adăugat cu succes.", {
         style: { background: '#22c55e', color: 'white' }
