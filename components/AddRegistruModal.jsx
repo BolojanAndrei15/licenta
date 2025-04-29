@@ -1,12 +1,31 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
-export default function AddRegistruModal({ open, onOpenChange, departmentId, onRegistruAdded, ani = [] }) {
+export default function AddRegistruModal({
+  open,
+  onOpenChange,
+  departmentId,
+  onRegistruAdded,
+  ani = [],
+}) {
   const [nume, setNume] = useState("");
   const [descriere, setDescriere] = useState("");
   const [an, setAn] = useState(new Date().getFullYear());
@@ -18,21 +37,21 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
   const [tipuriRegistru, setTipuriRegistru] = useState([]);
   const [tipRegistruId, setTipRegistruId] = useState("");
   const queryClient = useQueryClient();
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     const currentYear = new Date().getFullYear();
-    let aniUnici = ani && Array.isArray(ani) ? ani.filter(a => a !== currentYear) : [];
+    let aniUnici = ani && Array.isArray(ani) ? ani.filter((a) => a !== currentYear) : [];
     const newAniDisponibili = [currentYear, ...aniUnici];
     if (JSON.stringify(newAniDisponibili) !== JSON.stringify(aniDisponibili)) {
       setAniDisponibili(newAniDisponibili);
     }
   }, [ani]);
 
-  // Fetch tipuri registru only once when modal mounts
   useEffect(() => {
     fetch("/api/tipuri_registru")
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setTipuriRegistru(data);
         if (data.length > 0 && !tipRegistruId) setTipRegistruId(data[0].id);
       });
@@ -61,6 +80,7 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
       setError("Selectează tipul registrului.");
       return;
     }
+
     setLoading(true);
     try {
       const res = await fetch("/api/registre", {
@@ -77,26 +97,30 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
         }),
       });
       if (!res.ok) throw new Error("Eroare la adăugare registru");
+
+      // Reset form
       setNume("");
       setDescriere("");
       setAn(new Date().getFullYear());
       setMinVal(1);
       setMaxVal(999999);
-      // Trimite datele noului registru către onRegistruAdded
-      onRegistruAdded && onRegistruAdded({
-        nume,
-        descriere,
-        departament_id: departmentId,
-        an: Number(an),
-        min_val: Number(minVal),
-        max_val: Number(maxVal),
-        tip_registru_id: tipRegistruId,
-      });
-      // Invalidate registre query so UI updates
+
+      onRegistruAdded &&
+        onRegistruAdded({
+          nume,
+          descriere,
+          departament_id: departmentId,
+          an: Number(an),
+          min_val: Number(minVal),
+          max_val: Number(maxVal),
+          tip_registru_id: tipRegistruId,
+        });
+
       queryClient.invalidateQueries(["registre", departmentId]);
       onOpenChange(false);
+
       toast.success("Registrul a fost adăugat cu succes.", {
-        style: { background: '#22c55e', color: 'white' }
+        style: { background: "#22c55e", color: "white" },
       });
     } catch (err) {
       setError(err.message || "Eroare necunoscută");
@@ -105,11 +129,6 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
       setLoading(false);
     }
   };
-
-  // Limitează anii doar până la anul curent
-  const currentYear = new Date().getFullYear();
-  const minYear = 2000;
-  const aniDisponibiliFiltered = ani.filter(a => a <= currentYear && a >= minYear);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -123,13 +142,15 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
             <Input
               id="nume"
               value={nume}
-              onChange={e => setNume(e.target.value)}
+              onChange={(e) => setNume(e.target.value)}
               required
               disabled={loading}
               className={error && nume.length < 10 ? "border-red-500" : ""}
             />
             {error && nume.length < 10 && (
-              <div className="text-red-500 text-xs mt-1">Numele trebuie să aibă minim 10 caractere.</div>
+              <div className="text-red-500 text-xs mt-1">
+                Numele trebuie să aibă minim 10 caractere.
+              </div>
             )}
           </div>
           <div className="space-y-1">
@@ -137,13 +158,15 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
             <Input
               id="descriere"
               value={descriere}
-              onChange={e => setDescriere(e.target.value)}
+              onChange={(e) => setDescriere(e.target.value)}
               required
               disabled={loading}
               className={error && descriere.length < 10 ? "border-red-500" : ""}
             />
             {error && descriere.length < 10 && (
-              <div className="text-red-500 text-xs mt-1">Descrierea trebuie să aibă minim 10 caractere.</div>
+              <div className="text-red-500 text-xs mt-1">
+                Descrierea trebuie să aibă minim 10 caractere.
+              </div>
             )}
           </div>
           <div className="space-y-1">
@@ -152,7 +175,7 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
               id="an"
               type="number"
               value={an}
-              onChange={e => setAn(Number(e.target.value))}
+              onChange={(e) => setAn(Number(e.target.value))}
               required
               min={1992}
               max={currentYear}
@@ -166,7 +189,7 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
                 id="minVal"
                 type="number"
                 value={minVal}
-                onChange={e => setMinVal(Number(e.target.value))}
+                onChange={(e) => setMinVal(Number(e.target.value))}
                 required
                 min={0}
                 disabled={loading}
@@ -178,7 +201,7 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
                 id="maxVal"
                 type="number"
                 value={maxVal}
-                onChange={e => setMaxVal(Number(e.target.value))}
+                onChange={(e) => setMaxVal(Number(e.target.value))}
                 required
                 min={minVal}
                 disabled={loading}
@@ -187,20 +210,26 @@ export default function AddRegistruModal({ open, onOpenChange, departmentId, onR
           </div>
           <div className="space-y-1">
             <Label htmlFor="tip-registru">Tip registru</Label>
-            <select
-              id="tip-registru"
+            <Select
               value={tipRegistruId}
-              onChange={e => setTipRegistruId(e.target.value)}
-              required
+              onValueChange={setTipRegistruId}
               disabled={loading || tipuriRegistru.length === 0}
-              className="w-full border rounded px-2 py-2"
             >
-              {tipuriRegistru.map(tip => (
-                <option key={tip.id} value={tip.id}>{tip.nume}</option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full" id="tip-registru">
+                <SelectValue placeholder="Selectează tipul registrului" />
+              </SelectTrigger>
+              <SelectContent>
+                {tipuriRegistru.map((tip) => (
+                  <SelectItem key={tip.id} value={tip.id}>
+                    {tip.nume}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {error && !tipRegistruId && (
-              <div className="text-red-500 text-xs mt-1">Selectează tipul registrului.</div>
+              <div className="text-red-500 text-xs mt-1">
+                Selectează tipul registrului.
+              </div>
             )}
           </div>
           {error && <div className="text-red-500 text-xs mt-1">{error}</div>}

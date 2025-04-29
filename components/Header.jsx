@@ -17,26 +17,38 @@ import { Skeleton } from "./ui/skeleton";
 const Header = ({ pageTitle, breadcrumbs, departmentName }) => {
   const atomPageTitle = useAtomValue(pageTitleAtom);
   const pathname = usePathname();
-  // Always generate breadcrumbs from the URL if breadcrumbs are not provided
   const segments = pathname.split("/").filter(Boolean);
   let href = "";
-  const autoBreadcrumbs = segments.map((seg, idx) => {
-    href += "/" + seg;
-    let label = seg;
-    // Folosește atomPageTitle pentru orice segment care este un id (numai cifre sau UUID)
-    if (atomPageTitle && (/^\d+$/.test(seg) || /^[0-9a-fA-F-]{36}$/.test(seg))) {
-      label = atomPageTitle;
-    } else {
-      label = seg.replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+  // Detectăm dacă suntem pe o pagină de registru sau departament
+  const isERegistratura = segments[0] === "e-registratura";
+  const departmentID = segments[1];
+  const registruID = segments[2];
+  let customBreadcrumbs = [];
+  if (isERegistratura) {
+    customBreadcrumbs.push({ label: "E Registratura", href: "/e-registratura" });
+    if (departmentID) {
+      // Numele departamentului din atom dacă suntem pe pagina departamentului, altfel din prop dacă suntem pe registru
+      const departmentLabel = (segments.length === 2 ? atomPageTitle : departmentName) || "Departament";
+      customBreadcrumbs.push({ label: departmentLabel, href: `/e-registratura/${departmentID}` });
     }
-    return {
-      label,
-      href: idx < segments.length - 1 ? href : undefined
-    };
-  });
-  // Always prepend Acasă as the first breadcrumb
-  const homeCrumb = { label: "Acasă", href: "/" };
-  const crumbs = [homeCrumb, ...(breadcrumbs || autoBreadcrumbs)];
+    if (registruID) {
+      // Numele registrului din atom sau prop
+      customBreadcrumbs.push({ label: atomPageTitle || pageTitle || "Registru" });
+    }
+  } else {
+    // fallback: auto breadcrumbs ca înainte
+    href = "";
+    customBreadcrumbs = segments.map((seg, idx) => {
+      href += "/" + seg;
+      let label = seg.replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+      return {
+        label,
+        href: idx < segments.length - 1 ? href : undefined
+      };
+    });
+  }
+  // Always prepend Acasă ca primul breadcrumb (dar doar o dată)
+  const crumbs = [{ label: "Acasă", href: "/" }, ...customBreadcrumbs];
   // Folosește atomPageTitle dacă există, altfel pageTitle sau titlul generat
   const title = atomPageTitle || pageTitle || (crumbs.length > 0 ? crumbs[crumbs.length - 1].label : "Acasă");
   const isLoading = !atomPageTitle && !pageTitle && (!breadcrumbs || breadcrumbs.length === 0);

@@ -60,9 +60,18 @@ export async function DELETE(request) {
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
   const departament_id = searchParams.get("departament_id");
-  const where = departament_id ? { departament_id } : {};
   try {
+    if (id) {
+      const registru = await prisma.registre.findUnique({
+        where: { id },
+        include: { departamente: true, tip_registru: true },
+      });
+      return Response.json({ registru }, { status: 200 });
+    }
+    // Dacă nu există un ID, returnează lista de registre
+    const where = departament_id ? { departament_id } : {};
     const registre = await prisma.registre.findMany({
       where,
       include: {
@@ -76,7 +85,7 @@ export async function GET(request) {
       ...reg,
       numar_inregistrari: reg.documente.length,
       an: reg.an,
-      tip_registru: reg.tip_registru // include tipul de registru în răspuns
+      tip_registru: reg.tip_registru
     }));
     const ani = await prisma.registre.findMany({
       select: { an: true },
@@ -84,7 +93,6 @@ export async function GET(request) {
       orderBy: { an: 'desc' },
     });
     const aniUnici = Array.from(new Set(ani.map(a => a.an)));
-    // Fetch tipuri_registru pentru dropdown
     const tipuri_registru = await prisma.tipuri_registru.findMany({
       select: { id: true, nume: true },
       orderBy: { nume: "asc" }

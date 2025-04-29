@@ -88,7 +88,9 @@ export default function Registre() {
     onSuccess: () => {
       queryClient.invalidateQueries(["registre", departmentID]);
       setEditModalOpen(false);
-      toast.success("Registru actualizat");
+      toast.success("Registru actualizat cu succes", {
+        style: { background: "#22c55e", color: "white" },
+      });
     },
   });
 
@@ -98,7 +100,9 @@ export default function Registre() {
     onSuccess: () => {
       queryClient.invalidateQueries(["registre", departmentID]);
       setDeleteModalOpen(false);
-      toast.success("Registru șters");
+      toast.success("Registru șters", {
+        style: { background: "#22c55e", color: "white" },
+      });
     },
   });
 
@@ -140,18 +144,16 @@ export default function Registre() {
   return (
     <div className="p-6">
       {/* Header și Search */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold">Registre departament</h1>
-        <div className="flex gap-2 w-full md:w-auto">
-          <Input
-            placeholder="Caută registre..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-xs"
-          />
-          <Button onClick={() => setAddModalOpen(true)}>Adaugă registru</Button>
-        </div>
-      </div>
+      <div className="flex w-full justify-between md:w-auto mb-6">
+  <Input
+    placeholder="Caută registre..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="max-w-xs"
+  />
+  <Button onClick={() => setAddModalOpen(true)}>Adaugă registru</Button>
+</div>
+
 
       {/* Add Registru Modal */}
       <AddRegistruModal
@@ -237,73 +239,84 @@ export default function Registre() {
 
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editează Registru</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmitEdit}>
-            <div className="space-y-4">
-              <div>
-                <Label>Nume Registru</Label>
-                <Input
-                  value={editData.nume}
-                  onChange={(e) => setEditData({ ...editData, nume: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Descriere</Label>
-                <Input
-                  value={editData.descriere}
-                  onChange={(e) =>
-                    setEditData({ ...editData, descriere: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <Label>An</Label>
-                <Input
-                  type="number"
-                  value={editData.an}
-                  onChange={(e) => setEditData({ ...editData, an: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Tip Registru</Label>
-                <Select
-                  value={editData.tip_registru_id}
-                  onValueChange={(value) =>
-                    setEditData({ ...editData, tip_registru_id: value })
-                  }
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selectează tipul" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {tipuriRegistre.map((tip) => (
-                      <SelectItem key={tip.id} value={tip.id.toString()}> {tip.nume} </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter className="mt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setEditModalOpen(false)}
-              >
-                Anulează
-              </Button>
-              <Button type="submit" disabled={editRegistruMutation.isLoading}>
-                {editRegistruMutation.isLoading ? "Salvează..." : "Salvează"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Editează Registru</DialogTitle>
+    </DialogHeader>
+    <form onSubmit={handleSubmitEdit}>
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <Label>Nume Registru</Label>
+          <Input
+            value={editData.nume}
+            onChange={(e) => setEditData({ ...editData, nume: e.target.value })}
+            required
+            className="w-full"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <Label>Descriere</Label>
+          <Input
+            value={editData.descriere}
+            onChange={(e) =>
+              setEditData({ ...editData, descriere: e.target.value })
+            }
+            className="w-full"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <Label>An</Label>
+          <Input
+            type="number"
+            value={editData.an}
+            onChange={(e) =>
+              setEditData({ ...editData, an: e.target.value })
+            }
+            required
+            className="w-full"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <Label>Tip Registru</Label>
+          <Select
+            value={editData.tip_registru_id}
+            onValueChange={(value) =>
+              setEditData({ ...editData, tip_registru_id: value })
+            }
+            required
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selectează tipul" />
+            </SelectTrigger>
+            <SelectContent>
+              {tipuriRegistre.map((tip) => (
+                <SelectItem key={tip.id} value={tip.id.toString()}>
+                  {tip.nume}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <DialogFooter className="mt-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setEditModalOpen(false)}
+        >
+          Anulează
+        </Button>
+        <Button type="submit" disabled={editRegistruMutation.isLoading}>
+          {editRegistruMutation.isLoading ? "Salvează..." : "Salvează"}
+        </Button>
+      </DialogFooter>
+    </form>
+  </DialogContent>
+</Dialog>
 
       {/* Delete Modal */}
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>

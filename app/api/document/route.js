@@ -79,12 +79,27 @@ export async function GET(request) {
       // Doar documentele dintr-un registru selectat
       documente = await prisma.documente.findMany({
         where: { registru_id: registruId },
+        include: {
+          utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
+          tipuri_documente: { select: { nume: true } },
+        },
       });
     } else {
       // Toate documentele
-      documente = await prisma.documente.findMany();
+      documente = await prisma.documente.findMany({
+        include: {
+          utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
+          tipuri_documente: { select: { nume: true } },
+        },
+      });
     }
-    return NextResponse.json({ documente });
+    // Mapăm rezultatul pentru a returna doar numele la destinatar și tip document
+    const documenteMapped = documente.map(doc => ({
+      ...doc,
+      destinatar_nume: doc.utilizatori_documente_destinatar_idToutilizatori?.nume || null,
+      tip_document_nume: doc.tipuri_documente?.nume || null,
+    }));
+    return NextResponse.json({ documente: documenteMapped });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
