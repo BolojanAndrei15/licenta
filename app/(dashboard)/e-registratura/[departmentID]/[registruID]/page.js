@@ -1,3 +1,4 @@
+"use client";
 import { useParams } from "next/navigation";
 import { useSetAtom } from "jotai";
 import { useEffect } from "react";

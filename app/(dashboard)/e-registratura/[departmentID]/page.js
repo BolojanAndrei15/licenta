@@ -38,6 +38,22 @@ export default function Registre() {
 
   const setPageTitle = useSetAtom(pageTitleAtom);
 
+  useEffect(() => {
+    if (!departmentID) return;
+    async function fetchDepartmentName() {
+      try {
+        const res = await axios.get("/api/department");
+        const departments = res.data?.departments || [];
+        const department = departments.find(dep => String(dep.id) === String(departmentID));
+        setPageTitle(department ? department.nume : "Registre departament");
+      } catch {
+        setPageTitle("Registre departament");
+      }
+    }
+    fetchDepartmentName();
+    return () => setPageTitle("");
+  }, [departmentID, setPageTitle]);
+
   // Fetch registre, ani, tipuri_registru
   const { data, isLoading, error } = useQuery({
     queryKey: ["registre", departmentID],
@@ -52,21 +68,7 @@ export default function Registre() {
   const tipuriRegistre = data?.tipuri_registru || [];
   const ani = data?.ani || [];
 
-  useEffect(() => {
-    async function fetchDepartmentName() {
-      try {
-        // Use correct endpoint with departament_id param
-        const res = await axios.get(`/api/department?departament_id=${departmentID}`);
-        setPageTitle(res.data?.departament?.nume || "")
-        console.log(res.data?.departament?.nume || "")
-      } catch {
-        setPageTitle("");
-        console.log("Eroare la încărcarea numelui departamentului");
-      }
-    }
-    fetchDepartmentName();
-    return () => setPageTitle("");
-  }, [departmentID, setPageTitle]);
+  
 
   const queryClient = useQueryClient();
 
