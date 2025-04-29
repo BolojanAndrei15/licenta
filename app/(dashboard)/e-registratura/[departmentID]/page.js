@@ -56,6 +56,13 @@ export default function ERegistraturaDepartmentPage() {
   });
   const registreList = Array.isArray(registreData?.registre) ? registreData.registre : [];
 
+  // Setează tipurile de registru când datele sunt încărcate
+  useEffect(() => {
+    if (registreData?.tipuri_registru && Array.isArray(registreData.tipuri_registru)) {
+      setTipuriRegistru(registreData.tipuri_registru);
+    }
+  }, [registreData]);
+
   // Dropdown pentru ani: doar anii existenți în baza de date
   const aniDisponibili = Array.isArray(registreData?.ani) ? registreData.ani : [];
   const currentYear = new Date().getFullYear();
@@ -84,10 +91,12 @@ export default function ERegistraturaDepartmentPage() {
     try {
       if (!an || isNaN(an) || an < 1992 || an > currentYear) {
         setEditError(`Anul trebuie să fie între 1992 și ${currentYear}.`);
+        setEditLoading(false);
         return;
       }
       if (!tip_registru_id) {
         setEditError('Selectează tipul registrului.');
+        setEditLoading(false);
         return;
       }
       await axios.put('/api/registre', {
@@ -164,7 +173,7 @@ export default function ERegistraturaDepartmentPage() {
         ani={aniDisponibili}
       />
      <div className="mt-8 space-y-2">
-  {/* Header „tabel” */}
+  {/* Header „tabel" */}
   <div className="flex items-center px-4 py-2 bg-gray-100 text-gray-600 text-xs font-semibold rounded-md">
     {/* Icon gol + titlu */}
     <div className="flex items-center gap-2 flex-1">
@@ -239,7 +248,16 @@ export default function ERegistraturaDepartmentPage() {
           <Button
             size="icon"
             variant="outline"
-            onClick={() => setEditModal({ open: true, registru: { ...registru, tip_registru_id: registru.tip_registru_id || (registru.tip_registru && registru.tip_registru.id) || '' } })}
+            onClick={() => {
+              const tipRegistruId = registru.tip_registru_id || (registru.tip_registru && registru.tip_registru.id) || '';
+              setEditModal({ 
+                open: true, 
+                registru: { 
+                  ...registru, 
+                  tip_registru_id: tipRegistruId
+                } 
+              });
+            }}
             title="Editează"
           >
             <Pencil className="w-4 h-4" />
@@ -261,11 +279,6 @@ export default function ERegistraturaDepartmentPage() {
     </div>
   )}
 </div>
-
-
-
-
-
 
       {/* Edit Modal */}
       <EditRegistruModal

@@ -77,7 +77,12 @@ export async function GET(request) {
       orderBy: { an: 'desc' },
     });
     const aniUnici = Array.from(new Set(ani.map(a => a.an)));
-    return Response.json({ registre: result, ani: aniUnici }, { status: 200 });
+    // Fetch tipuri_registru pentru dropdown
+    const tipuri_registru = await prisma.tipuri_registru.findMany({
+      select: { id: true, nume: true },
+      orderBy: { nume: "asc" }
+    });
+    return Response.json({ registre: result, ani: aniUnici, tipuri_registru }, { status: 200 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
   }
