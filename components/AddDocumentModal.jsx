@@ -45,6 +45,13 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
     queryFn: async () => (await axios.get("/api/tip_document")).data,
   });
 
+  // Fetch next registration number
+  const { data: nextNumberData, isLoading: loadingNextNumber } = useQuery({
+    queryKey: ["nextNumber", registruID],
+    queryFn: async () => (await axios.get(`/api/next-number?registru_id=${registruID}`)).data,
+    enabled: !!registruID,
+  });
+
   const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
@@ -54,10 +61,10 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
     setLoading(true);
     setError("");
     try {
-      // Normalize UUID fields: if empty string, send null
+      // Nu trimite numar_inregistrare la backend!
+      const { numar_inregistrare, ...rest } = form;
       const payload = {
-        ...form,
-        numar_inregistrare: Number(form.numar_inregistrare),
+        ...rest,
         registru_id: registruID,
         inregistrat_de: session?.user?.id,
       };
@@ -104,7 +111,7 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="numar_inregistrare">Număr Înregistrare</Label>
-              <Input id="numar_inregistrare" name="numar_inregistrare" value={form.numar_inregistrare} onChange={handleChange} placeholder="123" required />
+              <Input id="numar_inregistrare" name="numar_inregistrare" value={loadingNextNumber ? '' : nextNumberData?.nextNumber ?? ''} readOnly disabled className="bg-gray-100 cursor-not-allowed" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="departament_adresat">Departament Adresat</Label>

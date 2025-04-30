@@ -63,6 +63,11 @@ export type tipuri_documente = $Result.DefaultSelection<Prisma.$tipuri_documente
  * 
  */
 export type utilizatori = $Result.DefaultSelection<Prisma.$utilizatoriPayload>
+/**
+ * Model configurare_serie
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ */
+export type configurare_serie = $Result.DefaultSelection<Prisma.$configurare_seriePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -288,6 +293,16 @@ export class PrismaClient<
     * ```
     */
   get utilizatori(): Prisma.utilizatoriDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.configurare_serie`: Exposes CRUD operations for the **configurare_serie** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Configurare_series
+    * const configurare_series = await prisma.configurare_serie.findMany()
+    * ```
+    */
+  get configurare_serie(): Prisma.configurare_serieDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -346,8 +361,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.6.0
-   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
+   * Prisma Client JS version: 6.7.0
+   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
    */
   export type PrismaVersion = {
     client: string
@@ -737,7 +752,8 @@ export namespace Prisma {
     registre: 'registre',
     roluri: 'roluri',
     tipuri_documente: 'tipuri_documente',
-    utilizatori: 'utilizatori'
+    utilizatori: 'utilizatori',
+    configurare_serie: 'configurare_serie'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -756,7 +772,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "audit_logs" | "backup_logs" | "departamente" | "documente" | "notificari" | "tipuri_registru" | "registre" | "roluri" | "tipuri_documente" | "utilizatori"
+      modelProps: "audit_logs" | "backup_logs" | "departamente" | "documente" | "notificari" | "tipuri_registru" | "registre" | "roluri" | "tipuri_documente" | "utilizatori" | "configurare_serie"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1500,6 +1516,80 @@ export namespace Prisma {
           }
         }
       }
+      configurare_serie: {
+        payload: Prisma.$configurare_seriePayload<ExtArgs>
+        fields: Prisma.configurare_serieFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.configurare_serieFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.configurare_serieFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>
+          }
+          findFirst: {
+            args: Prisma.configurare_serieFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.configurare_serieFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>
+          }
+          findMany: {
+            args: Prisma.configurare_serieFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>[]
+          }
+          create: {
+            args: Prisma.configurare_serieCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>
+          }
+          createMany: {
+            args: Prisma.configurare_serieCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.configurare_serieCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>[]
+          }
+          delete: {
+            args: Prisma.configurare_serieDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>
+          }
+          update: {
+            args: Prisma.configurare_serieUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>
+          }
+          deleteMany: {
+            args: Prisma.configurare_serieDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.configurare_serieUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.configurare_serieUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>[]
+          }
+          upsert: {
+            args: Prisma.configurare_serieUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$configurare_seriePayload>
+          }
+          aggregate: {
+            args: Prisma.Configurare_serieAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateConfigurare_serie>
+          }
+          groupBy: {
+            args: Prisma.configurare_serieGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Configurare_serieGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.configurare_serieCountArgs<ExtArgs>
+            result: $Utils.Optional<Configurare_serieCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1594,6 +1684,7 @@ export namespace Prisma {
     roluri?: roluriOmit
     tipuri_documente?: tipuri_documenteOmit
     utilizatori?: utilizatoriOmit
+    configurare_serie?: configurare_serieOmit
   }
 
   /* Types for Logging */
@@ -8909,8 +9000,8 @@ export namespace Prisma {
     nume: string
     descriere: string
     departament_id: string
-    min_val: number
-    max_val: number
+    min_val: number | null
+    max_val: number | null
     an: number
     tip_registru_id: string
     _count: RegistreCountAggregateOutputType | null
@@ -9014,8 +9105,8 @@ export namespace Prisma {
       nume: string
       descriere: string
       departament_id: string
-      min_val: number
-      max_val: number
+      min_val: number | null
+      max_val: number | null
       an: number
       tip_registru_id: string
     }, ExtArgs["result"]["registre"]>
@@ -13226,6 +13317,1009 @@ export namespace Prisma {
 
 
   /**
+   * Model configurare_serie
+   */
+
+  export type AggregateConfigurare_serie = {
+    _count: Configurare_serieCountAggregateOutputType | null
+    _avg: Configurare_serieAvgAggregateOutputType | null
+    _sum: Configurare_serieSumAggregateOutputType | null
+    _min: Configurare_serieMinAggregateOutputType | null
+    _max: Configurare_serieMaxAggregateOutputType | null
+  }
+
+  export type Configurare_serieAvgAggregateOutputType = {
+    numar_serie: number | null
+  }
+
+  export type Configurare_serieSumAggregateOutputType = {
+    numar_serie: number | null
+  }
+
+  export type Configurare_serieMinAggregateOutputType = {
+    id: string | null
+    numar_serie: number | null
+    descriere: string | null
+  }
+
+  export type Configurare_serieMaxAggregateOutputType = {
+    id: string | null
+    numar_serie: number | null
+    descriere: string | null
+  }
+
+  export type Configurare_serieCountAggregateOutputType = {
+    id: number
+    numar_serie: number
+    descriere: number
+    _all: number
+  }
+
+
+  export type Configurare_serieAvgAggregateInputType = {
+    numar_serie?: true
+  }
+
+  export type Configurare_serieSumAggregateInputType = {
+    numar_serie?: true
+  }
+
+  export type Configurare_serieMinAggregateInputType = {
+    id?: true
+    numar_serie?: true
+    descriere?: true
+  }
+
+  export type Configurare_serieMaxAggregateInputType = {
+    id?: true
+    numar_serie?: true
+    descriere?: true
+  }
+
+  export type Configurare_serieCountAggregateInputType = {
+    id?: true
+    numar_serie?: true
+    descriere?: true
+    _all?: true
+  }
+
+  export type Configurare_serieAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which configurare_serie to aggregate.
+     */
+    where?: configurare_serieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of configurare_series to fetch.
+     */
+    orderBy?: configurare_serieOrderByWithRelationInput | configurare_serieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: configurare_serieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` configurare_series from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` configurare_series.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned configurare_series
+    **/
+    _count?: true | Configurare_serieCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Configurare_serieAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Configurare_serieSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Configurare_serieMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Configurare_serieMaxAggregateInputType
+  }
+
+  export type GetConfigurare_serieAggregateType<T extends Configurare_serieAggregateArgs> = {
+        [P in keyof T & keyof AggregateConfigurare_serie]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateConfigurare_serie[P]>
+      : GetScalarType<T[P], AggregateConfigurare_serie[P]>
+  }
+
+
+
+
+  export type configurare_serieGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: configurare_serieWhereInput
+    orderBy?: configurare_serieOrderByWithAggregationInput | configurare_serieOrderByWithAggregationInput[]
+    by: Configurare_serieScalarFieldEnum[] | Configurare_serieScalarFieldEnum
+    having?: configurare_serieScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Configurare_serieCountAggregateInputType | true
+    _avg?: Configurare_serieAvgAggregateInputType
+    _sum?: Configurare_serieSumAggregateInputType
+    _min?: Configurare_serieMinAggregateInputType
+    _max?: Configurare_serieMaxAggregateInputType
+  }
+
+  export type Configurare_serieGroupByOutputType = {
+    id: string
+    numar_serie: number
+    descriere: string | null
+    _count: Configurare_serieCountAggregateOutputType | null
+    _avg: Configurare_serieAvgAggregateOutputType | null
+    _sum: Configurare_serieSumAggregateOutputType | null
+    _min: Configurare_serieMinAggregateOutputType | null
+    _max: Configurare_serieMaxAggregateOutputType | null
+  }
+
+  type GetConfigurare_serieGroupByPayload<T extends configurare_serieGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Configurare_serieGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Configurare_serieGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Configurare_serieGroupByOutputType[P]>
+            : GetScalarType<T[P], Configurare_serieGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type configurare_serieSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numar_serie?: boolean
+    descriere?: boolean
+  }, ExtArgs["result"]["configurare_serie"]>
+
+  export type configurare_serieSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numar_serie?: boolean
+    descriere?: boolean
+  }, ExtArgs["result"]["configurare_serie"]>
+
+  export type configurare_serieSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numar_serie?: boolean
+    descriere?: boolean
+  }, ExtArgs["result"]["configurare_serie"]>
+
+  export type configurare_serieSelectScalar = {
+    id?: boolean
+    numar_serie?: boolean
+    descriere?: boolean
+  }
+
+  export type configurare_serieOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "numar_serie" | "descriere", ExtArgs["result"]["configurare_serie"]>
+
+  export type $configurare_seriePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "configurare_serie"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      numar_serie: number
+      descriere: string | null
+    }, ExtArgs["result"]["configurare_serie"]>
+    composites: {}
+  }
+
+  type configurare_serieGetPayload<S extends boolean | null | undefined | configurare_serieDefaultArgs> = $Result.GetResult<Prisma.$configurare_seriePayload, S>
+
+  type configurare_serieCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<configurare_serieFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Configurare_serieCountAggregateInputType | true
+    }
+
+  export interface configurare_serieDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['configurare_serie'], meta: { name: 'configurare_serie' } }
+    /**
+     * Find zero or one Configurare_serie that matches the filter.
+     * @param {configurare_serieFindUniqueArgs} args - Arguments to find a Configurare_serie
+     * @example
+     * // Get one Configurare_serie
+     * const configurare_serie = await prisma.configurare_serie.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends configurare_serieFindUniqueArgs>(args: SelectSubset<T, configurare_serieFindUniqueArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Configurare_serie that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {configurare_serieFindUniqueOrThrowArgs} args - Arguments to find a Configurare_serie
+     * @example
+     * // Get one Configurare_serie
+     * const configurare_serie = await prisma.configurare_serie.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends configurare_serieFindUniqueOrThrowArgs>(args: SelectSubset<T, configurare_serieFindUniqueOrThrowArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Configurare_serie that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {configurare_serieFindFirstArgs} args - Arguments to find a Configurare_serie
+     * @example
+     * // Get one Configurare_serie
+     * const configurare_serie = await prisma.configurare_serie.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends configurare_serieFindFirstArgs>(args?: SelectSubset<T, configurare_serieFindFirstArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Configurare_serie that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {configurare_serieFindFirstOrThrowArgs} args - Arguments to find a Configurare_serie
+     * @example
+     * // Get one Configurare_serie
+     * const configurare_serie = await prisma.configurare_serie.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends configurare_serieFindFirstOrThrowArgs>(args?: SelectSubset<T, configurare_serieFindFirstOrThrowArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Configurare_series that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {configurare_serieFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Configurare_series
+     * const configurare_series = await prisma.configurare_serie.findMany()
+     * 
+     * // Get first 10 Configurare_series
+     * const configurare_series = await prisma.configurare_serie.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const configurare_serieWithIdOnly = await prisma.configurare_serie.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends configurare_serieFindManyArgs>(args?: SelectSubset<T, configurare_serieFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Configurare_serie.
+     * @param {configurare_serieCreateArgs} args - Arguments to create a Configurare_serie.
+     * @example
+     * // Create one Configurare_serie
+     * const Configurare_serie = await prisma.configurare_serie.create({
+     *   data: {
+     *     // ... data to create a Configurare_serie
+     *   }
+     * })
+     * 
+     */
+    create<T extends configurare_serieCreateArgs>(args: SelectSubset<T, configurare_serieCreateArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Configurare_series.
+     * @param {configurare_serieCreateManyArgs} args - Arguments to create many Configurare_series.
+     * @example
+     * // Create many Configurare_series
+     * const configurare_serie = await prisma.configurare_serie.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends configurare_serieCreateManyArgs>(args?: SelectSubset<T, configurare_serieCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Configurare_series and returns the data saved in the database.
+     * @param {configurare_serieCreateManyAndReturnArgs} args - Arguments to create many Configurare_series.
+     * @example
+     * // Create many Configurare_series
+     * const configurare_serie = await prisma.configurare_serie.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Configurare_series and only return the `id`
+     * const configurare_serieWithIdOnly = await prisma.configurare_serie.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends configurare_serieCreateManyAndReturnArgs>(args?: SelectSubset<T, configurare_serieCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Configurare_serie.
+     * @param {configurare_serieDeleteArgs} args - Arguments to delete one Configurare_serie.
+     * @example
+     * // Delete one Configurare_serie
+     * const Configurare_serie = await prisma.configurare_serie.delete({
+     *   where: {
+     *     // ... filter to delete one Configurare_serie
+     *   }
+     * })
+     * 
+     */
+    delete<T extends configurare_serieDeleteArgs>(args: SelectSubset<T, configurare_serieDeleteArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Configurare_serie.
+     * @param {configurare_serieUpdateArgs} args - Arguments to update one Configurare_serie.
+     * @example
+     * // Update one Configurare_serie
+     * const configurare_serie = await prisma.configurare_serie.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends configurare_serieUpdateArgs>(args: SelectSubset<T, configurare_serieUpdateArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Configurare_series.
+     * @param {configurare_serieDeleteManyArgs} args - Arguments to filter Configurare_series to delete.
+     * @example
+     * // Delete a few Configurare_series
+     * const { count } = await prisma.configurare_serie.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends configurare_serieDeleteManyArgs>(args?: SelectSubset<T, configurare_serieDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Configurare_series.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {configurare_serieUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Configurare_series
+     * const configurare_serie = await prisma.configurare_serie.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends configurare_serieUpdateManyArgs>(args: SelectSubset<T, configurare_serieUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Configurare_series and returns the data updated in the database.
+     * @param {configurare_serieUpdateManyAndReturnArgs} args - Arguments to update many Configurare_series.
+     * @example
+     * // Update many Configurare_series
+     * const configurare_serie = await prisma.configurare_serie.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Configurare_series and only return the `id`
+     * const configurare_serieWithIdOnly = await prisma.configurare_serie.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends configurare_serieUpdateManyAndReturnArgs>(args: SelectSubset<T, configurare_serieUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Configurare_serie.
+     * @param {configurare_serieUpsertArgs} args - Arguments to update or create a Configurare_serie.
+     * @example
+     * // Update or create a Configurare_serie
+     * const configurare_serie = await prisma.configurare_serie.upsert({
+     *   create: {
+     *     // ... data to create a Configurare_serie
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Configurare_serie we want to update
+     *   }
+     * })
+     */
+    upsert<T extends configurare_serieUpsertArgs>(args: SelectSubset<T, configurare_serieUpsertArgs<ExtArgs>>): Prisma__configurare_serieClient<$Result.GetResult<Prisma.$configurare_seriePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Configurare_series.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {configurare_serieCountArgs} args - Arguments to filter Configurare_series to count.
+     * @example
+     * // Count the number of Configurare_series
+     * const count = await prisma.configurare_serie.count({
+     *   where: {
+     *     // ... the filter for the Configurare_series we want to count
+     *   }
+     * })
+    **/
+    count<T extends configurare_serieCountArgs>(
+      args?: Subset<T, configurare_serieCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Configurare_serieCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Configurare_serie.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Configurare_serieAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Configurare_serieAggregateArgs>(args: Subset<T, Configurare_serieAggregateArgs>): Prisma.PrismaPromise<GetConfigurare_serieAggregateType<T>>
+
+    /**
+     * Group by Configurare_serie.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {configurare_serieGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends configurare_serieGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: configurare_serieGroupByArgs['orderBy'] }
+        : { orderBy?: configurare_serieGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, configurare_serieGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetConfigurare_serieGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the configurare_serie model
+   */
+  readonly fields: configurare_serieFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for configurare_serie.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__configurare_serieClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the configurare_serie model
+   */
+  interface configurare_serieFieldRefs {
+    readonly id: FieldRef<"configurare_serie", 'String'>
+    readonly numar_serie: FieldRef<"configurare_serie", 'Int'>
+    readonly descriere: FieldRef<"configurare_serie", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * configurare_serie findUnique
+   */
+  export type configurare_serieFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * Filter, which configurare_serie to fetch.
+     */
+    where: configurare_serieWhereUniqueInput
+  }
+
+  /**
+   * configurare_serie findUniqueOrThrow
+   */
+  export type configurare_serieFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * Filter, which configurare_serie to fetch.
+     */
+    where: configurare_serieWhereUniqueInput
+  }
+
+  /**
+   * configurare_serie findFirst
+   */
+  export type configurare_serieFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * Filter, which configurare_serie to fetch.
+     */
+    where?: configurare_serieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of configurare_series to fetch.
+     */
+    orderBy?: configurare_serieOrderByWithRelationInput | configurare_serieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for configurare_series.
+     */
+    cursor?: configurare_serieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` configurare_series from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` configurare_series.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of configurare_series.
+     */
+    distinct?: Configurare_serieScalarFieldEnum | Configurare_serieScalarFieldEnum[]
+  }
+
+  /**
+   * configurare_serie findFirstOrThrow
+   */
+  export type configurare_serieFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * Filter, which configurare_serie to fetch.
+     */
+    where?: configurare_serieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of configurare_series to fetch.
+     */
+    orderBy?: configurare_serieOrderByWithRelationInput | configurare_serieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for configurare_series.
+     */
+    cursor?: configurare_serieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` configurare_series from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` configurare_series.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of configurare_series.
+     */
+    distinct?: Configurare_serieScalarFieldEnum | Configurare_serieScalarFieldEnum[]
+  }
+
+  /**
+   * configurare_serie findMany
+   */
+  export type configurare_serieFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * Filter, which configurare_series to fetch.
+     */
+    where?: configurare_serieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of configurare_series to fetch.
+     */
+    orderBy?: configurare_serieOrderByWithRelationInput | configurare_serieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing configurare_series.
+     */
+    cursor?: configurare_serieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` configurare_series from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` configurare_series.
+     */
+    skip?: number
+    distinct?: Configurare_serieScalarFieldEnum | Configurare_serieScalarFieldEnum[]
+  }
+
+  /**
+   * configurare_serie create
+   */
+  export type configurare_serieCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * The data needed to create a configurare_serie.
+     */
+    data: XOR<configurare_serieCreateInput, configurare_serieUncheckedCreateInput>
+  }
+
+  /**
+   * configurare_serie createMany
+   */
+  export type configurare_serieCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many configurare_series.
+     */
+    data: configurare_serieCreateManyInput | configurare_serieCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * configurare_serie createManyAndReturn
+   */
+  export type configurare_serieCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * The data used to create many configurare_series.
+     */
+    data: configurare_serieCreateManyInput | configurare_serieCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * configurare_serie update
+   */
+  export type configurare_serieUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * The data needed to update a configurare_serie.
+     */
+    data: XOR<configurare_serieUpdateInput, configurare_serieUncheckedUpdateInput>
+    /**
+     * Choose, which configurare_serie to update.
+     */
+    where: configurare_serieWhereUniqueInput
+  }
+
+  /**
+   * configurare_serie updateMany
+   */
+  export type configurare_serieUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update configurare_series.
+     */
+    data: XOR<configurare_serieUpdateManyMutationInput, configurare_serieUncheckedUpdateManyInput>
+    /**
+     * Filter which configurare_series to update
+     */
+    where?: configurare_serieWhereInput
+    /**
+     * Limit how many configurare_series to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * configurare_serie updateManyAndReturn
+   */
+  export type configurare_serieUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * The data used to update configurare_series.
+     */
+    data: XOR<configurare_serieUpdateManyMutationInput, configurare_serieUncheckedUpdateManyInput>
+    /**
+     * Filter which configurare_series to update
+     */
+    where?: configurare_serieWhereInput
+    /**
+     * Limit how many configurare_series to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * configurare_serie upsert
+   */
+  export type configurare_serieUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * The filter to search for the configurare_serie to update in case it exists.
+     */
+    where: configurare_serieWhereUniqueInput
+    /**
+     * In case the configurare_serie found by the `where` argument doesn't exist, create a new configurare_serie with this data.
+     */
+    create: XOR<configurare_serieCreateInput, configurare_serieUncheckedCreateInput>
+    /**
+     * In case the configurare_serie was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<configurare_serieUpdateInput, configurare_serieUncheckedUpdateInput>
+  }
+
+  /**
+   * configurare_serie delete
+   */
+  export type configurare_serieDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+    /**
+     * Filter which configurare_serie to delete.
+     */
+    where: configurare_serieWhereUniqueInput
+  }
+
+  /**
+   * configurare_serie deleteMany
+   */
+  export type configurare_serieDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which configurare_series to delete
+     */
+    where?: configurare_serieWhereInput
+    /**
+     * Limit how many configurare_series to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * configurare_serie without action
+   */
+  export type configurare_serieDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the configurare_serie
+     */
+    select?: configurare_serieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the configurare_serie
+     */
+    omit?: configurare_serieOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -13364,6 +14458,15 @@ export namespace Prisma {
   };
 
   export type UtilizatoriScalarFieldEnum = (typeof UtilizatoriScalarFieldEnum)[keyof typeof UtilizatoriScalarFieldEnum]
+
+
+  export const Configurare_serieScalarFieldEnum: {
+    id: 'id',
+    numar_serie: 'numar_serie',
+    descriere: 'descriere'
+  };
+
+  export type Configurare_serieScalarFieldEnum = (typeof Configurare_serieScalarFieldEnum)[keyof typeof Configurare_serieScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -13932,8 +15035,8 @@ export namespace Prisma {
     nume?: StringFilter<"registre"> | string
     descriere?: StringFilter<"registre"> | string
     departament_id?: UuidFilter<"registre"> | string
-    min_val?: IntFilter<"registre"> | number
-    max_val?: IntFilter<"registre"> | number
+    min_val?: IntNullableFilter<"registre"> | number | null
+    max_val?: IntNullableFilter<"registre"> | number | null
     an?: IntFilter<"registre"> | number
     tip_registru_id?: UuidFilter<"registre"> | string
     documente?: DocumenteListRelationFilter
@@ -13946,8 +15049,8 @@ export namespace Prisma {
     nume?: SortOrder
     descriere?: SortOrder
     departament_id?: SortOrder
-    min_val?: SortOrder
-    max_val?: SortOrder
+    min_val?: SortOrderInput | SortOrder
+    max_val?: SortOrderInput | SortOrder
     an?: SortOrder
     tip_registru_id?: SortOrder
     documente?: documenteOrderByRelationAggregateInput
@@ -13964,8 +15067,8 @@ export namespace Prisma {
     nume?: StringFilter<"registre"> | string
     descriere?: StringFilter<"registre"> | string
     departament_id?: UuidFilter<"registre"> | string
-    min_val?: IntFilter<"registre"> | number
-    max_val?: IntFilter<"registre"> | number
+    min_val?: IntNullableFilter<"registre"> | number | null
+    max_val?: IntNullableFilter<"registre"> | number | null
     an?: IntFilter<"registre"> | number
     tip_registru_id?: UuidFilter<"registre"> | string
     documente?: DocumenteListRelationFilter
@@ -13978,8 +15081,8 @@ export namespace Prisma {
     nume?: SortOrder
     descriere?: SortOrder
     departament_id?: SortOrder
-    min_val?: SortOrder
-    max_val?: SortOrder
+    min_val?: SortOrderInput | SortOrder
+    max_val?: SortOrderInput | SortOrder
     an?: SortOrder
     tip_registru_id?: SortOrder
     _count?: registreCountOrderByAggregateInput
@@ -13997,8 +15100,8 @@ export namespace Prisma {
     nume?: StringWithAggregatesFilter<"registre"> | string
     descriere?: StringWithAggregatesFilter<"registre"> | string
     departament_id?: UuidWithAggregatesFilter<"registre"> | string
-    min_val?: IntWithAggregatesFilter<"registre"> | number
-    max_val?: IntWithAggregatesFilter<"registre"> | number
+    min_val?: IntNullableWithAggregatesFilter<"registre"> | number | null
+    max_val?: IntNullableWithAggregatesFilter<"registre"> | number | null
     an?: IntWithAggregatesFilter<"registre"> | number
     tip_registru_id?: UuidWithAggregatesFilter<"registre"> | string
   }
@@ -14179,6 +15282,50 @@ export namespace Prisma {
     nume?: StringWithAggregatesFilter<"utilizatori"> | string
     departament_id?: UuidWithAggregatesFilter<"utilizatori"> | string
     rol_id?: UuidWithAggregatesFilter<"utilizatori"> | string
+  }
+
+  export type configurare_serieWhereInput = {
+    AND?: configurare_serieWhereInput | configurare_serieWhereInput[]
+    OR?: configurare_serieWhereInput[]
+    NOT?: configurare_serieWhereInput | configurare_serieWhereInput[]
+    id?: UuidFilter<"configurare_serie"> | string
+    numar_serie?: IntFilter<"configurare_serie"> | number
+    descriere?: StringNullableFilter<"configurare_serie"> | string | null
+  }
+
+  export type configurare_serieOrderByWithRelationInput = {
+    id?: SortOrder
+    numar_serie?: SortOrder
+    descriere?: SortOrderInput | SortOrder
+  }
+
+  export type configurare_serieWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: configurare_serieWhereInput | configurare_serieWhereInput[]
+    OR?: configurare_serieWhereInput[]
+    NOT?: configurare_serieWhereInput | configurare_serieWhereInput[]
+    numar_serie?: IntFilter<"configurare_serie"> | number
+    descriere?: StringNullableFilter<"configurare_serie"> | string | null
+  }, "id">
+
+  export type configurare_serieOrderByWithAggregationInput = {
+    id?: SortOrder
+    numar_serie?: SortOrder
+    descriere?: SortOrderInput | SortOrder
+    _count?: configurare_serieCountOrderByAggregateInput
+    _avg?: configurare_serieAvgOrderByAggregateInput
+    _max?: configurare_serieMaxOrderByAggregateInput
+    _min?: configurare_serieMinOrderByAggregateInput
+    _sum?: configurare_serieSumOrderByAggregateInput
+  }
+
+  export type configurare_serieScalarWhereWithAggregatesInput = {
+    AND?: configurare_serieScalarWhereWithAggregatesInput | configurare_serieScalarWhereWithAggregatesInput[]
+    OR?: configurare_serieScalarWhereWithAggregatesInput[]
+    NOT?: configurare_serieScalarWhereWithAggregatesInput | configurare_serieScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"configurare_serie"> | string
+    numar_serie?: IntWithAggregatesFilter<"configurare_serie"> | number
+    descriere?: StringNullableWithAggregatesFilter<"configurare_serie"> | string | null
   }
 
   export type audit_logsCreateInput = {
@@ -14637,8 +15784,8 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     documente?: documenteCreateNestedManyWithoutRegistreInput
     departamente: departamenteCreateNestedOneWithoutRegistreInput
@@ -14650,8 +15797,8 @@ export namespace Prisma {
     nume: string
     descriere: string
     departament_id: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     tip_registru_id: string
     documente?: documenteUncheckedCreateNestedManyWithoutRegistreInput
@@ -14661,8 +15808,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     documente?: documenteUpdateManyWithoutRegistreNestedInput
     departamente?: departamenteUpdateOneRequiredWithoutRegistreNestedInput
@@ -14674,8 +15821,8 @@ export namespace Prisma {
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
     departament_id?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     tip_registru_id?: StringFieldUpdateOperationsInput | string
     documente?: documenteUncheckedUpdateManyWithoutRegistreNestedInput
@@ -14686,8 +15833,8 @@ export namespace Prisma {
     nume: string
     descriere: string
     departament_id: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     tip_registru_id: string
   }
@@ -14696,8 +15843,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
   }
 
@@ -14706,8 +15853,8 @@ export namespace Prisma {
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
     departament_id?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     tip_registru_id?: StringFieldUpdateOperationsInput | string
   }
@@ -14897,6 +16044,48 @@ export namespace Prisma {
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: StringFieldUpdateOperationsInput | string
     rol_id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type configurare_serieCreateInput = {
+    id?: string
+    numar_serie: number
+    descriere?: string | null
+  }
+
+  export type configurare_serieUncheckedCreateInput = {
+    id?: string
+    numar_serie: number
+    descriere?: string | null
+  }
+
+  export type configurare_serieUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numar_serie?: IntFieldUpdateOperationsInput | number
+    descriere?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type configurare_serieUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numar_serie?: IntFieldUpdateOperationsInput | number
+    descriere?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type configurare_serieCreateManyInput = {
+    id?: string
+    numar_serie: number
+    descriere?: string | null
+  }
+
+  export type configurare_serieUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numar_serie?: IntFieldUpdateOperationsInput | number
+    descriere?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type configurare_serieUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numar_serie?: IntFieldUpdateOperationsInput | number
+    descriere?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UuidFilter<$PrismaModel = never> = {
@@ -15429,6 +16618,17 @@ export namespace Prisma {
     nume?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type DepartamenteScalarRelationFilter = {
     is?: departamenteWhereInput
     isNot?: departamenteWhereInput
@@ -15488,6 +16688,22 @@ export namespace Prisma {
     min_val?: SortOrder
     max_val?: SortOrder
     an?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type roluriCountOrderByAggregateInput = {
@@ -15572,6 +16788,32 @@ export namespace Prisma {
     nume?: SortOrder
     departament_id?: SortOrder
     rol_id?: SortOrder
+  }
+
+  export type configurare_serieCountOrderByAggregateInput = {
+    id?: SortOrder
+    numar_serie?: SortOrder
+    descriere?: SortOrder
+  }
+
+  export type configurare_serieAvgOrderByAggregateInput = {
+    numar_serie?: SortOrder
+  }
+
+  export type configurare_serieMaxOrderByAggregateInput = {
+    id?: SortOrder
+    numar_serie?: SortOrder
+    descriere?: SortOrder
+  }
+
+  export type configurare_serieMinOrderByAggregateInput = {
+    id?: SortOrder
+    numar_serie?: SortOrder
+    descriere?: SortOrder
+  }
+
+  export type configurare_serieSumOrderByAggregateInput = {
+    numar_serie?: SortOrder
   }
 
   export type utilizatoriCreateNestedOneWithoutAudit_logsInput = {
@@ -15972,6 +17214,14 @@ export namespace Prisma {
     connectOrCreate?: documenteCreateOrConnectWithoutRegistreInput | documenteCreateOrConnectWithoutRegistreInput[]
     createMany?: documenteCreateManyRegistreInputEnvelope
     connect?: documenteWhereUniqueInput | documenteWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type documenteUpdateManyWithoutRegistreNestedInput = {
@@ -16587,6 +17837,33 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type utilizatoriCreateWithoutAudit_logsInput = {
     id?: string
     email: string
@@ -16719,8 +17996,8 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     documente?: documenteCreateNestedManyWithoutRegistreInput
     tip_registru: tipuri_registruCreateNestedOneWithoutRegistreInput
@@ -16730,8 +18007,8 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     tip_registru_id: string
     documente?: documenteUncheckedCreateNestedManyWithoutRegistreInput
@@ -16851,8 +18128,8 @@ export namespace Prisma {
     nume?: StringFilter<"registre"> | string
     descriere?: StringFilter<"registre"> | string
     departament_id?: UuidFilter<"registre"> | string
-    min_val?: IntFilter<"registre"> | number
-    max_val?: IntFilter<"registre"> | number
+    min_val?: IntNullableFilter<"registre"> | number | null
+    max_val?: IntNullableFilter<"registre"> | number | null
     an?: IntFilter<"registre"> | number
     tip_registru_id?: UuidFilter<"registre"> | string
   }
@@ -17024,8 +18301,8 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     departamente: departamenteCreateNestedOneWithoutRegistreInput
     tip_registru: tipuri_registruCreateNestedOneWithoutRegistreInput
@@ -17036,8 +18313,8 @@ export namespace Prisma {
     nume: string
     descriere: string
     departament_id: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     tip_registru_id: string
   }
@@ -17261,8 +18538,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     departamente?: departamenteUpdateOneRequiredWithoutRegistreNestedInput
     tip_registru?: tipuri_registruUpdateOneRequiredWithoutRegistreNestedInput
@@ -17273,8 +18550,8 @@ export namespace Prisma {
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
     departament_id?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     tip_registru_id?: StringFieldUpdateOperationsInput | string
   }
@@ -17505,8 +18782,8 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     documente?: documenteCreateNestedManyWithoutRegistreInput
     departamente: departamenteCreateNestedOneWithoutRegistreInput
@@ -17517,8 +18794,8 @@ export namespace Prisma {
     nume: string
     descriere: string
     departament_id: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     documente?: documenteUncheckedCreateNestedManyWithoutRegistreInput
   }
@@ -18234,8 +19511,8 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
     tip_registru_id: string
   }
@@ -18311,8 +19588,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     documente?: documenteUpdateManyWithoutRegistreNestedInput
     tip_registru?: tipuri_registruUpdateOneRequiredWithoutRegistreNestedInput
@@ -18322,8 +19599,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     tip_registru_id?: StringFieldUpdateOperationsInput | string
     documente?: documenteUncheckedUpdateManyWithoutRegistreNestedInput
@@ -18333,8 +19610,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     tip_registru_id?: StringFieldUpdateOperationsInput | string
   }
@@ -18423,8 +19700,8 @@ export namespace Prisma {
     nume: string
     descriere: string
     departament_id: string
-    min_val: number
-    max_val: number
+    min_val?: number | null
+    max_val?: number | null
     an: number
   }
 
@@ -18432,8 +19709,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     documente?: documenteUpdateManyWithoutRegistreNestedInput
     departamente?: departamenteUpdateOneRequiredWithoutRegistreNestedInput
@@ -18444,8 +19721,8 @@ export namespace Prisma {
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
     departament_id?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
     documente?: documenteUncheckedUpdateManyWithoutRegistreNestedInput
   }
@@ -18455,8 +19732,8 @@ export namespace Prisma {
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
     departament_id?: StringFieldUpdateOperationsInput | string
-    min_val?: IntFieldUpdateOperationsInput | number
-    max_val?: IntFieldUpdateOperationsInput | number
+    min_val?: NullableIntFieldUpdateOperationsInput | number | null
+    max_val?: NullableIntFieldUpdateOperationsInput | number | null
     an?: IntFieldUpdateOperationsInput | number
   }
 

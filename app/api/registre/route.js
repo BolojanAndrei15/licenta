@@ -9,9 +9,9 @@ export async function POST(request) {
     if (!data.tip_registru_id) {
       return Response.json({ error: 'tip_registru_id este obligatoriu' }, { status: 400 });
     }
-    // Setează valori implicite pentru min_val și max_val dacă lipsesc
-    if (data.min_val === undefined) data.min_val = 1;
-    if (data.max_val === undefined) data.max_val = 999999;
+    // Nu mai seta valori implicite pentru min_val și max_val
+    if (data.min_val === "" || data.min_val === undefined) data.min_val = null;
+    if (data.max_val === "" || data.max_val === undefined) data.max_val = null;
     const registru = await prisma.registre.create({
       data,
       include: { tip_registru: true },
@@ -24,16 +24,12 @@ export async function POST(request) {
 
 export async function PUT(request) {
   const data = await request.json();
-  const { id, ...updateData } = data;
-  delete updateData.key;
-  delete updateData.min_val;
-  delete updateData.max_val;
+  const { id, nume, descriere, departament_id, min_val, max_val, an, tip_registru_id } = data;
+  const updateData = { nume, descriere, departament_id, min_val, max_val, an, tip_registru_id };
   try {
-    // Asigură-te că tip_registru_id nu lipsește dacă se trimite
     if (updateData.tip_registru_id === undefined) {
       return Response.json({ error: 'tip_registru_id este obligatoriu' }, { status: 400 });
     }
-    // Conversie sigură pentru an (dacă există)
     if (updateData.an !== undefined) {
       updateData.an = Number(updateData.an);
     }

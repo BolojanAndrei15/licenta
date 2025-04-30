@@ -93,7 +93,7 @@ export default function RegistruIdPage() {
             )}
             {data && data.map((doc, index) => (
               <tr key={doc.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                <td className="px-2 py-2 text-[15px]">{index + 1}</td>
+                <td className="px-2 py-2 text-[15px]">{doc.numar_inregistrare ?? '-'}</td>
                 <td className="px-2 py-2 text-[15px]">{doc.data_document ? new Date(doc.data_document).toLocaleDateString() : ''}</td>
                 <td className="px-2 py-2 text-[15px]">{doc.tip_document_nume || '-'}</td>
                 <td className="px-2 py-2 text-[15px]">{doc.sursa || '-'}</td>

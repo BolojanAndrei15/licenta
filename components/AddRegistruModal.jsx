@@ -18,6 +18,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import axios from "axios";
 
 export default function AddRegistruModal({
   open,
@@ -29,8 +30,8 @@ export default function AddRegistruModal({
   const [nume, setNume] = useState("");
   const [descriere, setDescriere] = useState("");
   const [an, setAn] = useState(new Date().getFullYear());
-  const [minVal, setMinVal] = useState(1);
-  const [maxVal, setMaxVal] = useState(999999);
+  const [minVal, setMinVal] = useState("");
+  const [maxVal, setMaxVal] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [aniDisponibili, setAniDisponibili] = useState([]);
@@ -72,8 +73,12 @@ export default function AddRegistruModal({
       setError(`Anul trebuie să fie între 1992 și ${currentYear}.`);
       return;
     }
-    if (!minVal || !maxVal || minVal < 0 || maxVal < minVal) {
-      setError("Valorile minime și maxime trebuie să fie valide.");
+    if (minVal !== "" && (isNaN(minVal) || minVal < 0)) {
+      setError("Valoarea minimă trebuie să fie un număr pozitiv sau lăsați gol.");
+      return;
+    }
+    if (maxVal !== "" && (isNaN(maxVal) || (minVal !== "" && Number(maxVal) < Number(minVal)))) {
+      setError("Valoarea maximă trebuie să fie mai mare decât minimul sau lăsați gol.");
       return;
     }
     if (!tipRegistruId) {
@@ -83,27 +88,22 @@ export default function AddRegistruModal({
 
     setLoading(true);
     try {
-      const res = await fetch("/api/registre", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nume,
-          descriere,
-          departament_id: departmentId,
-          an: Number(an),
-          min_val: Number(minVal),
-          max_val: Number(maxVal),
-          tip_registru_id: tipRegistruId,
-        }),
-      });
-      if (!res.ok) throw new Error("Eroare la adăugare registru");
-
+      const body = {
+        nume,
+        descriere,
+        departament_id: departmentId,
+        an: Number(an),
+        tip_registru_id: tipRegistruId,
+      };
+      if (minVal !== "") body.min_val = Number(minVal);
+      if (maxVal !== "") body.max_val = Number(maxVal);
+      await axios.post("/api/registre", body);
       // Reset form
       setNume("");
       setDescriere("");
       setAn(new Date().getFullYear());
-      setMinVal(1);
-      setMaxVal(999999);
+      setMinVal("");
+      setMaxVal("");
 
       onRegistruAdded &&
         onRegistruAdded({
@@ -189,10 +189,10 @@ export default function AddRegistruModal({
                 id="minVal"
                 type="number"
                 value={minVal}
-                onChange={(e) => setMinVal(Number(e.target.value))}
-                required
+                onChange={(e) => setMinVal(e.target.value)}
                 min={0}
                 disabled={loading}
+                placeholder="(opțional)"
               />
             </div>
             <div className="space-y-1 flex-1">
@@ -201,10 +201,10 @@ export default function AddRegistruModal({
                 id="maxVal"
                 type="number"
                 value={maxVal}
-                onChange={(e) => setMaxVal(Number(e.target.value))}
-                required
-                min={minVal}
+                onChange={(e) => setMaxVal(e.target.value)}
+                min={minVal !== "" ? minVal : 0}
                 disabled={loading}
+                placeholder="(opțional)"
               />
             </div>
           </div>

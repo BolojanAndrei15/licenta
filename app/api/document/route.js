@@ -70,37 +70,34 @@ export async function DELETE(request) {
   }
 }
 
-// Preluare toate documentele
+// Elimin implementarea pentru /next-number, GET rămâne doar pentru documente
 export async function GET(request) {
-  try {
-    const registruId = request.nextUrl.searchParams.get("registru_id");
-    let documente;
-    if (registruId) {
-      // Doar documentele dintr-un registru selectat
-      documente = await prisma.documente.findMany({
-        where: { registru_id: registruId },
-        include: {
-          utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
-          tipuri_documente: { select: { nume: true } },
-        },
-      });
-    } else {
-      // Toate documentele
-      documente = await prisma.documente.findMany({
-        include: {
-          utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
-          tipuri_documente: { select: { nume: true } },
-        },
-      });
-    }
-    // Mapăm rezultatul pentru a returna doar numele la destinatar și tip document
-    const documenteMapped = documente.map(doc => ({
-      ...doc,
-      destinatar_nume: doc.utilizatori_documente_destinatar_idToutilizatori?.nume || null,
-      tip_document_nume: doc.tipuri_documente?.nume || null,
-    }));
-    return NextResponse.json({ documente: documenteMapped });
-  } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 400 });
+  const registruId = request.nextUrl.searchParams.get("registru_id");
+  let documente;
+  if (registruId) {
+    // Doar documentele dintr-un registru selectat
+    documente = await prisma.documente.findMany({
+      where: { registru_id: registruId },
+      include: {
+        utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
+        tipuri_documente: { select: { nume: true } },
+      },
+    });
+  } else {
+    // Toate documentele
+    documente = await prisma.documente.findMany({
+      include: {
+        utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
+        tipuri_documente: { select: { nume: true } },
+      },
+    });
   }
+  // Mapăm rezultatul pentru a returna și numărul de înregistrare
+  const documenteMapped = documente.map(doc => ({
+    ...doc,
+    numar_inregistrare: doc.numar_inregistrare, // asigură includerea explicită
+    destinatar_nume: doc.utilizatori_documente_destinatar_idToutilizatori?.nume || null,
+    tip_document_nume: doc.tipuri_documente?.nume || null,
+  }));
+  return NextResponse.json({ documente: documenteMapped });
 }
