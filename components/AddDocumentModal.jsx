@@ -121,6 +121,28 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
     }
   };
 
+  // Reset form la valorile implicite
+  const resetForm = () => {
+    setForm({
+      numar_inregistrare: "",
+      numar_document: "",
+      data_document: new Date().toISOString(),
+      sursa: "",
+      rezumat: "",
+      departament_adresat: "",
+      destinatar_id: "",
+      tip_document_id: "",
+      data_expedierii: new Date().toISOString(),
+      stadiu: "În așteptare",
+    });
+  };
+
+  // La închidere modal (x sau onClose), resetează formularul
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   // Pentru date, folosim shadcn Calendar + Popover
   const [calendarOpenDoc, setCalendarOpenDoc] = useState(false);
   const [calendarOpenExp, setCalendarOpenExp] = useState(false);
@@ -137,7 +159,7 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
   }, [open]);
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl">
         <DialogTitle className="mb-2">Adaugă Înregistrare Nouă</DialogTitle>
         <form onSubmit={handleSubmit} className="space-y-0">
@@ -287,7 +309,7 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
           </div>
           {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
           <div className="flex justify-between items-center mt-6">
-            <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
+            <Button type="button" variant="secondary" onClick={handleClose} disabled={loading}>
               Anulează
             </Button>
             <Button type="submit" variant="default" disabled={loading}>
