@@ -17,6 +17,12 @@ import {
   
 } from "./ui/select";
 import { Label } from "./ui/label";
+import { useEffect } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Command, CommandInput, CommandList, CommandItem, CommandEmpty } from "./ui/command";
+import { Calendar } from "./ui/calendar";
+import { format } from "date-fns";
+import ro from "date-fns/locale/ro";
 
 export default function AddDocumentModal({ open, onClose, registruID, onSuccess }) {
   const { data: session } = useSession();
@@ -35,21 +41,43 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
   });
   const [error, setError] = useState("");
 
-  // Fetch destinatari (utilizatori) și tipuri document
+  // Fetch destinatari (utilizatori) doar din departamentul registrului
+  const { data: registruDetails } = useQuery({
+    queryKey: ["registru", registruID],
+    queryFn: async () => {
+      const res = await axios.get(`/api/registre?id=${registruID}`);
+      return res.data.registru;
+    },
+    enabled: !!registruID,
+  });
+
+  const departamentId = registruDetails?.departamente?.id;
+
   const { data: destinatari } = useQuery({
-    queryKey: ["utilizatori"],
-    queryFn: async () => (await axios.get("/api/utilizatori")).data.utilizatori,
+    queryKey: ["utilizatori", departamentId],
+    queryFn: async () => {
+      if (!departamentId) return [];
+      const res = await axios.get(`/api/utilizatori?departament_id=${departamentId}`);
+      return res.data.utilizatori;
+    },
+    enabled: !!departamentId,
   });
-  const { data: tipuri } = useQuery({
-    queryKey: ["tipuri_documente"],
-    queryFn: async () => (await axios.get("/api/tip_document")).data,
-  });
+
+  // Pentru autocomplete destinatar
+  const [destinatarOpen, setDestinatarOpen] = useState(false);
+  const destinatarNume = destinatari?.find(u => u.id === form.destinatar_id)?.nume || "";
 
   // Fetch next registration number
   const { data: nextNumberData, isLoading: loadingNextNumber } = useQuery({
     queryKey: ["nextNumber", registruID],
     queryFn: async () => (await axios.get(`/api/next-number?registru_id=${registruID}`)).data,
     enabled: !!registruID,
+  });
+
+  // Fetch tipuri documente pentru dropdown
+  const { data: tipuri } = useQuery({
+    queryKey: ["tipuri_documente"],
+    queryFn: async () => (await axios.get("/api/tip_document")).data,
   });
 
   const handleChange = (e) => {
@@ -93,15 +121,20 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
     }
   };
 
-  // departament adresat: autocomplete cu departamentul registrului (read-only)
-  const { data: registruDetails } = useQuery({
-    queryKey: ["registru", registruID],
-    queryFn: async () => {
-      const res = await axios.get(`/api/registre?id=${registruID}`);
-      return res.data.registru;
-    },
-    enabled: !!registruID,
-  });
+  // Pentru date, folosim shadcn Calendar + Popover
+  const [calendarOpenDoc, setCalendarOpenDoc] = useState(false);
+  const [calendarOpenExp, setCalendarOpenExp] = useState(false);
+
+  // Setează data implicită la azi pentru data_document și data_expedierii
+  useEffect(() => {
+    if (open) {
+      setForm(f => ({
+        ...f,
+        data_document: new Date().toISOString(),
+        data_expedierii: new Date().toISOString(),
+      }));
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -123,44 +156,95 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
             </div>
             <div className="space-y-2">
               <Label htmlFor="destinatar_id">Destinatar</Label>
-              <Select
-                value={form.destinatar_id}
-                onValueChange={val => setForm(f => ({ ...f, destinatar_id: val }))}
-                required
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selectează destinatar" />
-                </SelectTrigger>
-                <SelectContent>
-                  {destinatari?.map((u) => (
-                    <SelectItem key={u.id} value={u.id}>{u.nume}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={destinatarOpen} onOpenChange={setDestinatarOpen}>
+                <PopoverTrigger asChild>
+                  <Input
+                    readOnly
+                    value={destinatarNume}
+                    placeholder="Selectează sau caută destinatar (opțional)"
+                    onClick={() => setDestinatarOpen(true)}
+                  />
+                </PopoverTrigger>
+                <PopoverContent className="p-0 w-[300px]">
+                  <Command>
+                    <CommandInput placeholder="Caută utilizator..." />
+                    <CommandList>
+                      <CommandEmpty>Nu există utilizatori</CommandEmpty>
+                      {destinatari?.map((u) => (
+                        <CommandItem
+                          key={u.id}
+                          value={u.nume}
+                          onSelect={() => {
+                            setForm(f => ({ ...f, destinatar_id: u.id }));
+                            setDestinatarOpen(false);
+                          }}
+                        >
+                          {u.nume}
+                        </CommandItem>
+                      ))}
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
               <Label htmlFor="data_document">Data Document</Label>
-              <Input id="data_document" name="data_document" value={form.data_document} onChange={handleChange} type="date" placeholder="mm/dd/yyyy" required />
+              <Popover open={calendarOpenDoc} onOpenChange={setCalendarOpenDoc}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={"w-full justify-start text-left font-normal " + (!form.data_document ? "text-muted-foreground" : "")}
+                  >
+                    {form.data_document
+                      ? format(new Date(form.data_document), "dd.MM.yyyy", { locale: ro })
+                      : "Alege data"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={form.data_document ? new Date(form.data_document) : undefined}
+                    onSelect={date => setForm(f => ({ ...f, data_document: date ? date.toISOString() : "" }))}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
               <Label htmlFor="data_expedierii">Data Expedierii</Label>
-              <Input id="data_expedierii" name="data_expedierii" value={form.data_expedierii} onChange={handleChange} type="date" placeholder="mm/dd/yyyy" required />
+              <Popover open={calendarOpenExp} onOpenChange={setCalendarOpenExp}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={"w-full justify-start text-left font-normal " + (!form.data_expedierii ? "text-muted-foreground" : "")}
+                  >
+                    {form.data_expedierii
+                      ? format(new Date(form.data_expedierii), "dd.MM.yyyy", { locale: ro })
+                      : "Alege data"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={form.data_expedierii ? new Date(form.data_expedierii) : undefined}
+                    onSelect={date => setForm(f => ({ ...f, data_expedierii: date ? date.toISOString() : "" }))}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
               <Label htmlFor="sursa">Sursă</Label>
-              <Select
+              <Input
+                id="sursa"
+                name="sursa"
                 value={form.sursa}
-                onValueChange={val => setForm(f => ({ ...f, sursa: val }))}
+                onChange={handleChange}
+                placeholder="Expeditor / Sursă"
                 required
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Extern" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Extern">Extern</SelectItem>
-                  <SelectItem value="Intern">Intern</SelectItem>
-                </SelectContent>
-              </Select>
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="stadiu">Stadiu</Label>

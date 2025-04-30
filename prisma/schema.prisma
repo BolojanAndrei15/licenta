@@ -48,7 +48,7 @@ model departamente {
 model documente {
   id                                                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   registru_id                                       String           @db.Uuid
-  numar_inregistrare                                Int
+  numar_inregistrare                                Int? // <-- modificat din Int în Int? pentru a fi opțional
   data                                              DateTime         @default(now()) @db.Timestamp(6)
   numar_document                                    String
   data_document                                     DateTime         @db.Date

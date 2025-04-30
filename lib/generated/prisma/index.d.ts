@@ -5534,7 +5534,7 @@ export namespace Prisma {
   export type DocumenteGroupByOutputType = {
     id: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare: number | null
     data: Date
     numar_document: string
     data_document: Date
@@ -5707,7 +5707,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       registru_id: string
-      numar_inregistrare: number
+      numar_inregistrare: number | null
       data: Date
       numar_document: string
       data_document: Date
@@ -14794,7 +14794,7 @@ export namespace Prisma {
     NOT?: documenteWhereInput | documenteWhereInput[]
     id?: UuidFilter<"documente"> | string
     registru_id?: UuidFilter<"documente"> | string
-    numar_inregistrare?: IntFilter<"documente"> | number
+    numar_inregistrare?: IntNullableFilter<"documente"> | number | null
     data?: DateTimeFilter<"documente"> | Date | string
     numar_document?: StringFilter<"documente"> | string
     data_document?: DateTimeFilter<"documente"> | Date | string
@@ -14820,7 +14820,7 @@ export namespace Prisma {
   export type documenteOrderByWithRelationInput = {
     id?: SortOrder
     registru_id?: SortOrder
-    numar_inregistrare?: SortOrder
+    numar_inregistrare?: SortOrderInput | SortOrder
     data?: SortOrder
     numar_document?: SortOrder
     data_document?: SortOrder
@@ -14850,7 +14850,7 @@ export namespace Prisma {
     OR?: documenteWhereInput[]
     NOT?: documenteWhereInput | documenteWhereInput[]
     registru_id?: UuidFilter<"documente"> | string
-    numar_inregistrare?: IntFilter<"documente"> | number
+    numar_inregistrare?: IntNullableFilter<"documente"> | number | null
     data?: DateTimeFilter<"documente"> | Date | string
     numar_document?: StringFilter<"documente"> | string
     data_document?: DateTimeFilter<"documente"> | Date | string
@@ -14876,7 +14876,7 @@ export namespace Prisma {
   export type documenteOrderByWithAggregationInput = {
     id?: SortOrder
     registru_id?: SortOrder
-    numar_inregistrare?: SortOrder
+    numar_inregistrare?: SortOrderInput | SortOrder
     data?: SortOrder
     numar_document?: SortOrder
     data_document?: SortOrder
@@ -14903,7 +14903,7 @@ export namespace Prisma {
     NOT?: documenteScalarWhereWithAggregatesInput | documenteScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"documente"> | string
     registru_id?: UuidWithAggregatesFilter<"documente"> | string
-    numar_inregistrare?: IntWithAggregatesFilter<"documente"> | number
+    numar_inregistrare?: IntNullableWithAggregatesFilter<"documente"> | number | null
     data?: DateTimeWithAggregatesFilter<"documente"> | Date | string
     numar_document?: StringWithAggregatesFilter<"documente"> | string
     data_document?: DateTimeWithAggregatesFilter<"documente"> | Date | string
@@ -15544,7 +15544,7 @@ export namespace Prisma {
 
   export type documenteCreateInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -15565,7 +15565,7 @@ export namespace Prisma {
   export type documenteUncheckedCreateInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -15584,7 +15584,7 @@ export namespace Prisma {
 
   export type documenteUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15605,7 +15605,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15625,7 +15625,7 @@ export namespace Prisma {
   export type documenteCreateManyInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -15643,7 +15643,7 @@ export namespace Prisma {
 
   export type documenteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15657,7 +15657,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16428,15 +16428,15 @@ export namespace Prisma {
     descriere?: SortOrder
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type DepartamenteNullableScalarRelationFilter = {
@@ -16539,20 +16539,20 @@ export namespace Prisma {
     numar_inregistrare?: SortOrder
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -16618,15 +16618,15 @@ export namespace Prisma {
     nume?: SortOrder
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type DepartamenteScalarRelationFilter = {
@@ -16690,20 +16690,20 @@ export namespace Prisma {
     an?: SortOrder
   }
 
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type roluriCountOrderByAggregateInput = {
@@ -17024,8 +17024,8 @@ export namespace Prisma {
     connect?: notificariWhereUniqueInput | notificariWhereUniqueInput[]
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
     increment?: number
     decrement?: number
     multiply?: number
@@ -17216,8 +17216,8 @@ export namespace Prisma {
     connect?: documenteWhereUniqueInput | documenteWhereUniqueInput[]
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
     increment?: number
     decrement?: number
     multiply?: number
@@ -17797,46 +17797,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -17862,6 +17822,46 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type utilizatoriCreateWithoutAudit_logsInput = {
@@ -17946,7 +17946,7 @@ export namespace Prisma {
 
   export type documenteCreateWithoutDepartamenteInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -17966,7 +17966,7 @@ export namespace Prisma {
   export type documenteUncheckedCreateWithoutDepartamenteInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -18088,7 +18088,7 @@ export namespace Prisma {
     NOT?: documenteScalarWhereInput | documenteScalarWhereInput[]
     id?: UuidFilter<"documente"> | string
     registru_id?: UuidFilter<"documente"> | string
-    numar_inregistrare?: IntFilter<"documente"> | number
+    numar_inregistrare?: IntNullableFilter<"documente"> | number | null
     data?: DateTimeFilter<"documente"> | Date | string
     numar_document?: StringFilter<"documente"> | string
     data_document?: DateTimeFilter<"documente"> | Date | string
@@ -18645,7 +18645,7 @@ export namespace Prisma {
 
   export type documenteCreateWithoutNotificariInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -18665,7 +18665,7 @@ export namespace Prisma {
   export type documenteUncheckedCreateWithoutNotificariInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -18742,7 +18742,7 @@ export namespace Prisma {
 
   export type documenteUpdateWithoutNotificariInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18762,7 +18762,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateWithoutNotificariInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18828,7 +18828,7 @@ export namespace Prisma {
 
   export type documenteCreateWithoutRegistreInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -18847,7 +18847,7 @@ export namespace Prisma {
 
   export type documenteUncheckedCreateWithoutRegistreInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19034,7 +19034,7 @@ export namespace Prisma {
 
   export type documenteCreateWithoutTipuri_documenteInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19054,7 +19054,7 @@ export namespace Prisma {
   export type documenteUncheckedCreateWithoutTipuri_documenteInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19134,7 +19134,7 @@ export namespace Prisma {
 
   export type documenteCreateWithoutUtilizatori_documente_destinatar_idToutilizatoriInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19154,7 +19154,7 @@ export namespace Prisma {
   export type documenteUncheckedCreateWithoutUtilizatori_documente_destinatar_idToutilizatoriInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19182,7 +19182,7 @@ export namespace Prisma {
 
   export type documenteCreateWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19202,7 +19202,7 @@ export namespace Prisma {
   export type documenteUncheckedCreateWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19230,7 +19230,7 @@ export namespace Prisma {
 
   export type documenteCreateWithoutUtilizatori_documente_preluat_deToutilizatoriInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19250,7 +19250,7 @@ export namespace Prisma {
   export type documenteUncheckedCreateWithoutUtilizatori_documente_preluat_deToutilizatoriInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19492,7 +19492,7 @@ export namespace Prisma {
   export type documenteCreateManyDepartamenteInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19530,7 +19530,7 @@ export namespace Prisma {
 
   export type documenteUpdateWithoutDepartamenteInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19550,7 +19550,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateWithoutDepartamenteInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19569,7 +19569,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateManyWithoutDepartamenteInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19739,7 +19739,7 @@ export namespace Prisma {
 
   export type documenteCreateManyRegistreInput = {
     id?: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19757,7 +19757,7 @@ export namespace Prisma {
 
   export type documenteUpdateWithoutRegistreInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19776,7 +19776,7 @@ export namespace Prisma {
 
   export type documenteUncheckedUpdateWithoutRegistreInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19795,7 +19795,7 @@ export namespace Prisma {
 
   export type documenteUncheckedUpdateManyWithoutRegistreInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19868,7 +19868,7 @@ export namespace Prisma {
   export type documenteCreateManyTipuri_documenteInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19885,7 +19885,7 @@ export namespace Prisma {
 
   export type documenteUpdateWithoutTipuri_documenteInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19905,7 +19905,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateWithoutTipuri_documenteInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19924,7 +19924,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateManyWithoutTipuri_documenteInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19955,7 +19955,7 @@ export namespace Prisma {
   export type documenteCreateManyUtilizatori_documente_destinatar_idToutilizatoriInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19973,7 +19973,7 @@ export namespace Prisma {
   export type documenteCreateManyUtilizatori_documente_inregistrat_deToutilizatoriInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -19991,7 +19991,7 @@ export namespace Prisma {
   export type documenteCreateManyUtilizatori_documente_preluat_deToutilizatoriInput = {
     id?: string
     registru_id: string
-    numar_inregistrare: number
+    numar_inregistrare?: number | null
     data?: Date | string
     numar_document: string
     data_document: Date | string
@@ -20056,7 +20056,7 @@ export namespace Prisma {
 
   export type documenteUpdateWithoutUtilizatori_documente_destinatar_idToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20076,7 +20076,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateWithoutUtilizatori_documente_destinatar_idToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20095,7 +20095,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateManyWithoutUtilizatori_documente_destinatar_idToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20112,7 +20112,7 @@ export namespace Prisma {
 
   export type documenteUpdateWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20132,7 +20132,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20151,7 +20151,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20168,7 +20168,7 @@ export namespace Prisma {
 
   export type documenteUpdateWithoutUtilizatori_documente_preluat_deToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20188,7 +20188,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateWithoutUtilizatori_documente_preluat_deToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20207,7 +20207,7 @@ export namespace Prisma {
   export type documenteUncheckedUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
     registru_id?: StringFieldUpdateOperationsInput | string
-    numar_inregistrare?: IntFieldUpdateOperationsInput | number
+    numar_inregistrare?: NullableIntFieldUpdateOperationsInput | number | null
     data?: DateTimeFieldUpdateOperationsInput | Date | string
     numar_document?: StringFieldUpdateOperationsInput | string
     data_document?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -3,10 +3,13 @@ import { PrismaClient } from "@/lib/generated/prisma";
 import { NextResponse } from "next/server";
 const prisma = new PrismaClient();
 
-// GET: Lista utilizatori
-export async function GET() {
+// GET: Lista utilizatori (toți sau doar dintr-un departament dacă se trimite departament_id)
+export async function GET(request) {
   try {
+    const departament_id = request?.nextUrl?.searchParams?.get("departament_id");
+    const where = departament_id ? { departament_id } : {};
     const utilizatori = await prisma.utilizatori.findMany({
+      where,
       include: {
         departamente: { select: { nume: true } },
         roluri: { select: { nume: true } },

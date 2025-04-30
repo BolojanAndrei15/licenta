@@ -2,20 +2,22 @@ import { PrismaClient } from "@/lib/generated/prisma";
 import { NextResponse } from "next/server";
 const prisma = new PrismaClient();
 
-// Creare document cu numar_inregistrare primit din body
+// Creare document cu destinatar opțional (poate fi null)
 export async function POST(request) {
   try {
     const body = await request.json();
+    // Elimină numar_inregistrare dacă există în body
+    if ("numar_inregistrare" in body) delete body.numar_inregistrare;
     const doc = await prisma.documente.create({
       data: {
         registru_id: body.registru_id,
-        numar_inregistrare: body.numar_inregistrare, // acum se preia din body
+        // numar_inregistrare se generează automat în DB
         numar_document: body.numar_document,
         data_document: new Date(body.data_document),
         sursa: body.sursa,
         rezumat: body.rezumat,
         departament_adresat: body.departament_adresat,
-        destinatar_id: body.destinatar_id,
+        destinatar_id: body.destinatar_id || null,
         tip_document_id: body.tip_document_id,
         data_expedierii: new Date(body.data_expedierii),
         inregistrat_de: body.inregistrat_de,
