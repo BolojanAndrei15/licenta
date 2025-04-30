@@ -36,23 +36,21 @@ export async function PUT(request) {
   try {
     const body = await request.json();
     if (!body.id) return NextResponse.json({ error: "ID lipsă" }, { status: 400 });
+    // Filtrăm doar câmpurile permise la update
+    const allowedFields = [
+      "registru_id", "numar_document", "data_document", "sursa", "rezumat", "departament_adresat",
+      "destinatar_id", "tip_document_id", "data_expedierii", "creat_la", "inregistrat_de", "preluat_de", "stadiu"
+    ];
+    const updateData = {};
+    for (const key of allowedFields) {
+      if (body[key] !== undefined) updateData[key] = body[key];
+    }
+    // Conversie date
+    if (updateData.data_document) updateData.data_document = new Date(updateData.data_document);
+    if (updateData.data_expedierii) updateData.data_expedierii = new Date(updateData.data_expedierii);
     const doc = await prisma.documente.update({
       where: { id: body.id },
-      data: {
-        registru_id: body.registru_id,
-        numar_inregistrare: body.numar_inregistrare,
-        numar_document: body.numar_document,
-        data_document: body.data_document ? new Date(body.data_document) : undefined,
-        sursa: body.sursa,
-        rezumat: body.rezumat,
-        departament_adresat: body.departament_adresat,
-        destinatar_id: body.destinatar_id,
-        tip_document_id: body.tip_document_id,
-        data_expedierii: body.data_expedierii ? new Date(body.data_expedierii) : undefined,
-        inregistrat_de: body.inregistrat_de,
-        preluat_de: body.preluat_de,
-        stadiu: body.stadiu,
-      },
+      data: updateData,
     });
     return NextResponse.json({ document: doc });
   } catch (err) {
@@ -84,6 +82,7 @@ export async function GET(request) {
         utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
         tipuri_documente: { select: { nume: true } },
       },
+      orderBy: { numar_inregistrare: "desc" },
     });
   } else {
     // Toate documentele
@@ -92,6 +91,7 @@ export async function GET(request) {
         utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
         tipuri_documente: { select: { nume: true } },
       },
+      orderBy: { numar_inregistrare: "desc" },
     });
   }
   // Mapăm rezultatul pentru a returna și numărul de înregistrare

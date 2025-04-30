@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Registre() {
   const { departmentID } = useParams();
@@ -143,7 +144,35 @@ export default function Registre() {
     reg.nume.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (isLoading) return <div>Se încarcă...</div>;
+  if (isLoading) return (
+    <div className="space-y-2">
+      <Skeleton className="h-10 w-1/3" />
+      <div className="border rounded-lg overflow-hidden bg-white">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3">&nbsp;</th>
+              <th className="px-6 py-3">&nbsp;</th>
+              <th className="px-6 py-3">&nbsp;</th>
+              <th className="px-6 py-3">&nbsp;</th>
+              <th className="px-6 py-3">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...Array(5)].map((_, i) => (
+              <tr key={i}>
+                {[...Array(5)].map((_, j) => (
+                  <td key={j} className="px-6 py-3">
+                    <Skeleton className="h-6 w-full" />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
   if (error) return <div className="text-red-500">Eroare la încărcare: {error.message}</div>;
 
 

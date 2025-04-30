@@ -6,13 +6,17 @@ import { useSetAtom } from "jotai";
 import { pageTitleAtom } from "@/lib/pageTitleAtom";
 import { useEffect, useState } from "react";
 import AddDocumentModal from "@/components/AddDocumentModal";
+import EditDocumentModal from "@/components/EditDocumentModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { format } from "date-fns";
 
 export default function RegistruIdPage() {
   const { registruID } = useParams();
   const setPageTitle = useSetAtom(pageTitleAtom);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
   const queryClient = useQueryClient();
   const { data: session } = useSession();
 
@@ -47,6 +51,12 @@ export default function RegistruIdPage() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         registruID={registruID}
+        onSuccess={() => queryClient.invalidateQueries(['documente', registruID])}
+      />
+      <EditDocumentModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        document={selectedDocument}
         onSuccess={() => queryClient.invalidateQueries(['documente', registruID])}
       />
       <div className="flex justify-between items-center mb-4">
@@ -94,7 +104,7 @@ export default function RegistruIdPage() {
             {data && data.map((doc, index) => (
               <tr key={doc.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                 <td className="px-2 py-2 text-[15px]">{doc.numar_inregistrare ?? '-'}</td>
-                <td className="px-2 py-2 text-[15px]">{doc.data_document ? new Date(doc.data_document).toLocaleDateString() : ''}</td>
+                <td className="px-2 py-2 text-[15px]">{doc.data_document ? format(new Date(doc.data_document), "dd.MM.yyyy") : ''}</td>
                 <td className="px-2 py-2 text-[15px]">{doc.tip_document_nume || '-'}</td>
                 <td className="px-2 py-2 text-[15px]">{doc.sursa || '-'}</td>
                 <td className="px-2 py-2 text-[15px] font-semibold">{doc.destinatar_nume || '-'}</td>
@@ -104,7 +114,14 @@ export default function RegistruIdPage() {
                     <button title="Vizualizează" className="text-blue-600 hover:bg-blue-50 rounded p-1">
                       <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12z"/></svg>
                     </button>
-                    <button title="Editează" className="text-gray-700 hover:bg-gray-100 rounded p-1">
+                    <button
+                      title="Editează"
+                      className="text-gray-700 hover:bg-gray-100 rounded p-1"
+                      onClick={() => {
+                        setSelectedDocument(doc);
+                        setEditModalOpen(true);
+                      }}
+                    >
                       <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/></svg>
                     </button>
                     <button title="Șterge" className="text-red-500 hover:bg-red-50 rounded p-1">
