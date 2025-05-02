@@ -48,7 +48,7 @@ model departamente {
 model documente {
   id                                                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   registru_id                                       String           @db.Uuid
-  numar_inregistrare                                Int
+  numar_inregistrare                                Int? // <-- modificat din Int în Int? pentru a fi opțional
   data                                              DateTime         @default(now()) @db.Timestamp(6)
   numar_document                                    String
   data_document                                     DateTime         @db.Date
@@ -116,6 +116,7 @@ model roluri {
   id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nume        String        @unique
   descriere   String
+  culoare     String?       @default("#6366f1")
   utilizatori utilizatori[]
 }
 
@@ -126,22 +127,22 @@ model tipuri_documente {
 }
 
 model utilizatori {
-  id                                              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                                           String       @unique
+  id                                              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                                           String        @unique
   password_hash                                   String
   session_token                                   String?
   refresh_token                                   String?
-  session_expires                                 DateTime?    @db.Timestamp(6)
+  session_expires                                 DateTime?     @db.Timestamp(6)
   nume                                            String
-  departament_id                                  String       @db.Uuid
-  rol_id                                          String       @db.Uuid
+  departament_id                                  String?       @db.Uuid
+  rol_id                                          String?       @db.Uuid
   audit_logs                                      audit_logs[]
-  documente_documente_destinatar_idToutilizatori  documente[]  @relation("documente_destinatar_idToutilizatori")
-  documente_documente_inregistrat_deToutilizatori documente[]  @relation("documente_inregistrat_deToutilizatori")
-  documente_documente_preluat_deToutilizatori     documente[]  @relation("documente_preluat_deToutilizatori")
+  documente_documente_destinatar_idToutilizatori  documente[]   @relation("documente_destinatar_idToutilizatori")
+  documente_documente_inregistrat_deToutilizatori documente[]   @relation("documente_inregistrat_deToutilizatori")
+  documente_documente_preluat_deToutilizatori     documente[]   @relation("documente_preluat_deToutilizatori")
   notificari                                      notificari[]
-  departamente                                    departamente @relation(fields: [departament_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  roluri                                          roluri       @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  departamente                                    departamente? @relation(fields: [departament_id], references: [id], onDelete: SetNull)
+  roluri                                          roluri?       @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.

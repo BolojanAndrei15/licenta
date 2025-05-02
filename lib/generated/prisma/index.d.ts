@@ -5545,7 +5545,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date
     creat_la: Date | null
-    inregistrat_de: string
+    inregistrat_de: string | null
     preluat_de: string | null
     stadiu: string
     _count: DocumenteCountAggregateOutputType | null
@@ -5588,7 +5588,7 @@ export namespace Prisma {
     stadiu?: boolean
     departamente?: boolean | documente$departamenteArgs<ExtArgs>
     utilizatori_documente_destinatar_idToutilizatori?: boolean | documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs>
-    utilizatori_documente_inregistrat_deToutilizatori?: boolean | utilizatoriDefaultArgs<ExtArgs>
+    utilizatori_documente_inregistrat_deToutilizatori?: boolean | documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs>
     utilizatori_documente_preluat_deToutilizatori?: boolean | documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs>
     registre?: boolean | registreDefaultArgs<ExtArgs>
     tipuri_documente?: boolean | tipuri_documenteDefaultArgs<ExtArgs>
@@ -5615,7 +5615,7 @@ export namespace Prisma {
     stadiu?: boolean
     departamente?: boolean | documente$departamenteArgs<ExtArgs>
     utilizatori_documente_destinatar_idToutilizatori?: boolean | documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs>
-    utilizatori_documente_inregistrat_deToutilizatori?: boolean | utilizatoriDefaultArgs<ExtArgs>
+    utilizatori_documente_inregistrat_deToutilizatori?: boolean | documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs>
     utilizatori_documente_preluat_deToutilizatori?: boolean | documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs>
     registre?: boolean | registreDefaultArgs<ExtArgs>
     tipuri_documente?: boolean | tipuri_documenteDefaultArgs<ExtArgs>
@@ -5640,7 +5640,7 @@ export namespace Prisma {
     stadiu?: boolean
     departamente?: boolean | documente$departamenteArgs<ExtArgs>
     utilizatori_documente_destinatar_idToutilizatori?: boolean | documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs>
-    utilizatori_documente_inregistrat_deToutilizatori?: boolean | utilizatoriDefaultArgs<ExtArgs>
+    utilizatori_documente_inregistrat_deToutilizatori?: boolean | documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs>
     utilizatori_documente_preluat_deToutilizatori?: boolean | documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs>
     registre?: boolean | registreDefaultArgs<ExtArgs>
     tipuri_documente?: boolean | tipuri_documenteDefaultArgs<ExtArgs>
@@ -5669,7 +5669,7 @@ export namespace Prisma {
   export type documenteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     departamente?: boolean | documente$departamenteArgs<ExtArgs>
     utilizatori_documente_destinatar_idToutilizatori?: boolean | documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs>
-    utilizatori_documente_inregistrat_deToutilizatori?: boolean | utilizatoriDefaultArgs<ExtArgs>
+    utilizatori_documente_inregistrat_deToutilizatori?: boolean | documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs>
     utilizatori_documente_preluat_deToutilizatori?: boolean | documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs>
     registre?: boolean | registreDefaultArgs<ExtArgs>
     tipuri_documente?: boolean | tipuri_documenteDefaultArgs<ExtArgs>
@@ -5679,7 +5679,7 @@ export namespace Prisma {
   export type documenteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     departamente?: boolean | documente$departamenteArgs<ExtArgs>
     utilizatori_documente_destinatar_idToutilizatori?: boolean | documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs>
-    utilizatori_documente_inregistrat_deToutilizatori?: boolean | utilizatoriDefaultArgs<ExtArgs>
+    utilizatori_documente_inregistrat_deToutilizatori?: boolean | documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs>
     utilizatori_documente_preluat_deToutilizatori?: boolean | documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs>
     registre?: boolean | registreDefaultArgs<ExtArgs>
     tipuri_documente?: boolean | tipuri_documenteDefaultArgs<ExtArgs>
@@ -5687,7 +5687,7 @@ export namespace Prisma {
   export type documenteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     departamente?: boolean | documente$departamenteArgs<ExtArgs>
     utilizatori_documente_destinatar_idToutilizatori?: boolean | documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs>
-    utilizatori_documente_inregistrat_deToutilizatori?: boolean | utilizatoriDefaultArgs<ExtArgs>
+    utilizatori_documente_inregistrat_deToutilizatori?: boolean | documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs>
     utilizatori_documente_preluat_deToutilizatori?: boolean | documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs>
     registre?: boolean | registreDefaultArgs<ExtArgs>
     tipuri_documente?: boolean | tipuri_documenteDefaultArgs<ExtArgs>
@@ -5698,7 +5698,7 @@ export namespace Prisma {
     objects: {
       departamente: Prisma.$departamentePayload<ExtArgs> | null
       utilizatori_documente_destinatar_idToutilizatori: Prisma.$utilizatoriPayload<ExtArgs> | null
-      utilizatori_documente_inregistrat_deToutilizatori: Prisma.$utilizatoriPayload<ExtArgs>
+      utilizatori_documente_inregistrat_deToutilizatori: Prisma.$utilizatoriPayload<ExtArgs> | null
       utilizatori_documente_preluat_deToutilizatori: Prisma.$utilizatoriPayload<ExtArgs> | null
       registre: Prisma.$registrePayload<ExtArgs>
       tipuri_documente: Prisma.$tipuri_documentePayload<ExtArgs>
@@ -5718,7 +5718,7 @@ export namespace Prisma {
       tip_document_id: string
       data_expedierii: Date
       creat_la: Date | null
-      inregistrat_de: string
+      inregistrat_de: string | null
       preluat_de: string | null
       stadiu: string
     }, ExtArgs["result"]["documente"]>
@@ -6117,7 +6117,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     departamente<T extends documente$departamenteArgs<ExtArgs> = {}>(args?: Subset<T, documente$departamenteArgs<ExtArgs>>): Prisma__departamenteClient<$Result.GetResult<Prisma.$departamentePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     utilizatori_documente_destinatar_idToutilizatori<T extends documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs> = {}>(args?: Subset<T, documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs>>): Prisma__utilizatoriClient<$Result.GetResult<Prisma.$utilizatoriPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    utilizatori_documente_inregistrat_deToutilizatori<T extends utilizatoriDefaultArgs<ExtArgs> = {}>(args?: Subset<T, utilizatoriDefaultArgs<ExtArgs>>): Prisma__utilizatoriClient<$Result.GetResult<Prisma.$utilizatoriPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    utilizatori_documente_inregistrat_deToutilizatori<T extends documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs> = {}>(args?: Subset<T, documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs>>): Prisma__utilizatoriClient<$Result.GetResult<Prisma.$utilizatoriPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     utilizatori_documente_preluat_deToutilizatori<T extends documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs> = {}>(args?: Subset<T, documente$utilizatori_documente_preluat_deToutilizatoriArgs<ExtArgs>>): Prisma__utilizatoriClient<$Result.GetResult<Prisma.$utilizatoriPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     registre<T extends registreDefaultArgs<ExtArgs> = {}>(args?: Subset<T, registreDefaultArgs<ExtArgs>>): Prisma__registreClient<$Result.GetResult<Prisma.$registrePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     tipuri_documente<T extends tipuri_documenteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, tipuri_documenteDefaultArgs<ExtArgs>>): Prisma__tipuri_documenteClient<$Result.GetResult<Prisma.$tipuri_documentePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -6585,6 +6585,25 @@ export namespace Prisma {
    * documente.utilizatori_documente_destinatar_idToutilizatori
    */
   export type documente$utilizatori_documente_destinatar_idToutilizatoriArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the utilizatori
+     */
+    select?: utilizatoriSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the utilizatori
+     */
+    omit?: utilizatoriOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: utilizatoriInclude<ExtArgs> | null
+    where?: utilizatoriWhereInput
+  }
+
+  /**
+   * documente.utilizatori_documente_inregistrat_deToutilizatori
+   */
+  export type documente$utilizatori_documente_inregistrat_deToutilizatoriArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the utilizatori
      */
@@ -12235,7 +12254,7 @@ export namespace Prisma {
     session_expires: Date | null
     nume: string
     departament_id: string | null
-    rol_id: string
+    rol_id: string | null
     _count: UtilizatoriCountAggregateOutputType | null
     _min: UtilizatoriMinAggregateOutputType | null
     _max: UtilizatoriMaxAggregateOutputType | null
@@ -12271,7 +12290,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: boolean | utilizatori$documente_documente_preluat_deToutilizatoriArgs<ExtArgs>
     notificari?: boolean | utilizatori$notificariArgs<ExtArgs>
     departamente?: boolean | utilizatori$departamenteArgs<ExtArgs>
-    roluri?: boolean | roluriDefaultArgs<ExtArgs>
+    roluri?: boolean | utilizatori$roluriArgs<ExtArgs>
     _count?: boolean | UtilizatoriCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["utilizatori"]>
 
@@ -12286,7 +12305,7 @@ export namespace Prisma {
     departament_id?: boolean
     rol_id?: boolean
     departamente?: boolean | utilizatori$departamenteArgs<ExtArgs>
-    roluri?: boolean | roluriDefaultArgs<ExtArgs>
+    roluri?: boolean | utilizatori$roluriArgs<ExtArgs>
   }, ExtArgs["result"]["utilizatori"]>
 
   export type utilizatoriSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12300,7 +12319,7 @@ export namespace Prisma {
     departament_id?: boolean
     rol_id?: boolean
     departamente?: boolean | utilizatori$departamenteArgs<ExtArgs>
-    roluri?: boolean | roluriDefaultArgs<ExtArgs>
+    roluri?: boolean | utilizatori$roluriArgs<ExtArgs>
   }, ExtArgs["result"]["utilizatori"]>
 
   export type utilizatoriSelectScalar = {
@@ -12323,16 +12342,16 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: boolean | utilizatori$documente_documente_preluat_deToutilizatoriArgs<ExtArgs>
     notificari?: boolean | utilizatori$notificariArgs<ExtArgs>
     departamente?: boolean | utilizatori$departamenteArgs<ExtArgs>
-    roluri?: boolean | roluriDefaultArgs<ExtArgs>
+    roluri?: boolean | utilizatori$roluriArgs<ExtArgs>
     _count?: boolean | UtilizatoriCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type utilizatoriIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     departamente?: boolean | utilizatori$departamenteArgs<ExtArgs>
-    roluri?: boolean | roluriDefaultArgs<ExtArgs>
+    roluri?: boolean | utilizatori$roluriArgs<ExtArgs>
   }
   export type utilizatoriIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     departamente?: boolean | utilizatori$departamenteArgs<ExtArgs>
-    roluri?: boolean | roluriDefaultArgs<ExtArgs>
+    roluri?: boolean | utilizatori$roluriArgs<ExtArgs>
   }
 
   export type $utilizatoriPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12344,7 +12363,7 @@ export namespace Prisma {
       documente_documente_preluat_deToutilizatori: Prisma.$documentePayload<ExtArgs>[]
       notificari: Prisma.$notificariPayload<ExtArgs>[]
       departamente: Prisma.$departamentePayload<ExtArgs> | null
-      roluri: Prisma.$roluriPayload<ExtArgs>
+      roluri: Prisma.$roluriPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12355,7 +12374,7 @@ export namespace Prisma {
       session_expires: Date | null
       nume: string
       departament_id: string | null
-      rol_id: string
+      rol_id: string | null
     }, ExtArgs["result"]["utilizatori"]>
     composites: {}
   }
@@ -12756,7 +12775,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori<T extends utilizatori$documente_documente_preluat_deToutilizatoriArgs<ExtArgs> = {}>(args?: Subset<T, utilizatori$documente_documente_preluat_deToutilizatoriArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$documentePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificari<T extends utilizatori$notificariArgs<ExtArgs> = {}>(args?: Subset<T, utilizatori$notificariArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$notificariPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     departamente<T extends utilizatori$departamenteArgs<ExtArgs> = {}>(args?: Subset<T, utilizatori$departamenteArgs<ExtArgs>>): Prisma__departamenteClient<$Result.GetResult<Prisma.$departamentePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    roluri<T extends roluriDefaultArgs<ExtArgs> = {}>(args?: Subset<T, roluriDefaultArgs<ExtArgs>>): Prisma__roluriClient<$Result.GetResult<Prisma.$roluriPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    roluri<T extends utilizatori$roluriArgs<ExtArgs> = {}>(args?: Subset<T, utilizatori$roluriArgs<ExtArgs>>): Prisma__roluriClient<$Result.GetResult<Prisma.$roluriPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13327,6 +13346,25 @@ export namespace Prisma {
      */
     include?: departamenteInclude<ExtArgs> | null
     where?: departamenteWhereInput
+  }
+
+  /**
+   * utilizatori.roluri
+   */
+  export type utilizatori$roluriArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roluri
+     */
+    select?: roluriSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roluri
+     */
+    omit?: roluriOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roluriInclude<ExtArgs> | null
+    where?: roluriWhereInput
   }
 
   /**
@@ -14838,12 +14876,12 @@ export namespace Prisma {
     tip_document_id?: UuidFilter<"documente"> | string
     data_expedierii?: DateTimeFilter<"documente"> | Date | string
     creat_la?: DateTimeNullableFilter<"documente"> | Date | string | null
-    inregistrat_de?: UuidFilter<"documente"> | string
+    inregistrat_de?: UuidNullableFilter<"documente"> | string | null
     preluat_de?: UuidNullableFilter<"documente"> | string | null
     stadiu?: StringFilter<"documente"> | string
     departamente?: XOR<DepartamenteNullableScalarRelationFilter, departamenteWhereInput> | null
     utilizatori_documente_destinatar_idToutilizatori?: XOR<UtilizatoriNullableScalarRelationFilter, utilizatoriWhereInput> | null
-    utilizatori_documente_inregistrat_deToutilizatori?: XOR<UtilizatoriScalarRelationFilter, utilizatoriWhereInput>
+    utilizatori_documente_inregistrat_deToutilizatori?: XOR<UtilizatoriNullableScalarRelationFilter, utilizatoriWhereInput> | null
     utilizatori_documente_preluat_deToutilizatori?: XOR<UtilizatoriNullableScalarRelationFilter, utilizatoriWhereInput> | null
     registre?: XOR<RegistreScalarRelationFilter, registreWhereInput>
     tipuri_documente?: XOR<Tipuri_documenteScalarRelationFilter, tipuri_documenteWhereInput>
@@ -14864,7 +14902,7 @@ export namespace Prisma {
     tip_document_id?: SortOrder
     data_expedierii?: SortOrder
     creat_la?: SortOrderInput | SortOrder
-    inregistrat_de?: SortOrder
+    inregistrat_de?: SortOrderInput | SortOrder
     preluat_de?: SortOrderInput | SortOrder
     stadiu?: SortOrder
     departamente?: departamenteOrderByWithRelationInput
@@ -14894,12 +14932,12 @@ export namespace Prisma {
     tip_document_id?: UuidFilter<"documente"> | string
     data_expedierii?: DateTimeFilter<"documente"> | Date | string
     creat_la?: DateTimeNullableFilter<"documente"> | Date | string | null
-    inregistrat_de?: UuidFilter<"documente"> | string
+    inregistrat_de?: UuidNullableFilter<"documente"> | string | null
     preluat_de?: UuidNullableFilter<"documente"> | string | null
     stadiu?: StringFilter<"documente"> | string
     departamente?: XOR<DepartamenteNullableScalarRelationFilter, departamenteWhereInput> | null
     utilizatori_documente_destinatar_idToutilizatori?: XOR<UtilizatoriNullableScalarRelationFilter, utilizatoriWhereInput> | null
-    utilizatori_documente_inregistrat_deToutilizatori?: XOR<UtilizatoriScalarRelationFilter, utilizatoriWhereInput>
+    utilizatori_documente_inregistrat_deToutilizatori?: XOR<UtilizatoriNullableScalarRelationFilter, utilizatoriWhereInput> | null
     utilizatori_documente_preluat_deToutilizatori?: XOR<UtilizatoriNullableScalarRelationFilter, utilizatoriWhereInput> | null
     registre?: XOR<RegistreScalarRelationFilter, registreWhereInput>
     tipuri_documente?: XOR<Tipuri_documenteScalarRelationFilter, tipuri_documenteWhereInput>
@@ -14920,7 +14958,7 @@ export namespace Prisma {
     tip_document_id?: SortOrder
     data_expedierii?: SortOrder
     creat_la?: SortOrderInput | SortOrder
-    inregistrat_de?: SortOrder
+    inregistrat_de?: SortOrderInput | SortOrder
     preluat_de?: SortOrderInput | SortOrder
     stadiu?: SortOrder
     _count?: documenteCountOrderByAggregateInput
@@ -14947,7 +14985,7 @@ export namespace Prisma {
     tip_document_id?: UuidWithAggregatesFilter<"documente"> | string
     data_expedierii?: DateTimeWithAggregatesFilter<"documente"> | Date | string
     creat_la?: DateTimeNullableWithAggregatesFilter<"documente"> | Date | string | null
-    inregistrat_de?: UuidWithAggregatesFilter<"documente"> | string
+    inregistrat_de?: UuidNullableWithAggregatesFilter<"documente"> | string | null
     preluat_de?: UuidNullableWithAggregatesFilter<"documente"> | string | null
     stadiu?: StringWithAggregatesFilter<"documente"> | string
   }
@@ -15241,14 +15279,14 @@ export namespace Prisma {
     session_expires?: DateTimeNullableFilter<"utilizatori"> | Date | string | null
     nume?: StringFilter<"utilizatori"> | string
     departament_id?: UuidNullableFilter<"utilizatori"> | string | null
-    rol_id?: UuidFilter<"utilizatori"> | string
+    rol_id?: UuidNullableFilter<"utilizatori"> | string | null
     audit_logs?: Audit_logsListRelationFilter
     documente_documente_destinatar_idToutilizatori?: DocumenteListRelationFilter
     documente_documente_inregistrat_deToutilizatori?: DocumenteListRelationFilter
     documente_documente_preluat_deToutilizatori?: DocumenteListRelationFilter
     notificari?: NotificariListRelationFilter
     departamente?: XOR<DepartamenteNullableScalarRelationFilter, departamenteWhereInput> | null
-    roluri?: XOR<RoluriScalarRelationFilter, roluriWhereInput>
+    roluri?: XOR<RoluriNullableScalarRelationFilter, roluriWhereInput> | null
   }
 
   export type utilizatoriOrderByWithRelationInput = {
@@ -15260,7 +15298,7 @@ export namespace Prisma {
     session_expires?: SortOrderInput | SortOrder
     nume?: SortOrder
     departament_id?: SortOrderInput | SortOrder
-    rol_id?: SortOrder
+    rol_id?: SortOrderInput | SortOrder
     audit_logs?: audit_logsOrderByRelationAggregateInput
     documente_documente_destinatar_idToutilizatori?: documenteOrderByRelationAggregateInput
     documente_documente_inregistrat_deToutilizatori?: documenteOrderByRelationAggregateInput
@@ -15282,14 +15320,14 @@ export namespace Prisma {
     session_expires?: DateTimeNullableFilter<"utilizatori"> | Date | string | null
     nume?: StringFilter<"utilizatori"> | string
     departament_id?: UuidNullableFilter<"utilizatori"> | string | null
-    rol_id?: UuidFilter<"utilizatori"> | string
+    rol_id?: UuidNullableFilter<"utilizatori"> | string | null
     audit_logs?: Audit_logsListRelationFilter
     documente_documente_destinatar_idToutilizatori?: DocumenteListRelationFilter
     documente_documente_inregistrat_deToutilizatori?: DocumenteListRelationFilter
     documente_documente_preluat_deToutilizatori?: DocumenteListRelationFilter
     notificari?: NotificariListRelationFilter
     departamente?: XOR<DepartamenteNullableScalarRelationFilter, departamenteWhereInput> | null
-    roluri?: XOR<RoluriScalarRelationFilter, roluriWhereInput>
+    roluri?: XOR<RoluriNullableScalarRelationFilter, roluriWhereInput> | null
   }, "id" | "email">
 
   export type utilizatoriOrderByWithAggregationInput = {
@@ -15301,7 +15339,7 @@ export namespace Prisma {
     session_expires?: SortOrderInput | SortOrder
     nume?: SortOrder
     departament_id?: SortOrderInput | SortOrder
-    rol_id?: SortOrder
+    rol_id?: SortOrderInput | SortOrder
     _count?: utilizatoriCountOrderByAggregateInput
     _max?: utilizatoriMaxOrderByAggregateInput
     _min?: utilizatoriMinOrderByAggregateInput
@@ -15319,7 +15357,7 @@ export namespace Prisma {
     session_expires?: DateTimeNullableWithAggregatesFilter<"utilizatori"> | Date | string | null
     nume?: StringWithAggregatesFilter<"utilizatori"> | string
     departament_id?: UuidNullableWithAggregatesFilter<"utilizatori"> | string | null
-    rol_id?: UuidWithAggregatesFilter<"utilizatori"> | string
+    rol_id?: UuidNullableWithAggregatesFilter<"utilizatori"> | string | null
   }
 
   export type configurare_serieWhereInput = {
@@ -15593,7 +15631,7 @@ export namespace Prisma {
     stadiu?: string
     departamente?: departamenteCreateNestedOneWithoutDocumenteInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_destinatar_idToutilizatoriInput
-    utilizatori_documente_inregistrat_deToutilizatori: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_preluat_deToutilizatoriInput
     registre: registreCreateNestedOneWithoutDocumenteInput
     tipuri_documente: tipuri_documenteCreateNestedOneWithoutDocumenteInput
@@ -15614,7 +15652,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
     notificari?: notificariUncheckedCreateNestedManyWithoutDocumenteInput
@@ -15633,7 +15671,7 @@ export namespace Prisma {
     stadiu?: StringFieldUpdateOperationsInput | string
     departamente?: departamenteUpdateOneWithoutDocumenteNestedInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_destinatar_idToutilizatoriNestedInput
-    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_preluat_deToutilizatoriNestedInput
     registre?: registreUpdateOneRequiredWithoutDocumenteNestedInput
     tipuri_documente?: tipuri_documenteUpdateOneRequiredWithoutDocumenteNestedInput
@@ -15654,7 +15692,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     notificari?: notificariUncheckedUpdateManyWithoutDocumenteNestedInput
@@ -15674,7 +15712,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
   }
@@ -15706,7 +15744,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
   }
@@ -16003,7 +16041,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
     notificari?: notificariCreateNestedManyWithoutUtilizatoriInput
     departamente?: departamenteCreateNestedOneWithoutUtilizatoriInput
-    roluri: roluriCreateNestedOneWithoutUtilizatoriInput
+    roluri?: roluriCreateNestedOneWithoutUtilizatoriInput
   }
 
   export type utilizatoriUncheckedCreateInput = {
@@ -16015,7 +16053,7 @@ export namespace Prisma {
     session_expires?: Date | string | null
     nume: string
     departament_id?: string | null
-    rol_id: string
+    rol_id?: string | null
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutUtilizatoriInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_destinatar_idToutilizatoriInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
@@ -16037,7 +16075,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
     notificari?: notificariUpdateManyWithoutUtilizatoriNestedInput
     departamente?: departamenteUpdateOneWithoutUtilizatoriNestedInput
-    roluri?: roluriUpdateOneRequiredWithoutUtilizatoriNestedInput
+    roluri?: roluriUpdateOneWithoutUtilizatoriNestedInput
   }
 
   export type utilizatoriUncheckedUpdateInput = {
@@ -16049,7 +16087,7 @@ export namespace Prisma {
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
     audit_logs?: audit_logsUncheckedUpdateManyWithoutUtilizatoriNestedInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_destinatar_idToutilizatoriNestedInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
@@ -16066,7 +16104,7 @@ export namespace Prisma {
     session_expires?: Date | string | null
     nume: string
     departament_id?: string | null
-    rol_id: string
+    rol_id?: string | null
   }
 
   export type utilizatoriUpdateManyMutationInput = {
@@ -16088,7 +16126,7 @@ export namespace Prisma {
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type configurare_serieCreateInput = {
@@ -16489,11 +16527,6 @@ export namespace Prisma {
     isNot?: departamenteWhereInput | null
   }
 
-  export type UtilizatoriScalarRelationFilter = {
-    is?: utilizatoriWhereInput
-    isNot?: utilizatoriWhereInput
-  }
-
   export type RegistreScalarRelationFilter = {
     is?: registreWhereInput
     isNot?: registreWhereInput
@@ -16603,6 +16636,11 @@ export namespace Prisma {
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type UtilizatoriScalarRelationFilter = {
+    is?: utilizatoriWhereInput
+    isNot?: utilizatoriWhereInput
   }
 
   export type DocumenteNullableScalarRelationFilter = {
@@ -16793,9 +16831,9 @@ export namespace Prisma {
     none?: audit_logsWhereInput
   }
 
-  export type RoluriScalarRelationFilter = {
-    is?: roluriWhereInput
-    isNot?: roluriWhereInput
+  export type RoluriNullableScalarRelationFilter = {
+    is?: roluriWhereInput | null
+    isNot?: roluriWhereInput | null
   }
 
   export type audit_logsOrderByRelationAggregateInput = {
@@ -17100,10 +17138,12 @@ export namespace Prisma {
     update?: XOR<XOR<utilizatoriUpdateToOneWithWhereWithoutDocumente_documente_destinatar_idToutilizatoriInput, utilizatoriUpdateWithoutDocumente_documente_destinatar_idToutilizatoriInput>, utilizatoriUncheckedUpdateWithoutDocumente_documente_destinatar_idToutilizatoriInput>
   }
 
-  export type utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput = {
+  export type utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput = {
     create?: XOR<utilizatoriCreateWithoutDocumente_documente_inregistrat_deToutilizatoriInput, utilizatoriUncheckedCreateWithoutDocumente_documente_inregistrat_deToutilizatoriInput>
     connectOrCreate?: utilizatoriCreateOrConnectWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     upsert?: utilizatoriUpsertWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    disconnect?: utilizatoriWhereInput | boolean
+    delete?: utilizatoriWhereInput | boolean
     connect?: utilizatoriWhereUniqueInput
     update?: XOR<XOR<utilizatoriUpdateToOneWithWhereWithoutDocumente_documente_inregistrat_deToutilizatoriInput, utilizatoriUpdateWithoutDocumente_documente_inregistrat_deToutilizatoriInput>, utilizatoriUncheckedUpdateWithoutDocumente_documente_inregistrat_deToutilizatoriInput>
   }
@@ -17562,10 +17602,12 @@ export namespace Prisma {
     update?: XOR<XOR<departamenteUpdateToOneWithWhereWithoutUtilizatoriInput, departamenteUpdateWithoutUtilizatoriInput>, departamenteUncheckedUpdateWithoutUtilizatoriInput>
   }
 
-  export type roluriUpdateOneRequiredWithoutUtilizatoriNestedInput = {
+  export type roluriUpdateOneWithoutUtilizatoriNestedInput = {
     create?: XOR<roluriCreateWithoutUtilizatoriInput, roluriUncheckedCreateWithoutUtilizatoriInput>
     connectOrCreate?: roluriCreateOrConnectWithoutUtilizatoriInput
     upsert?: roluriUpsertWithoutUtilizatoriInput
+    disconnect?: roluriWhereInput | boolean
+    delete?: roluriWhereInput | boolean
     connect?: roluriWhereUniqueInput
     update?: XOR<XOR<roluriUpdateToOneWithWhereWithoutUtilizatoriInput, roluriUpdateWithoutUtilizatoriInput>, roluriUncheckedUpdateWithoutUtilizatoriInput>
   }
@@ -17927,7 +17969,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
     notificari?: notificariCreateNestedManyWithoutUtilizatoriInput
     departamente?: departamenteCreateNestedOneWithoutUtilizatoriInput
-    roluri: roluriCreateNestedOneWithoutUtilizatoriInput
+    roluri?: roluriCreateNestedOneWithoutUtilizatoriInput
   }
 
   export type utilizatoriUncheckedCreateWithoutAudit_logsInput = {
@@ -17939,7 +17981,7 @@ export namespace Prisma {
     session_expires?: Date | string | null
     nume: string
     departament_id?: string | null
-    rol_id: string
+    rol_id?: string | null
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_destinatar_idToutilizatoriInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
     documente_documente_preluat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
@@ -17975,7 +18017,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
     notificari?: notificariUpdateManyWithoutUtilizatoriNestedInput
     departamente?: departamenteUpdateOneWithoutUtilizatoriNestedInput
-    roluri?: roluriUpdateOneRequiredWithoutUtilizatoriNestedInput
+    roluri?: roluriUpdateOneWithoutUtilizatoriNestedInput
   }
 
   export type utilizatoriUncheckedUpdateWithoutAudit_logsInput = {
@@ -17987,7 +18029,7 @@ export namespace Prisma {
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_destinatar_idToutilizatoriNestedInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
     documente_documente_preluat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
@@ -18006,7 +18048,7 @@ export namespace Prisma {
     creat_la?: Date | string | null
     stadiu?: string
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_destinatar_idToutilizatoriInput
-    utilizatori_documente_inregistrat_deToutilizatori: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_preluat_deToutilizatoriInput
     registre: registreCreateNestedOneWithoutDocumenteInput
     tipuri_documente: tipuri_documenteCreateNestedOneWithoutDocumenteInput
@@ -18026,7 +18068,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
     notificari?: notificariUncheckedCreateNestedManyWithoutDocumenteInput
@@ -18087,7 +18129,7 @@ export namespace Prisma {
     documente_documente_inregistrat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
     documente_documente_preluat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
     notificari?: notificariCreateNestedManyWithoutUtilizatoriInput
-    roluri: roluriCreateNestedOneWithoutUtilizatoriInput
+    roluri?: roluriCreateNestedOneWithoutUtilizatoriInput
   }
 
   export type utilizatoriUncheckedCreateWithoutDepartamenteInput = {
@@ -18098,7 +18140,7 @@ export namespace Prisma {
     refresh_token?: string | null
     session_expires?: Date | string | null
     nume: string
-    rol_id: string
+    rol_id?: string | null
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutUtilizatoriInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_destinatar_idToutilizatoriInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
@@ -18149,7 +18191,7 @@ export namespace Prisma {
     tip_document_id?: UuidFilter<"documente"> | string
     data_expedierii?: DateTimeFilter<"documente"> | Date | string
     creat_la?: DateTimeNullableFilter<"documente"> | Date | string | null
-    inregistrat_de?: UuidFilter<"documente"> | string
+    inregistrat_de?: UuidNullableFilter<"documente"> | string | null
     preluat_de?: UuidNullableFilter<"documente"> | string | null
     stadiu?: StringFilter<"documente"> | string
   }
@@ -18212,7 +18254,7 @@ export namespace Prisma {
     session_expires?: DateTimeNullableFilter<"utilizatori"> | Date | string | null
     nume?: StringFilter<"utilizatori"> | string
     departament_id?: UuidNullableFilter<"utilizatori"> | string | null
-    rol_id?: UuidFilter<"utilizatori"> | string
+    rol_id?: UuidNullableFilter<"utilizatori"> | string | null
   }
 
   export type departamenteCreateWithoutDocumenteInput = {
@@ -18249,7 +18291,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
     notificari?: notificariCreateNestedManyWithoutUtilizatoriInput
     departamente?: departamenteCreateNestedOneWithoutUtilizatoriInput
-    roluri: roluriCreateNestedOneWithoutUtilizatoriInput
+    roluri?: roluriCreateNestedOneWithoutUtilizatoriInput
   }
 
   export type utilizatoriUncheckedCreateWithoutDocumente_documente_destinatar_idToutilizatoriInput = {
@@ -18261,7 +18303,7 @@ export namespace Prisma {
     session_expires?: Date | string | null
     nume: string
     departament_id?: string | null
-    rol_id: string
+    rol_id?: string | null
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutUtilizatoriInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
     documente_documente_preluat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
@@ -18286,7 +18328,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
     notificari?: notificariCreateNestedManyWithoutUtilizatoriInput
     departamente?: departamenteCreateNestedOneWithoutUtilizatoriInput
-    roluri: roluriCreateNestedOneWithoutUtilizatoriInput
+    roluri?: roluriCreateNestedOneWithoutUtilizatoriInput
   }
 
   export type utilizatoriUncheckedCreateWithoutDocumente_documente_inregistrat_deToutilizatoriInput = {
@@ -18298,7 +18340,7 @@ export namespace Prisma {
     session_expires?: Date | string | null
     nume: string
     departament_id?: string | null
-    rol_id: string
+    rol_id?: string | null
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutUtilizatoriInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_destinatar_idToutilizatoriInput
     documente_documente_preluat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
@@ -18323,7 +18365,7 @@ export namespace Prisma {
     documente_documente_inregistrat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
     notificari?: notificariCreateNestedManyWithoutUtilizatoriInput
     departamente?: departamenteCreateNestedOneWithoutUtilizatoriInput
-    roluri: roluriCreateNestedOneWithoutUtilizatoriInput
+    roluri?: roluriCreateNestedOneWithoutUtilizatoriInput
   }
 
   export type utilizatoriUncheckedCreateWithoutDocumente_documente_preluat_deToutilizatoriInput = {
@@ -18335,7 +18377,7 @@ export namespace Prisma {
     session_expires?: Date | string | null
     nume: string
     departament_id?: string | null
-    rol_id: string
+    rol_id?: string | null
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutUtilizatoriInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_destinatar_idToutilizatoriInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
@@ -18468,7 +18510,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
     notificari?: notificariUpdateManyWithoutUtilizatoriNestedInput
     departamente?: departamenteUpdateOneWithoutUtilizatoriNestedInput
-    roluri?: roluriUpdateOneRequiredWithoutUtilizatoriNestedInput
+    roluri?: roluriUpdateOneWithoutUtilizatoriNestedInput
   }
 
   export type utilizatoriUncheckedUpdateWithoutDocumente_documente_destinatar_idToutilizatoriInput = {
@@ -18480,7 +18522,7 @@ export namespace Prisma {
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
     audit_logs?: audit_logsUncheckedUpdateManyWithoutUtilizatoriNestedInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
     documente_documente_preluat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
@@ -18511,7 +18553,7 @@ export namespace Prisma {
     documente_documente_preluat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
     notificari?: notificariUpdateManyWithoutUtilizatoriNestedInput
     departamente?: departamenteUpdateOneWithoutUtilizatoriNestedInput
-    roluri?: roluriUpdateOneRequiredWithoutUtilizatoriNestedInput
+    roluri?: roluriUpdateOneWithoutUtilizatoriNestedInput
   }
 
   export type utilizatoriUncheckedUpdateWithoutDocumente_documente_inregistrat_deToutilizatoriInput = {
@@ -18523,7 +18565,7 @@ export namespace Prisma {
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
     audit_logs?: audit_logsUncheckedUpdateManyWithoutUtilizatoriNestedInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_destinatar_idToutilizatoriNestedInput
     documente_documente_preluat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
@@ -18554,7 +18596,7 @@ export namespace Prisma {
     documente_documente_inregistrat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
     notificari?: notificariUpdateManyWithoutUtilizatoriNestedInput
     departamente?: departamenteUpdateOneWithoutUtilizatoriNestedInput
-    roluri?: roluriUpdateOneRequiredWithoutUtilizatoriNestedInput
+    roluri?: roluriUpdateOneWithoutUtilizatoriNestedInput
   }
 
   export type utilizatoriUncheckedUpdateWithoutDocumente_documente_preluat_deToutilizatoriInput = {
@@ -18566,7 +18608,7 @@ export namespace Prisma {
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
     audit_logs?: audit_logsUncheckedUpdateManyWithoutUtilizatoriNestedInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_destinatar_idToutilizatoriNestedInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
@@ -18669,7 +18711,7 @@ export namespace Prisma {
     documente_documente_inregistrat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
     documente_documente_preluat_deToutilizatori?: documenteCreateNestedManyWithoutUtilizatori_documente_preluat_deToutilizatoriInput
     departamente?: departamenteCreateNestedOneWithoutUtilizatoriInput
-    roluri: roluriCreateNestedOneWithoutUtilizatoriInput
+    roluri?: roluriCreateNestedOneWithoutUtilizatoriInput
   }
 
   export type utilizatoriUncheckedCreateWithoutNotificariInput = {
@@ -18681,7 +18723,7 @@ export namespace Prisma {
     session_expires?: Date | string | null
     nume: string
     departament_id?: string | null
-    rol_id: string
+    rol_id?: string | null
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutUtilizatoriInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_destinatar_idToutilizatoriInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedCreateNestedManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriInput
@@ -18706,7 +18748,7 @@ export namespace Prisma {
     stadiu?: string
     departamente?: departamenteCreateNestedOneWithoutDocumenteInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_destinatar_idToutilizatoriInput
-    utilizatori_documente_inregistrat_deToutilizatori: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_preluat_deToutilizatoriInput
     registre: registreCreateNestedOneWithoutDocumenteInput
     tipuri_documente: tipuri_documenteCreateNestedOneWithoutDocumenteInput
@@ -18726,7 +18768,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
   }
@@ -18760,7 +18802,7 @@ export namespace Prisma {
     documente_documente_inregistrat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
     documente_documente_preluat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
     departamente?: departamenteUpdateOneWithoutUtilizatoriNestedInput
-    roluri?: roluriUpdateOneRequiredWithoutUtilizatoriNestedInput
+    roluri?: roluriUpdateOneWithoutUtilizatoriNestedInput
   }
 
   export type utilizatoriUncheckedUpdateWithoutNotificariInput = {
@@ -18772,7 +18814,7 @@ export namespace Prisma {
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
     departament_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
     audit_logs?: audit_logsUncheckedUpdateManyWithoutUtilizatoriNestedInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_destinatar_idToutilizatoriNestedInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
@@ -18803,7 +18845,7 @@ export namespace Prisma {
     stadiu?: StringFieldUpdateOperationsInput | string
     departamente?: departamenteUpdateOneWithoutDocumenteNestedInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_destinatar_idToutilizatoriNestedInput
-    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_preluat_deToutilizatoriNestedInput
     registre?: registreUpdateOneRequiredWithoutDocumenteNestedInput
     tipuri_documente?: tipuri_documenteUpdateOneRequiredWithoutDocumenteNestedInput
@@ -18823,7 +18865,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
   }
@@ -18889,7 +18931,7 @@ export namespace Prisma {
     stadiu?: string
     departamente?: departamenteCreateNestedOneWithoutDocumenteInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_destinatar_idToutilizatoriInput
-    utilizatori_documente_inregistrat_deToutilizatori: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_preluat_deToutilizatoriInput
     tipuri_documente: tipuri_documenteCreateNestedOneWithoutDocumenteInput
     notificari?: notificariCreateNestedManyWithoutDocumenteInput
@@ -18908,7 +18950,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
     notificari?: notificariUncheckedCreateNestedManyWithoutDocumenteInput
@@ -19095,7 +19137,7 @@ export namespace Prisma {
     stadiu?: string
     departamente?: departamenteCreateNestedOneWithoutDocumenteInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_destinatar_idToutilizatoriInput
-    utilizatori_documente_inregistrat_deToutilizatori: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_preluat_deToutilizatoriInput
     registre: registreCreateNestedOneWithoutDocumenteInput
     notificari?: notificariCreateNestedManyWithoutDocumenteInput
@@ -19114,7 +19156,7 @@ export namespace Prisma {
     destinatar_id?: string | null
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
     notificari?: notificariUncheckedCreateNestedManyWithoutDocumenteInput
@@ -19194,7 +19236,7 @@ export namespace Prisma {
     creat_la?: Date | string | null
     stadiu?: string
     departamente?: departamenteCreateNestedOneWithoutDocumenteInput
-    utilizatori_documente_inregistrat_deToutilizatori: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_preluat_deToutilizatoriInput
     registre: registreCreateNestedOneWithoutDocumenteInput
     tipuri_documente: tipuri_documenteCreateNestedOneWithoutDocumenteInput
@@ -19214,7 +19256,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
     notificari?: notificariUncheckedCreateNestedManyWithoutDocumenteInput
@@ -19291,7 +19333,7 @@ export namespace Prisma {
     stadiu?: string
     departamente?: departamenteCreateNestedOneWithoutDocumenteInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_destinatar_idToutilizatoriInput
-    utilizatori_documente_inregistrat_deToutilizatori: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriCreateNestedOneWithoutDocumente_documente_inregistrat_deToutilizatoriInput
     registre: registreCreateNestedOneWithoutDocumenteInput
     tipuri_documente: tipuri_documenteCreateNestedOneWithoutDocumenteInput
     notificari?: notificariCreateNestedManyWithoutDocumenteInput
@@ -19311,7 +19353,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     stadiu?: string
     notificari?: notificariUncheckedCreateNestedManyWithoutDocumenteInput
   }
@@ -19556,7 +19598,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
   }
@@ -19579,7 +19621,7 @@ export namespace Prisma {
     refresh_token?: string | null
     session_expires?: Date | string | null
     nume: string
-    rol_id: string
+    rol_id?: string | null
   }
 
   export type documenteUpdateWithoutDepartamenteInput = {
@@ -19594,7 +19636,7 @@ export namespace Prisma {
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_destinatar_idToutilizatoriNestedInput
-    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_preluat_deToutilizatoriNestedInput
     registre?: registreUpdateOneRequiredWithoutDocumenteNestedInput
     tipuri_documente?: tipuri_documenteUpdateOneRequiredWithoutDocumenteNestedInput
@@ -19614,7 +19656,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     notificari?: notificariUncheckedUpdateManyWithoutDocumenteNestedInput
@@ -19633,7 +19675,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
   }
@@ -19683,7 +19725,7 @@ export namespace Prisma {
     documente_documente_inregistrat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
     documente_documente_preluat_deToutilizatori?: documenteUpdateManyWithoutUtilizatori_documente_preluat_deToutilizatoriNestedInput
     notificari?: notificariUpdateManyWithoutUtilizatoriNestedInput
-    roluri?: roluriUpdateOneRequiredWithoutUtilizatoriNestedInput
+    roluri?: roluriUpdateOneWithoutUtilizatoriNestedInput
   }
 
   export type utilizatoriUncheckedUpdateWithoutDepartamenteInput = {
@@ -19694,7 +19736,7 @@ export namespace Prisma {
     refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
     audit_logs?: audit_logsUncheckedUpdateManyWithoutUtilizatoriNestedInput
     documente_documente_destinatar_idToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_destinatar_idToutilizatoriNestedInput
     documente_documente_inregistrat_deToutilizatori?: documenteUncheckedUpdateManyWithoutUtilizatori_documente_inregistrat_deToutilizatoriNestedInput
@@ -19710,7 +19752,7 @@ export namespace Prisma {
     refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
     session_expires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nume?: StringFieldUpdateOperationsInput | string
-    rol_id?: StringFieldUpdateOperationsInput | string
+    rol_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type notificariCreateManyDocumenteInput = {
@@ -19804,7 +19846,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
   }
@@ -19822,7 +19864,7 @@ export namespace Prisma {
     stadiu?: StringFieldUpdateOperationsInput | string
     departamente?: departamenteUpdateOneWithoutDocumenteNestedInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_destinatar_idToutilizatoriNestedInput
-    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_preluat_deToutilizatoriNestedInput
     tipuri_documente?: tipuri_documenteUpdateOneRequiredWithoutDocumenteNestedInput
     notificari?: notificariUpdateManyWithoutDocumenteNestedInput
@@ -19841,7 +19883,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     notificari?: notificariUncheckedUpdateManyWithoutDocumenteNestedInput
@@ -19860,7 +19902,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
   }
@@ -19932,7 +19974,7 @@ export namespace Prisma {
     destinatar_id?: string | null
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
   }
@@ -19950,7 +19992,7 @@ export namespace Prisma {
     stadiu?: StringFieldUpdateOperationsInput | string
     departamente?: departamenteUpdateOneWithoutDocumenteNestedInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_destinatar_idToutilizatoriNestedInput
-    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_preluat_deToutilizatoriNestedInput
     registre?: registreUpdateOneRequiredWithoutDocumenteNestedInput
     notificari?: notificariUpdateManyWithoutDocumenteNestedInput
@@ -19969,7 +20011,7 @@ export namespace Prisma {
     destinatar_id?: NullableStringFieldUpdateOperationsInput | string | null
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     notificari?: notificariUncheckedUpdateManyWithoutDocumenteNestedInput
@@ -19988,7 +20030,7 @@ export namespace Prisma {
     destinatar_id?: NullableStringFieldUpdateOperationsInput | string | null
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
   }
@@ -20019,7 +20061,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     preluat_de?: string | null
     stadiu?: string
   }
@@ -20056,7 +20098,7 @@ export namespace Prisma {
     tip_document_id: string
     data_expedierii: Date | string
     creat_la?: Date | string | null
-    inregistrat_de: string
+    inregistrat_de?: string | null
     stadiu?: string
   }
 
@@ -20120,7 +20162,7 @@ export namespace Prisma {
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     departamente?: departamenteUpdateOneWithoutDocumenteNestedInput
-    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
     utilizatori_documente_preluat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_preluat_deToutilizatoriNestedInput
     registre?: registreUpdateOneRequiredWithoutDocumenteNestedInput
     tipuri_documente?: tipuri_documenteUpdateOneRequiredWithoutDocumenteNestedInput
@@ -20140,7 +20182,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     notificari?: notificariUncheckedUpdateManyWithoutDocumenteNestedInput
@@ -20159,7 +20201,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     preluat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
   }
@@ -20233,7 +20275,7 @@ export namespace Prisma {
     stadiu?: StringFieldUpdateOperationsInput | string
     departamente?: departamenteUpdateOneWithoutDocumenteNestedInput
     utilizatori_documente_destinatar_idToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_destinatar_idToutilizatoriNestedInput
-    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneRequiredWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
+    utilizatori_documente_inregistrat_deToutilizatori?: utilizatoriUpdateOneWithoutDocumente_documente_inregistrat_deToutilizatoriNestedInput
     registre?: registreUpdateOneRequiredWithoutDocumenteNestedInput
     tipuri_documente?: tipuri_documenteUpdateOneRequiredWithoutDocumenteNestedInput
     notificari?: notificariUpdateManyWithoutDocumenteNestedInput
@@ -20253,7 +20295,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
     notificari?: notificariUncheckedUpdateManyWithoutDocumenteNestedInput
   }
@@ -20272,7 +20314,7 @@ export namespace Prisma {
     tip_document_id?: StringFieldUpdateOperationsInput | string
     data_expedierii?: DateTimeFieldUpdateOperationsInput | Date | string
     creat_la?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    inregistrat_de?: StringFieldUpdateOperationsInput | string
+    inregistrat_de?: NullableStringFieldUpdateOperationsInput | string | null
     stadiu?: StringFieldUpdateOperationsInput | string
   }
 

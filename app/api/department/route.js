@@ -142,27 +142,31 @@ export async function DELETE(request) {
 
     // Obține numele departamentului pentru ștergere folder
     const department = await prisma.departamente.findUnique({ where: { id } });
-    await prisma.departamente.delete({
-      where: { id: id },
-    });
-
-    // Șterge folderul din WebDAV
-    let webdavDeleteError = false;
-    if (department) {
-      try {
-        await webdavClient.deleteFile(`/${department.nume}`);
-      } catch (e) {
-        webdavDeleteError = true;
-      }
-    }
-    if (webdavDeleteError) {
-      return new NextResponse(JSON.stringify({ warning: 'Atenție: ștergerea folderului nu s-a realizat în Nextcloud, trebuie făcută manual!' }), {
-        status: 204,
+    if (!department) {
+      return new NextResponse(JSON.stringify({ message: 'Departamentul nu există.' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
       });
     }
+
+    // Șterge departamentul din baza de date (utilizatorii vor avea departament_id = NULL)
+    await prisma.departamente.delete({
+      where: { id },
+    });
+
+    // Șterge folderul din WebDAV în fundal
+    (async () => {
+      try {
+        await webdavClient.deleteFile(`/${department.nume}`);
+        console.log(`Folderul ${department.nume} a fost șters din Nextcloud.`);
+      } catch (e) {
+        console.error(`Eroare la ștergerea folderului ${department.nume} din Nextcloud:`, e.message);
+      }
+    })();
+
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    console.error(error);
+    console.error("Eroare la ștergerea departamentului:", error.message);
     return new NextResponse(JSON.stringify({ message: 'Failed to delete department' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
