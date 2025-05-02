@@ -6,27 +6,61 @@ const prisma = new PrismaClient();
 export async function POST(request) {
   try {
     const body = await request.json();
-    // Elimină numar_inregistrare dacă există în body
     if ("numar_inregistrare" in body) delete body.numar_inregistrare;
-    const doc = await prisma.documente.create({
-      data: {
-        registru_id: body.registru_id,
-        // numar_inregistrare se generează automat în DB
-        numar_document: body.numar_document,
-        data_document: new Date(body.data_document),
-        sursa: body.sursa,
-        rezumat: body.rezumat,
-        departament_adresat: body.departament_adresat,
-        destinatar_id: body.destinatar_id || null,
-        tip_document_id: body.tip_document_id,
-        data_expedierii: new Date(body.data_expedierii),
-        inregistrat_de: body.inregistrat_de,
-        preluat_de: body.preluat_de,
-        stadiu: body.stadiu || undefined,
-      },
-    });
+    let doc;
+    try {
+      doc = await prisma.documente.create({
+        data: {
+          registru_id: body.registru_id,
+          numar_document: body.numar_document,
+          data_document: new Date(body.data_document),
+          sursa: body.sursa,
+          rezumat: body.rezumat,
+          departament_adresat: body.departament_adresat,
+          destinatar_id: body.destinatar_id || null,
+          tip_document_id: body.tip_document_id,
+          data_expedierii: new Date(body.data_expedierii),
+          inregistrat_de: body.inregistrat_de,
+          preluat_de: body.preluat_de,
+          stadiu: body.stadiu || undefined,
+        },
+      });
+    } catch (err) {
+      // Check for Postgres sequence max value error
+      if (err.code === '2200H' || (err.message && err.message.includes('reached maximum value of sequence'))) {
+        // Extend interval in DB
+        const { registru_id } = body;
+        // Call the function to extend the interval
+        await prisma.$executeRaw`SELECT extend_registru_interval(${registru_id}::uuid)`;
+        // Retry document creation
+        doc = await prisma.documente.create({
+          data: {
+            registru_id: body.registru_id,
+            numar_document: body.numar_document,
+            data_document: new Date(body.data_document),
+            sursa: body.sursa,
+            rezumat: body.rezumat,
+            departament_adresat: body.departament_adresat,
+            destinatar_id: body.destinatar_id || null,
+            tip_document_id: body.tip_document_id,
+            data_expedierii: new Date(body.data_expedierii),
+            inregistrat_de: body.inregistrat_de,
+            preluat_de: body.preluat_de,
+            stadiu: body.stadiu || undefined,
+          },
+        });
+      } else {
+        throw err;
+      }
+    }
     return NextResponse.json({ document: doc }, { status: 201 });
   } catch (err) {
+    if (
+      err.code === 'P0001' ||
+      (err.message && err.message.includes('Nu mai sunt numere disponibile în registru'))
+    ) {
+      return NextResponse.json({ error: 'Nu mai sunt numere disponibile pentru acest registru. Contactați administratorul.' }, { status: 400 });
+    }
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 }

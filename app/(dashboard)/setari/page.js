@@ -20,6 +20,7 @@ import { useSetAtom } from "jotai";
 import { pageTitleAtom } from "@/lib/pageTitleAtom";
 import RolCard from "@/components/RolCard";
 import LoguriTable from "@/components/LoguriTable";
+import EditUserModal from "@/components/EditUserModal";
 
 const fetchUsers = async () => {
   const res = await axios.get('/api/utilizatori');
@@ -49,6 +50,15 @@ export default function SetariPage() {
   const { data: roles = [], isLoading: loadingRoles, error: errorRoles } = useQuery({
     queryKey: ['roluri'],
     queryFn: fetchRoles,
+  });
+
+  // Fetch departments for edit modal
+  const { data: departments = [] } = useQuery({
+    queryKey: ['departamente'],
+    queryFn: async () => {
+      const res = await axios.get('/api/department');
+      return res.data?.departments || [];
+    },
   });
 
   return (
@@ -116,6 +126,12 @@ export default function SetariPage() {
                           <TableCell className="text-sm text-gray-700">{user.data_inregistrare ? user.data_inregistrare : '-'}</TableCell>
                           <TableCell>
                             <span className="inline-flex items-center px-2 py-0.5 rounded bg-green-50 text-green-700 text-xs font-semibold border border-green-200">Activ</span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <EditUserModal user={user} roles={roles} departments={departments} onSuccess={() => queryClient.invalidateQueries(['utilizatori'])} />
+                              <DeleteUserDialog user={user} />
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}

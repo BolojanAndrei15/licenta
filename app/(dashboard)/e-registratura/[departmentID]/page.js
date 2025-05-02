@@ -64,7 +64,7 @@ export default function Registre() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["registre", departmentID],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/registre?department_id=${departmentID}`);
+      const { data } = await axios.get(`/api/registre?departament_id=${departmentID}`);
       return data;
     },
     enabled: !!departmentID,
