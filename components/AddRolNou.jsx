@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 export default function AddRolNou({ onSuccess }) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ nume: "", descriere: "" });
+  const [form, setForm] = useState({ nume: "", descriere: "", culoare: "#6366f1" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,9 +27,10 @@ export default function AddRolNou({ onSuccess }) {
       await axios.post("/api/rol_utilizator", {
         nume: form.nume,
         descriere: form.descriere,
+        culoare: form.culoare,
       });
       setOpen(false);
-      setForm({ nume: "", descriere: "" });
+      setForm({ nume: "", descriere: "", culoare: "#6366f1" });
       toast.success("Rol adăugat cu succes!");
       if (onSuccess) onSuccess();
     } catch (err) {
@@ -57,6 +58,10 @@ export default function AddRolNou({ onSuccess }) {
           <div>
             <Label htmlFor="descriere">Descriere</Label>
             <Input id="descriere" name="descriere" value={form.descriere} onChange={handleChange} />
+          </div>
+          <div>
+            <Label htmlFor="culoare">Culoare</Label>
+            <Input id="culoare" name="culoare" type="color" value={form.culoare} onChange={handleChange} className="w-12 h-8 p-0 border-none" />
           </div>
           {error && <div className="text-red-500 text-sm">{error}</div>}
           <DialogFooter>

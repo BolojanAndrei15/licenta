@@ -1,7 +1,6 @@
-import { PrismaClient } from '../../../lib/generated/prisma';
+import prisma from '../../../lib/prismaClient';
+import webdavClient from '../../../lib/webdavClient';
 import { NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
 
 export async function POST(request) {
   try {
@@ -29,7 +28,17 @@ export async function POST(request) {
       data: { nume, descriere },
     });
 
-    return new NextResponse(JSON.stringify(department), {
+    // Creează folder în WebDAV
+    let webdavCreateError = false;
+    try {
+      await webdavClient.createDirectory(`/${nume}`);
+    } catch (e) {
+      webdavCreateError = true;
+    }
+    const responseBody = webdavCreateError
+      ? { ...department, webdavWarning: 'Atenție: folderul nu a fost creat în Nextcloud, trebuie creat manual!' }
+      : department;
+    return new NextResponse(JSON.stringify(responseBody), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -54,15 +63,29 @@ export async function PUT(request) {
       });
     }
 
+    // Obține numele vechi
+    const oldDepartment = await prisma.departamente.findUnique({ where: { id } });
     const updatedDepartment = await prisma.departamente.update({
-      where: { id: id }, // sau where: { id }
+      where: { id: id },
       data: {
         nume: nume,
         descriere: descriere,
       },
     });
 
-    return new NextResponse(JSON.stringify(updatedDepartment), {
+    // Redenumește folderul dacă s-a schimbat numele
+    let webdavRenameError = false;
+    if (oldDepartment && oldDepartment.nume !== nume) {
+      try {
+        await webdavClient.moveFile(`/${oldDepartment.nume}`, `/${nume}`);
+      } catch (e) {
+        webdavRenameError = true;
+      }
+    }
+    const updateResponseBody = webdavRenameError
+      ? { ...updatedDepartment, webdavWarning: 'Atenție: redenumirea folderului nu s-a realizat în Nextcloud, trebuie făcută manual!' }
+      : updatedDepartment;
+    return new NextResponse(JSON.stringify(updateResponseBody), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -117,10 +140,26 @@ export async function DELETE(request) {
       });
     }
 
+    // Obține numele departamentului pentru ștergere folder
+    const department = await prisma.departamente.findUnique({ where: { id } });
     await prisma.departamente.delete({
       where: { id: id },
     });
 
+    // Șterge folderul din WebDAV
+    let webdavDeleteError = false;
+    if (department) {
+      try {
+        await webdavClient.deleteFile(`/${department.nume}`);
+      } catch (e) {
+        webdavDeleteError = true;
+      }
+    }
+    if (webdavDeleteError) {
+      return new NextResponse(JSON.stringify({ warning: 'Atenție: ștergerea folderului nu s-a realizat în Nextcloud, trebuie făcută manual!' }), {
+        status: 204,
+      });
+    }
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error(error);

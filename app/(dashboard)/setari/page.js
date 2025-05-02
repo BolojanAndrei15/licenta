@@ -21,10 +21,18 @@ import { pageTitleAtom } from "@/lib/pageTitleAtom";
 import RolCard from "@/components/RolCard";
 import LoguriTable from "@/components/LoguriTable";
 import EditUserModal from "@/components/EditUserModal";
+import EditRolModal from "@/components/EditRolModal";
 
 const fetchUsers = async () => {
   const res = await axios.get('/api/utilizatori');
-  return res.data.utilizatori || [];
+  // Asigură-te că fiecare user are roluri cu culoare
+  return (res.data.utilizatori || []).map(user => ({
+    ...user,
+    roluri: user.roluri ? {
+      ...user.roluri,
+      culoare: user.roluri.culoare || '#6366f1',
+    } : undefined,
+  }));
 };
 
 const fetchRoles = async () => {
@@ -61,6 +69,18 @@ export default function SetariPage() {
     },
   });
 
+  // PAGINARE UTILIZATORI
+  const [userPage, setUserPage] = useState(1);
+  const usersPerPage = 6;
+  const totalUserPages = Math.ceil(users.length / usersPerPage);
+  const pagedUsers = users.slice((userPage - 1) * usersPerPage, userPage * usersPerPage);
+
+  // PAGINARE ROLURI
+  const [rolePage, setRolePage] = useState(1);
+  const rolesPerPage = 6;
+  const totalRolePages = Math.ceil(roles.length / rolesPerPage);
+  const pagedRoles = roles.slice((rolePage - 1) * rolesPerPage, rolePage * rolesPerPage);
+
   return (
     <div className="p-0 max-w-7xl mx-auto">
     
@@ -95,7 +115,6 @@ export default function SetariPage() {
                         <TableHead className="font-semibold text-gray-500 text-xs uppercase">Utilizator</TableHead>
                         <TableHead className="font-semibold text-gray-500 text-xs uppercase">Email</TableHead>
                         <TableHead className="font-semibold text-gray-500 text-xs uppercase">Rol</TableHead>
-                        <TableHead className="font-semibold text-gray-500 text-xs uppercase">Data Înregistrării</TableHead>
                         <TableHead className="font-semibold text-gray-500 text-xs uppercase">Status</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -106,24 +125,23 @@ export default function SetariPage() {
                       {error && (
                         <TableRow><TableCell colSpan={5} className="text-red-500">Eroare la încărcare!</TableCell></TableRow>
                       )}
-                      {users.length === 0 && !isLoading && !error && (
+                      {pagedUsers.length === 0 && !isLoading && !error && (
                         <TableRow><TableCell colSpan={5} className="text-gray-400">Nu există utilizatori.</TableCell></TableRow>
                       )}
-                      {users.map((user) => (
+                      {pagedUsers.map((user) => (
                         <TableRow key={user.id} className="hover:bg-gray-50">
                           <TableCell>
                             <div className="flex items-center gap-3 font-medium">
-                              <Avatar className="w-8 h-8">
-                                <img src={user.avatar || '/file.svg'} alt="avatar" />
-                              </Avatar>
+                              <span className="w-4 h-4 rounded-full" style={{ background: user.roluri?.culoare || '#6366f1', display: 'inline-block' }}></span>
                               <span className="text-sm font-semibold text-gray-900">{user.nume}</span>
                             </div>
                           </TableCell>
                           <TableCell className="text-sm text-gray-700">{user.email}</TableCell>
                           <TableCell>
-                            <span className="inline-flex items-center px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200">{user.roluri?.nume || '-'}</span>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border" style={{ background: user.roluri?.culoare || '#6366f1', color: '#fff', borderColor: user.roluri?.culoare || '#6366f1' }}>
+                              {user.roluri?.nume || '-'}
+                            </span>
                           </TableCell>
-                          <TableCell className="text-sm text-gray-700">{user.data_inregistrare ? user.data_inregistrare : '-'}</TableCell>
                           <TableCell>
                             <span className="inline-flex items-center px-2 py-0.5 rounded bg-green-50 text-green-700 text-xs font-semibold border border-green-200">Activ</span>
                           </TableCell>
@@ -138,6 +156,16 @@ export default function SetariPage() {
                     </TableBody>
                   </Table>
                 </div>
+                {/* PAGINARE UTILIZATORI */}
+                {totalUserPages > 1 && (
+                  <div className="flex justify-center items-center gap-2 py-3">
+                    <Button size="sm" variant="ghost" disabled={userPage === 1} onClick={() => setUserPage(userPage - 1)}>&lt;</Button>
+                    {Array.from({ length: totalUserPages }, (_, i) => (
+                      <Button key={i} size="sm" variant={userPage === i + 1 ? "default" : "ghost"} onClick={() => setUserPage(i + 1)}>{i + 1}</Button>
+                    ))}
+                    <Button size="sm" variant="ghost" disabled={userPage === totalUserPages} onClick={() => setUserPage(userPage + 1)}>&gt;</Button>
+                  </div>
+                )}
               </div>
               {/* Roluri */}
               <div className="w-full lg:w-[370px] flex-shrink-0">
@@ -154,8 +182,8 @@ export default function SetariPage() {
                   <ul className="divide-y divide-gray-100">
                     {loadingRoles && <li className="p-4">Se încarcă rolurile...</li>}
                     {errorRoles && <li className="p-4 text-red-500">Eroare la încărcare roluri!</li>}
-                    {roles.length === 0 && !loadingRoles && !errorRoles && <li className="p-4 text-gray-400">Nu există roluri.</li>}
-                    {roles.map((rol) => (
+                    {pagedRoles.length === 0 && !loadingRoles && !errorRoles && <li className="p-4 text-gray-400">Nu există roluri.</li>}
+                    {pagedRoles.map((rol) => (
                       <li key={rol.id} className="flex items-start gap-3 py-3 px-2 group">
                         <span className="mt-1 w-2.5 h-2.5 rounded-full" style={{background: rol.culoare || '#6366f1'}}></span>
                         <div className="flex-1">
@@ -164,12 +192,21 @@ export default function SetariPage() {
                           </div>
                           <div className="text-xs text-gray-500 leading-tight">{rol.descriere || 'Fără descriere'}</div>
                         </div>
-                        <button className="ml-2 opacity-60 hover:opacity-100 transition" title="Editează rolul">
-                          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/></svg>
-                        </button>
+                        <EditRolModal rol={rol} onSuccess={() => queryClient.invalidateQueries(['roluri'])} />
+                        <DeleteRolModal rol={rol} onSuccess={() => queryClient.invalidateQueries(['roluri'])} />
                       </li>
                     ))}
                   </ul>
+                  {/* PAGINARE ROLURI */}
+                  {totalRolePages > 1 && (
+                    <div className="flex justify-center items-center gap-2 py-3">
+                      <Button size="sm" variant="ghost" disabled={rolePage === 1} onClick={() => setRolePage(rolePage - 1)}>&lt;</Button>
+                      {Array.from({ length: totalRolePages }, (_, i) => (
+                        <Button key={i} size="sm" variant={rolePage === i + 1 ? "default" : "ghost"} onClick={() => setRolePage(i + 1)}>{i + 1}</Button>
+                      ))}
+                      <Button size="sm" variant="ghost" disabled={rolePage === totalRolePages} onClick={() => setRolePage(rolePage + 1)}>&gt;</Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -215,6 +252,46 @@ function DeleteUserDialog({ user }) {
           <DialogTitle>Confirmă ștergerea</DialogTitle>
         </DialogHeader>
         <div className="mb-4">Ești sigur că vrei să ștergi utilizatorul <b>{user.nume}</b>?</div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>Anulează</Button>
+          <Button variant="destructive" onClick={handleDelete} disabled={loading}>{loading ? "Se șterge..." : "Șterge"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteRolModal({ rol, onSuccess }) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      await axios.delete("/api/rol_utilizator", { data: { id: rol.id } });
+      toast.success("Rol șters cu succes!");
+      setOpen(false);
+      onSuccess();
+    } catch (err) {
+      toast.error("Eroare la ștergere rol!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="icon" variant="ghost" title="Șterge rol">
+          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirmă ștergerea rolului</DialogTitle>
+        </DialogHeader>
+        <div className="mb-4">Ești sigur că vrei să ștergi rolul <b>{rol.nume}</b>?</div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>Anulează</Button>
           <Button variant="destructive" onClick={handleDelete} disabled={loading}>{loading ? "Se șterge..." : "Șterge"}</Button>

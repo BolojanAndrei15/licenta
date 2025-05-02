@@ -1,6 +1,5 @@
-import { PrismaClient } from "@/lib/generated/prisma";
-
-const prisma = new PrismaClient();
+import webdavClient from '../../../lib/webdavClient';
+import prisma from '../../../lib/prismaClient';
 
 export async function POST(request) {
   const data = await request.json();
@@ -9,13 +8,27 @@ export async function POST(request) {
     if (!data.tip_registru_id) {
       return Response.json({ error: 'tip_registru_id este obligatoriu' }, { status: 400 });
     }
-    // Nu mai seta valori implicite pentru min_val și max_val
     if (data.min_val === "" || data.min_val === undefined) data.min_val = null;
     if (data.max_val === "" || data.max_val === undefined) data.max_val = null;
     const registru = await prisma.registre.create({
       data,
-      include: { tip_registru: true },
+      include: { tip_registru: true, departamente: true },
     });
+    // Creează folder în Nextcloud în interiorul departamentului
+    let webdavCreateError = false;
+    if (registru.departamente && registru.departamente.nume && registru.nume) {
+      try {
+        await webdavClient.createDirectory(`/${registru.departamente.nume}/${registru.nume}`);
+      } catch (e) {
+        webdavCreateError = true;
+      }
+    }
+    if (webdavCreateError) {
+      return Response.json({
+        ...registru,
+        webdavWarning: 'Atenție: registrul a fost creat în aplicație, dar nu a putut fi creat folderul în Nextcloud. Trebuie creat manual!'
+      }, { status: 201 });
+    }
     return Response.json(registru, { status: 201 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
@@ -33,11 +46,39 @@ export async function PUT(request) {
     if (updateData.an !== undefined) {
       updateData.an = Number(updateData.an);
     }
+    // Obține registrul vechi cu departamentul asociat
+    const oldRegistru = await prisma.registre.findUnique({
+      where: { id },
+      include: { departamente: true },
+    });
     const registru = await prisma.registre.update({
       where: { id },
       data: updateData,
-      include: { tip_registru: true },
+      include: { tip_registru: true, departamente: true },
     });
+    // Redenumește folderul dacă s-a schimbat numele
+    let webdavRenameError = false;
+    if (
+      oldRegistru &&
+      oldRegistru.nume !== nume &&
+      oldRegistru.departamente?.nume &&
+      nume
+    ) {
+      try {
+        await webdavClient.moveFile(
+          `/${oldRegistru.departamente.nume}/${oldRegistru.nume}`,
+          `/${oldRegistru.departamente.nume}/${nume}`
+        );
+      } catch (e) {
+        webdavRenameError = true;
+      }
+    }
+    if (webdavRenameError) {
+      return Response.json({
+        ...registru,
+        webdavWarning: 'Atenție: registrul a fost editat în aplicație, dar folderul nu a putut fi redenumit în Nextcloud. Trebuie redenumit manual!'
+      });
+    }
     return Response.json(registru);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
@@ -47,8 +88,27 @@ export async function PUT(request) {
 export async function DELETE(request) {
   const { id } = await request.json();
   try {
+    // Obține registrul cu departamentul asociat pentru a șterge folderul
+    const registru = await prisma.registre.findUnique({
+      where: { id },
+      include: { departamente: true },
+    });
     await prisma.registre.delete({ where: { id } });
-    return Response.json({ success: true });
+    // Șterge folderul din WebDAV
+    let webdavDeleteError = false;
+    if (registru?.departamente?.nume && registru?.nume) {
+      try {
+        await webdavClient.deleteFile(`/${registru.departamente.nume}/${registru.nume}`);
+      } catch (e) {
+        webdavDeleteError = true;
+      }
+    }
+    if (webdavDeleteError) {
+      return Response.json({
+        warning: 'Atenție: registrul a fost șters din aplicație, dar folderul nu a putut fi șters din Nextcloud. Trebuie șters manual!'
+      }, { status: 204 });
+    }
+    return Response.json(null, { status: 204 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
   }

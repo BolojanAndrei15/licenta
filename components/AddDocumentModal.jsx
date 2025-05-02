@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -14,7 +14,6 @@ import {
   SelectContent,
   SelectItem,
   SelectValue,
-  
 } from "./ui/select";
 import { Label } from "./ui/label";
 import { useEffect } from "react";
@@ -40,6 +39,9 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
     stadiu: "În așteptare",
   });
   const [error, setError] = useState("");
+  const [file, setFile] = useState(null);
+  const fileInputRef = useRef();
+  const [dragActive, setDragActive] = useState(false);
 
   // Fetch destinatari (utilizatori) doar din departamentul registrului
   const { data: registruDetails } = useQuery({
@@ -84,6 +86,33 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
 
+  const handleFileChange = (e) => {
+    const f = e.target.files[0];
+    if (f && ["application/pdf", "image/png", "image/jpeg", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"].includes(f.type)) {
+      setFile(f);
+    } else {
+      setFile(null);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileChange({ target: { files: e.dataTransfer.files } });
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -99,7 +128,15 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
       if (!payload.departament_adresat) payload.departament_adresat = null;
       if (!payload.destinatar_id) payload.destinatar_id = null;
       if (!payload.preluat_de) payload.preluat_de = null;
-      await axios.post("/api/document", payload);
+      const docRes = await axios.post("/api/document", payload);
+      const documentId = docRes.data?.id;
+      // Dacă există fișier, trimite-l la endpointul de upload
+      if (file && documentId) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("documentId", documentId);
+        await axios.post("/api/upload-document", formData);
+      }
       setForm({
         numar_inregistrare: "",
         numar_document: "",
@@ -112,6 +149,7 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
         data_expedierii: "",
         stadiu: "În așteptare",
       });
+      setFile(null);
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -305,6 +343,29 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
             <div className="space-y-2 col-span-1 md:col-span-2">
               <Label htmlFor="rezumat">Rezumat</Label>
               <Textarea id="rezumat" name="rezumat" value={form.rezumat} onChange={handleChange} placeholder="Descriere pe scurt a documentului..." required rows={3} />
+            </div>
+            <div className="space-y-2 col-span-1 md:col-span-2">
+              <Label>Fișier atașat (opțional, PDF, PNG, JPEG, XLSX, CSV)</Label>
+              <div
+                className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
+                onClick={() => fileInputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+              >
+                {file ? (
+                  <span className="text-green-700">{file.name}</span>
+                ) : (
+                  <span className="text-gray-500">Trage fișierul aici sau apasă pentru a selecta</span>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.png,.jpeg,.jpg,.xlsx,.csv"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
             </div>
           </div>
           {error && <div className="text-red-500 text-sm mt-2">{error}</div>}

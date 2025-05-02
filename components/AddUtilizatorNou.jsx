@@ -36,17 +36,21 @@ function AddUtilizatorNou({ children }) {
     }
     setLoading(true);
     try {
-      await axios.post("/api/utilizatori", {
+      const res = await axios.post("/api/utilizatori", {
         nume: form.nume,
         email: form.email,
         password_hash: form.password,
         rol_id: form.rol_id,
         departament_id: form.departament_id,
+        username: form.email, // sau alt username dacă ai un field separat
       });
       setOpen(false);
       setForm({ nume: "", email: "", password: "", rol_id: "", departament_id: "" });
       queryClient.invalidateQueries(['utilizatori']);
       toast.success("Utilizator adăugat cu succes!");
+      if (res.data.nextcloudError) {
+        toast.warning(res.data.nextcloudError);
+      }
     } catch (err) {
       setError("Eroare la creare utilizator!");
       toast.error(err?.response?.data?.error || "Eroare la creare utilizator!");

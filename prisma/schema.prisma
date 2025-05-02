@@ -116,6 +116,7 @@ model roluri {
   id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nume        String        @unique
   descriere   String
+  culoare     String?      @default("#6366f1")
   utilizatori utilizatori[]
 }
 

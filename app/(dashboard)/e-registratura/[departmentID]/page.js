@@ -218,8 +218,9 @@ export default function Registre() {
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
                   Tip Registru
                 </th>
+             
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
-                  Data Creării
+                  Secvență
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
                   Înregistrări
@@ -237,7 +238,7 @@ export default function Registre() {
                     <span className="font-medium text-gray-700">{reg.nume}</span>
                   </td>
                   <td className="px-6 py-3 text-gray-600">{reg.tip_registru?.nume || "-"}</td>
-                  <td className="px-6 py-3 text-gray-600">{new Date(reg.data_creare).toLocaleDateString("ro-RO", { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                  <td className="px-6 py-3 text-gray-600">{(reg.min_val && reg.max_val) ? `${reg.min_val}-${reg.max_val}` : '-'}</td>
                   <td className="px-6 py-3">
                     <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-semibold">
                       {reg.numar_inregistrari} înregistrări

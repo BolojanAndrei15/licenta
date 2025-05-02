@@ -9995,18 +9995,21 @@ export namespace Prisma {
     id: string | null
     nume: string | null
     descriere: string | null
+    culoare: string | null
   }
 
   export type RoluriMaxAggregateOutputType = {
     id: string | null
     nume: string | null
     descriere: string | null
+    culoare: string | null
   }
 
   export type RoluriCountAggregateOutputType = {
     id: number
     nume: number
     descriere: number
+    culoare: number
     _all: number
   }
 
@@ -10015,18 +10018,21 @@ export namespace Prisma {
     id?: true
     nume?: true
     descriere?: true
+    culoare?: true
   }
 
   export type RoluriMaxAggregateInputType = {
     id?: true
     nume?: true
     descriere?: true
+    culoare?: true
   }
 
   export type RoluriCountAggregateInputType = {
     id?: true
     nume?: true
     descriere?: true
+    culoare?: true
     _all?: true
   }
 
@@ -10106,6 +10112,7 @@ export namespace Prisma {
     id: string
     nume: string
     descriere: string
+    culoare: string | null
     _count: RoluriCountAggregateOutputType | null
     _min: RoluriMinAggregateOutputType | null
     _max: RoluriMaxAggregateOutputType | null
@@ -10129,6 +10136,7 @@ export namespace Prisma {
     id?: boolean
     nume?: boolean
     descriere?: boolean
+    culoare?: boolean
     utilizatori?: boolean | roluri$utilizatoriArgs<ExtArgs>
     _count?: boolean | RoluriCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["roluri"]>
@@ -10137,21 +10145,24 @@ export namespace Prisma {
     id?: boolean
     nume?: boolean
     descriere?: boolean
+    culoare?: boolean
   }, ExtArgs["result"]["roluri"]>
 
   export type roluriSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nume?: boolean
     descriere?: boolean
+    culoare?: boolean
   }, ExtArgs["result"]["roluri"]>
 
   export type roluriSelectScalar = {
     id?: boolean
     nume?: boolean
     descriere?: boolean
+    culoare?: boolean
   }
 
-  export type roluriOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nume" | "descriere", ExtArgs["result"]["roluri"]>
+  export type roluriOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nume" | "descriere" | "culoare", ExtArgs["result"]["roluri"]>
   export type roluriInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     utilizatori?: boolean | roluri$utilizatoriArgs<ExtArgs>
     _count?: boolean | RoluriCountOutputTypeDefaultArgs<ExtArgs>
@@ -10168,6 +10179,7 @@ export namespace Prisma {
       id: string
       nume: string
       descriere: string
+      culoare: string | null
     }, ExtArgs["result"]["roluri"]>
     composites: {}
   }
@@ -10595,6 +10607,7 @@ export namespace Prisma {
     readonly id: FieldRef<"roluri", 'String'>
     readonly nume: FieldRef<"roluri", 'String'>
     readonly descriere: FieldRef<"roluri", 'String'>
+    readonly culoare: FieldRef<"roluri", 'String'>
   }
     
 
@@ -14450,7 +14463,8 @@ export namespace Prisma {
   export const RoluriScalarFieldEnum: {
     id: 'id',
     nume: 'nume',
-    descriere: 'descriere'
+    descriere: 'descriere',
+    culoare: 'culoare'
   };
 
   export type RoluriScalarFieldEnum = (typeof RoluriScalarFieldEnum)[keyof typeof RoluriScalarFieldEnum]
@@ -15132,6 +15146,7 @@ export namespace Prisma {
     id?: UuidFilter<"roluri"> | string
     nume?: StringFilter<"roluri"> | string
     descriere?: StringFilter<"roluri"> | string
+    culoare?: StringNullableFilter<"roluri"> | string | null
     utilizatori?: UtilizatoriListRelationFilter
   }
 
@@ -15139,6 +15154,7 @@ export namespace Prisma {
     id?: SortOrder
     nume?: SortOrder
     descriere?: SortOrder
+    culoare?: SortOrderInput | SortOrder
     utilizatori?: utilizatoriOrderByRelationAggregateInput
   }
 
@@ -15149,6 +15165,7 @@ export namespace Prisma {
     OR?: roluriWhereInput[]
     NOT?: roluriWhereInput | roluriWhereInput[]
     descriere?: StringFilter<"roluri"> | string
+    culoare?: StringNullableFilter<"roluri"> | string | null
     utilizatori?: UtilizatoriListRelationFilter
   }, "id" | "nume">
 
@@ -15156,6 +15173,7 @@ export namespace Prisma {
     id?: SortOrder
     nume?: SortOrder
     descriere?: SortOrder
+    culoare?: SortOrderInput | SortOrder
     _count?: roluriCountOrderByAggregateInput
     _max?: roluriMaxOrderByAggregateInput
     _min?: roluriMinOrderByAggregateInput
@@ -15168,6 +15186,7 @@ export namespace Prisma {
     id?: UuidWithAggregatesFilter<"roluri"> | string
     nume?: StringWithAggregatesFilter<"roluri"> | string
     descriere?: StringWithAggregatesFilter<"roluri"> | string
+    culoare?: StringNullableWithAggregatesFilter<"roluri"> | string | null
   }
 
   export type tipuri_documenteWhereInput = {
@@ -15882,6 +15901,7 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
+    culoare?: string | null
     utilizatori?: utilizatoriCreateNestedManyWithoutRoluriInput
   }
 
@@ -15889,6 +15909,7 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
+    culoare?: string | null
     utilizatori?: utilizatoriUncheckedCreateNestedManyWithoutRoluriInput
   }
 
@@ -15896,6 +15917,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
+    culoare?: NullableStringFieldUpdateOperationsInput | string | null
     utilizatori?: utilizatoriUpdateManyWithoutRoluriNestedInput
   }
 
@@ -15903,6 +15925,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
+    culoare?: NullableStringFieldUpdateOperationsInput | string | null
     utilizatori?: utilizatoriUncheckedUpdateManyWithoutRoluriNestedInput
   }
 
@@ -15910,18 +15933,21 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
+    culoare?: string | null
   }
 
   export type roluriUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
+    culoare?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type roluriUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
+    culoare?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type tipuri_documenteCreateInput = {
@@ -16729,18 +16755,21 @@ export namespace Prisma {
     id?: SortOrder
     nume?: SortOrder
     descriere?: SortOrder
+    culoare?: SortOrder
   }
 
   export type roluriMaxOrderByAggregateInput = {
     id?: SortOrder
     nume?: SortOrder
     descriere?: SortOrder
+    culoare?: SortOrder
   }
 
   export type roluriMinOrderByAggregateInput = {
     id?: SortOrder
     nume?: SortOrder
     descriere?: SortOrder
+    culoare?: SortOrder
   }
 
   export type tipuri_documenteCountOrderByAggregateInput = {
@@ -19350,12 +19379,14 @@ export namespace Prisma {
     id?: string
     nume: string
     descriere: string
+    culoare?: string | null
   }
 
   export type roluriUncheckedCreateWithoutUtilizatoriInput = {
     id?: string
     nume: string
     descriere: string
+    culoare?: string | null
   }
 
   export type roluriCreateOrConnectWithoutUtilizatoriInput = {
@@ -19502,12 +19533,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
+    culoare?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type roluriUncheckedUpdateWithoutUtilizatoriInput = {
     id?: StringFieldUpdateOperationsInput | string
     nume?: StringFieldUpdateOperationsInput | string
     descriere?: StringFieldUpdateOperationsInput | string
+    culoare?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type documenteCreateManyDepartamenteInput = {

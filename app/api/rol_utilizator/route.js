@@ -5,7 +5,14 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
     const roluri = await prisma.roluri.findMany({
-      orderBy: { nume: "asc" }
+      orderBy: { nume: "asc" },
+      select: {
+        id: true,
+        nume: true,
+        descriere: true,
+        culoare: true,
+        utilizatori: true,
+      }
     });
     return NextResponse.json(roluri, { status: 200 });
   } catch (error) {
@@ -23,6 +30,7 @@ export async function POST(request) {
       data: {
         nume: body.nume,
         descriere: body.descriere || null,
+        culoare: body.culoare || "#6366f1",
       },
     });
     return NextResponse.json(rol, { status: 201 });
@@ -42,6 +50,7 @@ export async function PUT(request) {
       data: {
         nume: body.nume,
         descriere: body.descriere || null,
+        culoare: body.culoare || "#6366f1",
       },
     });
     return NextResponse.json(rol);
