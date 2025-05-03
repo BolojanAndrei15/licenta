@@ -1,5 +1,6 @@
 import { PrismaClient } from "@/lib/generated/prisma";
 import { NextResponse } from "next/server";
+
 const prisma = new PrismaClient();
 
 // Creare document cu destinatar opțional (poate fi null)
@@ -24,6 +25,7 @@ export async function POST(request) {
           preluat_de: body.preluat_de,
           stadiu: body.stadiu || undefined,
         },
+        include: { registre: { include: { departamente: true } } },
       });
     } catch (err) {
       // Check for Postgres sequence max value error

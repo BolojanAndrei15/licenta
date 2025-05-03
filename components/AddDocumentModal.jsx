@@ -128,13 +128,15 @@ export default function AddDocumentModal({ open, onClose, registruID, onSuccess 
       if (!payload.departament_adresat) payload.departament_adresat = null;
       if (!payload.destinatar_id) payload.destinatar_id = null;
       if (!payload.preluat_de) payload.preluat_de = null;
+      // 1. Creează documentul în baza de date
       const docRes = await axios.post("/api/document", payload);
-      const documentId = docRes.data?.id;
-      // Dacă există fișier, trimite-l la endpointul de upload
-      if (file && documentId) {
+      // 2. Trimite fișierul la upload-document dacă există
+      if (file && registruDetails?.departamente?.nume && registruDetails?.nume) {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("documentId", documentId);
+        formData.append("department", registruDetails.departamente.nume);
+        formData.append("register", registruDetails.nume);
+        formData.append("documentName", `${form.numar_document}__${registruID}`);
         await axios.post("/api/upload-document", formData);
       }
       setForm({

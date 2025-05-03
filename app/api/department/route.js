@@ -31,7 +31,7 @@ export async function POST(request) {
     // Creează folder în WebDAV
     let webdavCreateError = false;
     try {
-      await webdavClient.createDirectory(`/${nume}`);
+      await webdavClient.addDepartmentFolder(nume);
     } catch (e) {
       webdavCreateError = true;
     }
@@ -54,7 +54,7 @@ export async function POST(request) {
 export async function PUT(request) {
   try {
     const json = await request.json();
-    const { id, nume, descriere } = json; 
+    const { id, nume, descriere } = json;
 
     if (!id || !nume || !descriere) {
       return new NextResponse(JSON.stringify({ message: 'Id, nume și descriere sunt obligatorii.' }), {
@@ -77,7 +77,7 @@ export async function PUT(request) {
     let webdavRenameError = false;
     if (oldDepartment && oldDepartment.nume !== nume) {
       try {
-        await webdavClient.moveFile(`/${oldDepartment.nume}`, `/${nume}`);
+        await webdavClient.renameDepartmentFolder(oldDepartment.nume, nume);
       } catch (e) {
         webdavRenameError = true;
       }
@@ -86,37 +86,6 @@ export async function PUT(request) {
       ? { ...updatedDepartment, webdavWarning: 'Atenție: redenumirea folderului nu s-a realizat în Nextcloud, trebuie făcută manual!' }
       : updatedDepartment;
     return new NextResponse(JSON.stringify(updateResponseBody), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error(error);
-    return new NextResponse(JSON.stringify({ message: 'Failed to update department' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-}
-
-export async function PATCH(request) {
-  try {
-    const json = await request.json();
-    const { id, nume, descriere } = json;
-    if (!id) {
-      return new NextResponse(JSON.stringify({ message: 'Id este obligatoriu.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-    // Construiește obiectul de update doar cu câmpurile trimise
-    const data = {};
-    if (nume !== undefined) data.nume = nume;
-    if (descriere !== undefined) data.descriere = descriere;
-    const updatedDepartment = await prisma.departamente.update({
-      where: { id },
-      data: {nume, descriere},
-    });
-    return new NextResponse(JSON.stringify(updatedDepartment), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -157,7 +126,7 @@ export async function DELETE(request) {
     // Șterge folderul din WebDAV în fundal
     (async () => {
       try {
-        await webdavClient.deleteFile(`/${department.nume}`);
+        await webdavClient.deleteDepartmentFolder(department.nume);
         console.log(`Folderul ${department.nume} a fost șters din Nextcloud.`);
       } catch (e) {
         console.error(`Eroare la ștergerea folderului ${department.nume} din Nextcloud:`, e.message);

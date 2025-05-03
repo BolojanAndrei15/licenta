@@ -7,6 +7,7 @@ import { Pencil, Trash2, User } from "lucide-react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import axios from "axios";
 
 const DepartmentCard = ({
   titluDepartament,
@@ -31,18 +32,16 @@ const DepartmentCard = ({
     setError("");
     const toastId = toast.loading("Se șterge departamentul...");
     try {
-      const res = await fetch("/api/department", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: departmentId })
+      const res = await axios.delete("/api/department", {
+        data: { id: departmentId },
+        headers: { "Content-Type": "application/json" }
       });
-      if (!res.ok) throw new Error("Eroare la ștergere departament");
       toast.success("Departamentul a fost șters cu succes.", { id: toastId, style: { background: '#22c55e', color: 'white' } });
       setDeleteOpen(false);
       onStergere();
     } catch (err) {
-      setError(err.message || "Eroare necunoscută");
-      toast.error(err.message || "Eroare la ștergere departament.", { id: toastId });
+      setError(err.response?.data?.message || err.message || "Eroare necunoscută");
+      toast.error(err.response?.data?.message || err.message || "Eroare la ștergere departament.", { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -54,18 +53,19 @@ const DepartmentCard = ({
     setError("");
     const toastId = toast.loading("Se salvează modificările...");
     try {
-      const res = await fetch("/api/department", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: departmentId, nume: editNume, descriere: editDescriere })
+      const res = await axios.put("/api/department", {
+        id: departmentId,
+        nume: editNume,
+        descriere: editDescriere
+      }, {
+        headers: { "Content-Type": "application/json" }
       });
-      if (!res.ok) throw new Error("Eroare la editare departament");
       toast.success("Departamentul a fost actualizat cu succes.", { id: toastId, style: { background: '#22c55e', color: 'white' } });
       setEditOpen(false);
       onEditare();
     } catch (err) {
-      setError(err.message || "Eroare necunoscută");
-      toast.error(err.message || "Eroare la editare departament.", { id: toastId });
+      setError(err.response?.data?.message || err.message || "Eroare necunoscută");
+      toast.error(err.response?.data?.message || err.message || "Eroare la editare departament.", { id: toastId });
     } finally {
       setLoading(false);
     }

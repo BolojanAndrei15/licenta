@@ -18,7 +18,7 @@ export async function POST(request) {
     let webdavCreateError = false;
     if (registru.departamente && registru.departamente.nume && registru.nume) {
       try {
-        await webdavClient.createDirectory(`/${registru.departamente.nume}/${registru.nume}`);
+        await webdavClient.addRegisterFolder(registru.departamente.nume, registru.nume);
       } catch (e) {
         webdavCreateError = true;
       }
@@ -65,10 +65,7 @@ export async function PUT(request) {
       nume
     ) {
       try {
-        await webdavClient.moveFile(
-          `/${oldRegistru.departamente.nume}/${oldRegistru.nume}`,
-          `/${oldRegistru.departamente.nume}/${nume}`
-        );
+        await webdavClient.renameRegisterFolder(oldRegistru.departamente.nume, oldRegistru.nume, nume);
       } catch (e) {
         webdavRenameError = true;
       }
@@ -98,7 +95,7 @@ export async function DELETE(request) {
     let webdavDeleteError = false;
     if (registru?.departamente?.nume && registru?.nume) {
       try {
-        await webdavClient.deleteFile(`/${registru.departamente.nume}/${registru.nume}`);
+        await webdavClient.deleteRegisterFolder(registru.departamente.nume, registru.nume);
       } catch (e) {
         webdavDeleteError = true;
       }
