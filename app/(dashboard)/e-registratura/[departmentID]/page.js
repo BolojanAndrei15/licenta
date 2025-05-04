@@ -28,6 +28,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
 export default function Registre() {
   const { departmentID } = useParams();
@@ -98,6 +99,11 @@ export default function Registre() {
         style: { background: "#22c55e", color: "white" },
       });
     },
+    onError: (error) => {
+      toast.error("Eroare la actualizarea registrului", {
+        description: error?.response?.data?.message || undefined,
+      });
+    },
   });
 
   // Delete Registru Mutation
@@ -108,6 +114,11 @@ export default function Registre() {
       setDeleteModalOpen(false);
       toast.success("Registru șters", {
         style: { background: "#22c55e", color: "white" },
+      });
+    },
+    onError: (error) => {
+      toast.error("Eroare la ștergerea registrului", {
+        description: error?.response?.data?.message || undefined,
       });
     },
   });
@@ -209,43 +220,36 @@ export default function Registre() {
         </div>
       ) : (
         <div className="border rounded-lg overflow-hidden bg-white">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
-                  <span className="pl-2">Nume Registru</span>
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
-                  Tip Registru
-                </th>
-             
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
-                  Secvență
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
-                  Înregistrări
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider uppercase">
-                  Acțiuni
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-8">Nume Registru</TableHead>
+                <TableHead>Tip Registru</TableHead>
+                <TableHead>Secvență</TableHead>
+                <TableHead>Înregistrări</TableHead>
+                <TableHead>Acțiuni</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {filteredRegistre.map((reg) => (
-                <tr key={reg.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-3 flex items-center gap-2">
+                <TableRow
+                  key={reg.id}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => window.location.href = `/e-registratura/${departmentID}/${reg.id}`}
+                >
+                  <TableCell className="flex items-center gap-2 pl-8">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" /></svg>
                     <span className="font-medium text-gray-700">{reg.nume}</span>
-                  </td>
-                  <td className="px-6 py-3 text-gray-600">{reg.tip_registru?.nume || "-"}</td>
-                  <td className="px-6 py-3 text-gray-600">{(reg.min_val && reg.max_val) ? `${reg.min_val}-${reg.max_val}` : '-'}</td>
-                  <td className="px-6 py-3">
+                  </TableCell>
+                  <TableCell className="text-gray-600">{reg.tip_registru?.nume || "-"}</TableCell>
+                  <TableCell className="text-gray-600">{(reg.min_val && reg.max_val) ? `${reg.min_val}-${reg.max_val}` : '-'}</TableCell>
+                  <TableCell>
                     <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-semibold">
                       {reg.numar_inregistrari} înregistrări
                     </span>
-                  </td>
-                  <td className="px-6 py-3 flex gap-2">
-                    <Link href={`/e-registratura/${departmentID}/${reg.id}`}> 
+                  </TableCell>
+                  <TableCell className="flex gap-2" onClick={e => e.stopPropagation()}>
+                    <Link href={`/e-registratura/${departmentID}/${reg.id}`}>
                       <Button variant="ghost" size="icon">
                         <Eye className="w-4 h-4" />
                       </Button>
@@ -271,11 +275,11 @@ export default function Registre() {
                         </Button>
                       </>
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 
@@ -349,6 +353,7 @@ export default function Registre() {
           type="button"
           variant="outline"
           onClick={() => setEditModalOpen(false)}
+          disabled={editRegistruMutation.isLoading}
         >
           Anulează
         </Button>
@@ -370,7 +375,7 @@ export default function Registre() {
             Ești sigur că vrei să ștergi registrul "{selectedRegistru?.nume}"? Această acțiune este permanentă.
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>
+            <Button variant="outline" onClick={() => setDeleteModalOpen(false)} disabled={deleteRegistruMutation.isLoading}>
               Anulează
             </Button>
             <Button

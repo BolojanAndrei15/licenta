@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -20,12 +20,20 @@ import { Command, CommandInput, CommandList, CommandItem, CommandEmpty } from ".
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import ro from "date-fns/locale/ro";
+import { Document, Page, pdfjs } from 'react-pdf';
+
+// Pentru compatibilitate cu pdfjs-dist v4+ (unde nu mai există build/pdf.worker.entry)
+// Folosește worker-ul direct din node_modules
+pdfjs.GlobalWorkerOptions.workerSrc = `/node_modules/pdfjs-dist/build/pdf.worker.js`;
 
 export default function EditDocumentModal({ open, onClose, document, onSuccess }) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ ...document });
   const [error, setError] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState("");
+  const fileInputRef = useRef();
 
   useEffect(() => {
     setForm({ ...document });
@@ -59,8 +67,41 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
     queryFn: async () => (await axios.get("/api/tip_document")).data,
   });
 
+  // Mutăm fetchFileUrl la nivel de componentă pentru a putea fi apelată oriunde
+  async function fetchFileUrl() {
+    if (registruDetails?.departamente?.nume && registruDetails?.nume && document?.id) {
+      try {
+        const params = new URLSearchParams({
+          retrieve: "1",
+          department: registruDetails.departamente.nume,
+          register: registruDetails.nume,
+          iddocument: document.id,
+        });
+        const res = await axios.get(`/api/upload-document?${params.toString()}`);
+        if (res.data && res.data.files && res.data.files.length > 0) {
+          setFileUrl(`/api/upload-document/download?department=${encodeURIComponent(registruDetails.departamente.nume)}&register=${encodeURIComponent(registruDetails.nume)}&filename=${encodeURIComponent(res.data.files[0])}`);
+        } else {
+          setFileUrl("");
+        }
+      } catch {
+        setFileUrl("");
+      }
+    } else {
+      setFileUrl("");
+    }
+  }
+
+  useEffect(() => {
+    setFileUrl(""); // Resetăm fileUrl imediat la schimbare document/registru
+    fetchFileUrl();
+  }, [registruDetails, document]);
+
   const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -72,11 +113,78 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
       const payload = {
         ...rest,
         id: document.id,
-        // nu trimite numar_inregistrare sau departament_adresat la update
       };
       if (!payload.destinatar_id) payload.destinatar_id = null;
       if (!payload.preluat_de) payload.preluat_de = null;
+      // 1. Update document în baza de date
       await axios.put("/api/document", payload);
+
+      // 2. Dacă s-a schimbat numărul documentului și există fișier atașat, redenumește fișierul în Nextcloud
+      if (
+        registruDetails?.departamente?.nume &&
+        registruDetails?.nume &&
+        document?.id &&
+        form.numar_document !== document.numar_document &&
+        fileUrl // există fișier asociat
+      ) {
+        // Extrage numele vechi al fișierului (din fileUrl)
+        const oldName = decodeURIComponent(fileUrl.split("filename=")[1] || "");
+        // Înlocuiește doar numărul documentului din numele vechi
+        // Caută patternul __@__id
+        const idx = oldName.lastIndexOf(`__@__${document.id}`);
+        let newName = oldName;
+        if (idx !== -1) {
+          // Prefixul până la numărul vechi
+          const prefix = oldName.substring(0, idx);
+          // Sufixul cu __@__id și extensia
+          const suffix = oldName.substring(idx);
+          // În prefix, înlocuiește ultimul număr cu noul număr document
+          // Caută ultimul _ sau alt separator înainte de idx
+          const lastUnderscore = prefix.lastIndexOf('_');
+          if (lastUnderscore !== -1) {
+            newName = prefix.substring(0, lastUnderscore + 1) + form.numar_document + suffix;
+          } else {
+            // fallback: tot prefixul devine noul număr
+            newName = form.numar_document + suffix;
+          }
+        }
+        const formData = new FormData();
+        formData.append("department", registruDetails.departamente.nume);
+        formData.append("register", registruDetails.nume);
+        formData.append("oldName", oldName);
+        formData.append("newName", newName);
+        await axios.put("/api/upload-document", formData);
+      }
+
+      // 3. Dacă s-a selectat un fișier nou, îl uploadăm și ștergem vechiul fișier
+      if (selectedFile && registruDetails?.departamente?.nume && registruDetails?.nume) {
+        // 1. Caută fișierul vechi
+        const params = new URLSearchParams({
+          retrieve: "1",
+          department: registruDetails.departamente.nume,
+          register: registruDetails.nume,
+          iddocument: document.id,
+        });
+        const retrieveRes = await axios.get(`/api/upload-document?${params.toString()}`);
+        if (retrieveRes.data && retrieveRes.data.files && retrieveRes.data.files.length > 0) {
+          // Șterge fișierul vechi
+          await axios.delete("/api/upload-document", {
+            data: {
+              department: registruDetails.departamente.nume,
+              register: registruDetails.nume,
+              documentName: retrieveRes.data.files[0],
+            }
+          });
+        }
+        // 2. Încarcă fișierul nou
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("department", registruDetails.departamente.nume);
+        formData.append("register", registruDetails.nume);
+        formData.append("documentName", `${form.numar_document}__@__${document.id}`);
+        await axios.post("/api/upload-document", formData);
+      }
+      await fetchFileUrl();
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -236,6 +344,25 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
             <div className="space-y-2 col-span-1 md:col-span-2">
               <Label htmlFor="rezumat">Rezumat</Label>
               <Textarea id="rezumat" name="rezumat" value={form.rezumat} onChange={handleChange} required rows={3} />
+            </div>
+            <div className="space-y-2 col-span-1 md:col-span-2">
+              <Label>Document atașat</Label>
+              {fileUrl === "" && loading ? (
+                <span className="text-gray-400">Se încarcă documentul...</span>
+              ) : fileUrl ? (
+                <span className="text-gray-800 font-medium">
+                  {decodeURIComponent(fileUrl.split("filename=")[1] || "document")}
+                </span>
+              ) : (
+                <span className="text-gray-400">Niciun document atașat</span>
+              )}
+              <input
+                type="file"
+                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+                className="block mt-2"
+              />
             </div>
           </div>
           {error && <div className="text-red-500 text-sm mt-2">{error}</div>}

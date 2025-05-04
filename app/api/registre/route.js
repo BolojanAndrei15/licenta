@@ -103,9 +103,9 @@ export async function DELETE(request) {
     if (webdavDeleteError) {
       return Response.json({
         warning: 'Atenție: registrul a fost șters din aplicație, dar folderul nu a putut fi șters din Nextcloud. Trebuie șters manual!'
-      }, { status: 204 });
+      }, { status: 200 });
     }
-    return Response.json(null, { status: 204 });
+    return new Response(null, { status: 204 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 400 });
   }

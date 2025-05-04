@@ -10,6 +10,11 @@ import EditDocumentModal from "@/components/EditDocumentModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { format } from "date-fns";
+import dynamic from "next/dynamic";
+import { DocumentViewer } from 'react-documents';
+import PDFPreviewModal from "@/components/PDFPreviewModal";
+
+const PDFViewer = dynamic(() => import("@/components/PDFViewer"), { ssr: false });
 
 export default function RegistruIdPage() {
   const { registruID } = useParams();
@@ -17,6 +22,9 @@ export default function RegistruIdPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [pdfModalOpen, setPdfModalOpen] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [selectedViewer, setSelectedViewer] = useState(null);
   const queryClient = useQueryClient();
   const { data: session } = useSession();
 
@@ -58,6 +66,13 @@ export default function RegistruIdPage() {
         onClose={() => setEditModalOpen(false)}
         document={selectedDocument}
         onSuccess={() => queryClient.invalidateQueries(['documente', registruID])}
+      />
+      <PDFPreviewModal
+        open={pdfModalOpen && pdfUrl && pdfUrl !== "" && selectedDocument}
+        onClose={() => setPdfModalOpen(false)}
+        url={pdfUrl}
+        document={selectedDocument}
+        viewer={selectedViewer}
       />
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-3">
@@ -111,7 +126,27 @@ export default function RegistruIdPage() {
                 <td className="px-2 py-2 text-[15px]">{doc.rezumat || '-'}</td>
                 <td className="px-2 py-2 text-lg">
                   <div className="flex gap-2">
-                    <button title="Vizualizează" className="text-blue-600 hover:bg-blue-50 rounded p-1">
+                    <button title="Vizualizează" className="text-blue-600 hover:bg-blue-50 rounded p-1"
+                      onClick={async () => {
+                        // Caută fișierul PDF asociat documentului
+                        const params = new URLSearchParams({
+                          retrieve: "1",
+                          department: registruData?.departamente?.nume,
+                          register: registruData?.nume,
+                          iddocument: doc.id,
+                        });
+                        const res = await axios.get(`/api/upload-document?${params.toString()}`);
+                        if (res.data && res.data.files && res.data.files.length > 0) {
+                          const filename = res.data.files[0];
+                          setPdfUrl(`/api/upload-document?download=1&department=${encodeURIComponent(registruData?.departamente?.nume)}&register=${encodeURIComponent(registruData?.nume)}&filename=${encodeURIComponent(filename)}`);
+                          setSelectedViewer({ name: "pdf", viewerUrl: "https://react-doc-viewer.firebaseapp.com/" });
+                          setSelectedDocument(doc); // asigură detaliile documentului
+                          setPdfModalOpen(true);
+                        } else {
+                          alert("Nu există fișier PDF atașat acestui document.");
+                        }
+                      }}
+                    >
                       <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12z"/></svg>
                     </button>
                     <button
