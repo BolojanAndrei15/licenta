@@ -128,17 +128,25 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
   const uploadFile = async (formData) => {
     setUploadProgress(0);
     setUploadSuccess(false);
-    // Simulează progresul cu animatie 3 secunde
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setUploadProgress(null);
-    // Verifică extensia
-    const ext = uploadingFileName.split('.').pop().toLowerCase();
-    if (["pdf", "png", "jpeg", "jpg", "xlsx", "csv"].includes(ext)) {
-      setUploadSuccess(true);
-      // Ascunde mesajul de succes după 2 secunde
-      setTimeout(() => setUploadSuccess(false), 2000);
+    try {
+      await axios.post("/api/upload-document", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          // opțional: poți adăuga progres vizual dacă vrei
+        },
+      });
+      // Verifică extensia pentru mesaj de succes
+      const ext = uploadingFileName.split('.').pop().toLowerCase();
+      if (["pdf", "png", "jpeg", "jpg", "xlsx", "csv"].includes(ext)) {
+        setUploadSuccess(true);
+        setTimeout(() => setUploadSuccess(false), 2000);
+      }
+    } catch (err) {
+      setError("Eroare la upload fișier!");
+    } finally {
+      setUploadProgress(null);
+      setUploadingFileName("");
     }
-    setUploadingFileName("");
   };
 
   const handleSubmit = async (e) => {
@@ -412,8 +420,9 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
                       if (["png", "jpg", "jpeg", "gif", "bmp", "webp"].includes(ext)) {
                         return <img src={uploadedPreviewUrl} alt="Preview" className="max-h-32 mx-auto rounded shadow" />;
                       }
+                      // Pentru PDF, nu afișa previzualizare la edit
                       if (["pdf"].includes(ext)) {
-                        return <iframe src={uploadedPreviewUrl} title="Preview PDF" className="w-full h-32 rounded shadow bg-white" />;
+                        return <span className="text-gray-700 font-medium">{uploadingFileName}</span>;
                       }
                       return <span className="text-gray-700 font-medium">{uploadingFileName}</span>;
                     })()}

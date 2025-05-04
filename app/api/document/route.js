@@ -111,31 +111,52 @@ export async function GET(request) {
   const registruId = request.nextUrl.searchParams.get("registru_id");
   let documente;
   if (registruId) {
-    // Doar documentele dintr-un registru selectat
     documente = await prisma.documente.findMany({
       where: { registru_id: registruId },
       include: {
         utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
         tipuri_documente: { select: { nume: true } },
+        registre: { select: { nume: true } },
+        utilizatori_documente_inregistrat_deToutilizatori: { select: { nume: true } },
+        utilizatori_documente_preluat_deToutilizatori: { select: { nume: true } },
       },
       orderBy: { numar_inregistrare: "desc" },
     });
   } else {
-    // Toate documentele
     documente = await prisma.documente.findMany({
       include: {
         utilizatori_documente_destinatar_idToutilizatori: { select: { nume: true } },
         tipuri_documente: { select: { nume: true } },
+        registre: { select: { nume: true } },
+        utilizatori_documente_inregistrat_deToutilizatori: { select: { nume: true } },
+        utilizatori_documente_preluat_deToutilizatori: { select: { nume: true } },
       },
       orderBy: { numar_inregistrare: "desc" },
     });
   }
-  // Mapăm rezultatul pentru a returna și numărul de înregistrare
+  // Mapăm rezultatul pentru a returna TOATE câmpurile modelului documente + nume destinatar, tip document, registru, inregistrat de, preluat de
   const documenteMapped = documente.map(doc => ({
-    ...doc,
-    numar_inregistrare: doc.numar_inregistrare, // asigură includerea explicită
+    id: doc.id,
+    registru_id: doc.registru_id,
+    numar_inregistrare: doc.numar_inregistrare,
+    data: doc.data,
+    numar_document: doc.numar_document,
+    data_document: doc.data_document,
+    sursa: doc.sursa,
+    rezumat: doc.rezumat,
+    departament_adresat: doc.departament_adresat,
+    destinatar_id: doc.destinatar_id,
+    tip_document_id: doc.tip_document_id,
+    data_expedierii: doc.data_expedierii,
+    creat_la: doc.creat_la,
+    inregistrat_de: doc.inregistrat_de,
+    preluat_de: doc.preluat_de,
+    stadiu: doc.stadiu,
     destinatar_nume: doc.utilizatori_documente_destinatar_idToutilizatori?.nume || null,
     tip_document_nume: doc.tipuri_documente?.nume || null,
+    registru_nume: doc.registre?.nume || null,
+    inregistrat_de_nume: doc.utilizatori_documente_inregistrat_deToutilizatori?.nume || null,
+    preluat_de_nume: doc.utilizatori_documente_preluat_deToutilizatori?.nume || null,
   }));
   return NextResponse.json({ documente: documenteMapped });
 }

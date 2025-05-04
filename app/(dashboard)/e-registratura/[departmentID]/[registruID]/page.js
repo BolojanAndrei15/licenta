@@ -54,7 +54,7 @@ export default function RegistruIdPage() {
   });
 
   return (
-    <div className="bg-[#fafbfc] min-h-screen p-6">
+    <div className="bg-[#fafbfc] h-screen overflow-y-hidden p-6">
       <AddDocumentModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -65,7 +65,10 @@ export default function RegistruIdPage() {
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         document={selectedDocument}
-        onSuccess={() => queryClient.invalidateQueries(['documente', registruID])}
+        onSuccess={() => {
+          queryClient.invalidateQueries(['documente', registruID]);
+          setEditModalOpen(false);
+        }}
       />
       <PDFPreviewModal
         open={pdfModalOpen && pdfUrl && pdfUrl !== "" && selectedDocument}
@@ -73,6 +76,10 @@ export default function RegistruIdPage() {
         url={pdfUrl}
         document={selectedDocument}
         viewer={selectedViewer}
+        onEdit={() => {
+          setPdfModalOpen(false);
+          setEditModalOpen(true);
+        }}
       />
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-3">
