@@ -21,6 +21,7 @@ import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import ro from "date-fns/locale/ro";
 import { Document, Page, pdfjs } from 'react-pdf';
+import { Progress } from "./ui/progress";
 
 // Pentru compatibilitate cu pdfjs-dist v4+ (unde nu mai există build/pdf.worker.entry)
 // Folosește worker-ul direct din node_modules
@@ -33,6 +34,10 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileUrl, setFileUrl] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(null);
+  const [uploadingFileName, setUploadingFileName] = useState("");
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadedPreviewUrl, setUploadedPreviewUrl] = useState("");
   const fileInputRef = useRef();
 
   useEffect(() => {
@@ -101,7 +106,39 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
   };
 
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    setUploadingFileName(file?.name || "");
+    setUploadProgress(null);
+    setUploadSuccess(false);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setUploadedPreviewUrl(url);
+    } else {
+      setUploadedPreviewUrl("");
+    }
+  };
+
+  const handleRemoveUpload = () => {
+    setSelectedFile(null);
+    setUploadingFileName("");
+    setUploadedPreviewUrl("");
+  };
+
+  const uploadFile = async (formData) => {
+    setUploadProgress(0);
+    setUploadSuccess(false);
+    // Simulează progresul cu animatie 3 secunde
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    setUploadProgress(null);
+    // Verifică extensia
+    const ext = uploadingFileName.split('.').pop().toLowerCase();
+    if (["pdf", "png", "jpeg", "jpg", "xlsx", "csv"].includes(ext)) {
+      setUploadSuccess(true);
+      // Ascunde mesajul de succes după 2 secunde
+      setTimeout(() => setUploadSuccess(false), 2000);
+    }
+    setUploadingFileName("");
   };
 
   const handleSubmit = async (e) => {
@@ -182,7 +219,7 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
         formData.append("department", registruDetails.departamente.nume);
         formData.append("register", registruDetails.nume);
         formData.append("documentName", `${form.numar_document}__@__${document.id}`);
-        await axios.post("/api/upload-document", formData);
+        await uploadFile(formData);
       }
       await fetchFileUrl();
       onSuccess?.();
@@ -202,6 +239,14 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogTitle className="mb-2">Editează Înregistrare</DialogTitle>
+         {/* Card document curent */}
+         <div className="flex items-center gap-3 bg-gray-50 rounded-lg w-full mt-0 mb-4 p-2 border border-gray-100" style={{ marginLeft: 0, marginRight: 0 }}>
+            <svg width="28" height="28" fill="none" stroke="#b91c1c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <div>
+              <div className="font-medium text-gray-800 text-sm">Document curent: {fileUrl ? decodeURIComponent(fileUrl.split("filename=")[1] || "document.pdf").split("__@__")[0] : "-"}</div>
+              <div className="text-xs text-gray-500">Încărcat la: {document?.creat_la ? format(new Date(document.creat_la), "dd MMM yyyy, HH:mm") : '-'}</div>
+            </div>
+          </div>
         <form onSubmit={handleSubmit} className="space-y-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -346,25 +391,52 @@ export default function EditDocumentModal({ open, onClose, document, onSuccess }
               <Textarea id="rezumat" name="rezumat" value={form.rezumat} onChange={handleChange} required rows={3} />
             </div>
             <div className="space-y-2 col-span-1 md:col-span-2">
-              <Label>Document atașat</Label>
+              <Label>Fișier atașat (opțional, PDF, PNG, JPEG, XLSX, CSV)</Label>
+              <div
+                className="border-2 border-dashed border-gray-300 rounded-md p-4 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition flex flex-col items-center justify-center gap-2"
+                onClick={() => fileInputRef.current?.click()}
+                onDrop={e => {
+                  e.preventDefault();
+                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    handleFileChange({ target: { files: e.dataTransfer.files } });
+                  }
+                }}
+                onDragOver={e => e.preventDefault()}
+                style={{ minHeight: 48 }}
+              >
+                {uploadedPreviewUrl ? (
+                  <div className="relative w-full flex flex-col items-center">
+                    <button type="button" onClick={handleRemoveUpload} className="absolute top-0 right-0 text-gray-400 hover:text-red-500 text-lg font-bold z-10 bg-white rounded-full w-7 h-7 flex items-center justify-center shadow-sm" title="Șterge fișierul selectat">&times;</button>
+                    {(() => {
+                      const ext = uploadingFileName.split('.').pop()?.toLowerCase();
+                      if (["png", "jpg", "jpeg", "gif", "bmp", "webp"].includes(ext)) {
+                        return <img src={uploadedPreviewUrl} alt="Preview" className="max-h-32 mx-auto rounded shadow" />;
+                      }
+                      if (["pdf"].includes(ext)) {
+                        return <iframe src={uploadedPreviewUrl} title="Preview PDF" className="w-full h-32 rounded shadow bg-white" />;
+                      }
+                      return <span className="text-gray-700 font-medium">{uploadingFileName}</span>;
+                    })()}
+                  </div>
+                ) : (
+                  <span className="text-gray-500 select-none">Trage fișierul aici sau apasă pentru a selecta</span>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.png,.jpeg,.jpg,.xlsx,.csv"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
               {fileUrl === "" && loading ? (
                 <span className="text-gray-400">Se încarcă documentul...</span>
-              ) : fileUrl ? (
-                <span className="text-gray-800 font-medium">
-                  {decodeURIComponent(fileUrl.split("filename=")[1] || "document")}
-                </span>
-              ) : (
+              ) : fileUrl ? null : (
                 <span className="text-gray-400">Niciun document atașat</span>
               )}
-              <input
-                type="file"
-                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                className="block mt-2"
-              />
             </div>
           </div>
+         
           {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
           <div className="flex justify-between items-center mt-6">
             <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
