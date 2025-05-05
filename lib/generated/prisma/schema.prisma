@@ -46,25 +46,26 @@ model departamente {
 }
 
 model documente {
-  id                                                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  registru_id                                       String           @db.Uuid
-  numar_inregistrare                                Int? // <-- modificat din Int în Int? pentru a fi opțional
-  data                                              DateTime         @default(now()) @db.Timestamp(6)
-  numar_document                                    String
-  data_document                                     DateTime         @db.Date
-  sursa                                             String
-  rezumat                                           String
-  departament_adresat                               String?          @db.Uuid
-  destinatar_id                                     String?          @db.Uuid
-  tip_document_id                                   String           @db.Uuid
-  data_expedierii                                   DateTime         @db.Date
-  creat_la                                          DateTime?        @default(now()) @db.Timestamp(6)
-  inregistrat_de                                    String           @db.Uuid
-  preluat_de                                        String?          @db.Uuid
-  stadiu                                            String           @default("În așteptare")
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  registru_id         String    @db.Uuid
+  numar_inregistrare  Int?
+  data                DateTime  @default(now()) @db.Timestamp(6)
+  numar_document      String
+  data_document       DateTime  @db.Date
+  sursa               String
+  rezumat             String
+  departament_adresat String?   @db.Uuid
+  destinatar_id       String?   @db.Uuid
+  tip_document_id     String    @db.Uuid
+  data_expedierii     DateTime  @db.Date
+  creat_la            DateTime? @default(now()) @db.Timestamp(6)
+  inregistrat_de      String?   @db.Uuid
+  preluat_de          String?   @db.Uuid
+  stadiu              String    @default("În așteptare")
+
   departamente                                      departamente?    @relation(fields: [departament_adresat], references: [id], onUpdate: NoAction)
   utilizatori_documente_destinatar_idToutilizatori  utilizatori?     @relation("documente_destinatar_idToutilizatori", fields: [destinatar_id], references: [id], onUpdate: NoAction)
-  utilizatori_documente_inregistrat_deToutilizatori utilizatori      @relation("documente_inregistrat_deToutilizatori", fields: [inregistrat_de], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  utilizatori_documente_inregistrat_deToutilizatori utilizatori?     @relation("documente_inregistrat_deToutilizatori", fields: [inregistrat_de], references: [id], onDelete: SetNull, onUpdate: NoAction)
   utilizatori_documente_preluat_deToutilizatori     utilizatori?     @relation("documente_preluat_deToutilizatori", fields: [preluat_de], references: [id], onUpdate: NoAction)
   registre                                          registre         @relation(fields: [registru_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   tipuri_documente                                  tipuri_documente @relation(fields: [tip_document_id], references: [id], onDelete: Cascade, onUpdate: NoAction)

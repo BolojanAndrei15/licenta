@@ -125,22 +125,47 @@ export async function PUT(request) {
 export async function DELETE(request) {
   try {
     const body = await request.json();
-    if (!body.id) return NextResponse.json({ error: "ID lipsă" }, { status: 400 });
+    const userId = body.id;
+
+    if (!userId) {
+      return NextResponse.json({ message: "ID utilizator lipsă" }, { status: 400 });
+    }
+
+    // Verifică dacă utilizatorul există înainte de a încerca ștergerea
+    const existingUser = await prisma.utilizatori.findUnique({
+      where: { id: userId },
+      select: { nume: true }, // Selectăm doar numele pentru operația Nextcloud
+    });
+
+    if (!existingUser) {
+      return NextResponse.json({ message: "Utilizatorul nu a fost găsit" }, { status: 404 }); // Not Found
+    }
 
     // Șterge utilizatorul din baza de date
-    const utilizator = await prisma.utilizatori.delete({ where: { id: body.id } });
+    await prisma.utilizatori.delete({ where: { id: userId } });
 
     // Șterge utilizatorul din Nextcloud în fundal
     (async () => {
       try {
-        await webdavClient.deleteUser(utilizator.nume);
+        await webdavClient.deleteUser(existingUser.nume);
       } catch (e) {
-        console.error("Error deleting user in Nextcloud:", e.response?.data || e.message);
+        // Logăm eroarea Nextcloud, dar nu blocăm răspunsul API
+        console.error(`Error deleting user ${existingUser.nume} from Nextcloud:`, e.response?.data || e.message);
       }
     })();
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: "Utilizator șters cu succes" });
+
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 400 });
+    console.error("Eroare la ștergere utilizator API:", err);
+
+    // Verificăm dacă eroarea este de la Prisma (ex: constrângeri)
+    // Prisma errors often have code and meta properties
+    if (err.code && err.meta) {
+        return NextResponse.json({ message: "Nu s-a putut șterge utilizatorul. Verificați dependențele (ex: documente asociate).", details: err.message }, { status: 409 }); // Conflict
+    }
+
+    // Eroare generică
+    return NextResponse.json({ message: "Eroare server la ștergerea utilizatorului", details: err.message }, { status: 500 });
   }
 }

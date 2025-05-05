@@ -22,6 +22,7 @@ import RolCard from "@/components/RolCard";
 import LoguriTable from "@/components/LoguriTable";
 import EditUserModal from "@/components/EditUserModal";
 import EditRolModal from "@/components/EditRolModal";
+import { useSession, signOut } from "next-auth/react";
 
 const fetchUsers = async () => {
   const res = await axios.get('/api/utilizatori');
@@ -225,6 +226,7 @@ function DeleteUserDialog({ user }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
+  const { data: session } = useSession(); // Get current session
 
   const handleDelete = async () => {
     setLoading(true);
@@ -232,9 +234,18 @@ function DeleteUserDialog({ user }) {
       await axios.delete("/api/utilizatori", { data: { id: user.id } });
       toast.success("Utilizator șters cu succes!");
       setOpen(false);
-      queryClient.invalidateQueries(['utilizatori']);
+
+      // Check if the deleted user is the current user
+      if (session?.user?.id === user.id) {
+        toast.info("Utilizatorul curent a fost șters. Se efectuează delogarea.");
+        await signOut({ callbackUrl: '/login' }); // Redirect to login after sign out
+      } else {
+        queryClient.invalidateQueries(['utilizatori']); // Invalidate only if not logging out
+      }
     } catch (err) {
-      toast.error("Eroare la ștergere utilizator!");
+      console.error("Eroare la ștergere utilizator:", err);
+      const errorMessage = err.response?.data?.message || "Eroare la ștergere utilizator!";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
