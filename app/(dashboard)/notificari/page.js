@@ -1,274 +1,323 @@
 "use client";
-import { useSession } from "next-auth/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { formatDistanceToNow, format } from "date-fns";
-import { useState } from "react";
-import { useSetAtom } from "jotai";
-import { useEffect } from "react";
-import { pageTitleAtom } from "@/lib/pageTitleAtom";
-import { notificariCountAtom } from "@/lib/notificariCountAtom";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from "axios";
-
-const NOTIF_TYPES = [
-  { value: "all", label: "Toate notificările" },
-  { value: "document", label: "Document nou înregistrat" },
-  { value: "procesare", label: "Cerere procesată" },
-];
-const STATUS = [
-  { value: "all", label: "Toate" },
-  { value: "necitita", label: "Necitite" },
-  { value: "citita", label: "Citite" },
-];
-const PERIODS = [
-  { value: "all", label: "Toată perioada" },
-  { value: "week", label: "Ultima săptămână" },
-  { value: "month", label: "Ultima lună" },
-];
+import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Check, Trash2, Circle, MoreVertical, MailCheck, MailOpen, Search, CheckSquare, CircleDot } from "lucide-react";
+import { pageTitleAtom } from "@/lib/pageTitleAtom";
+import { useSetAtom } from "jotai";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function NotificariPage() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const [tip, setTip] = useState("all");
-  const [status, setStatus] = useState("all");
-  const [period, setPeriod] = useState("week");
-  const [notifDoc, setNotifDoc] = useState(true);
-  const [notifEmail, setNotifEmail] = useState(false);
-  const [page, setPage] = useState(1);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [notifToDelete, setNotifToDelete] = useState(null);
-  const [markAllModalOpen, setMarkAllModalOpen] = useState(false);
-  const pageSize = 6;
-
+  const { data: session, status: sessionStatus } = useSession();
+  const destinatar_id = session?.user?.id;
+  const queryClient = useQueryClient();
   const setPageTitle = useSetAtom(pageTitleAtom);
-  const setNotificariCount = useSetAtom(notificariCountAtom);
   useEffect(() => {
-    setPageTitle("Notificări");
+    setPageTitle("Notificările mele");
     return () => setPageTitle("");
   }, [setPageTitle]);
 
-  const queryClient = useQueryClient();
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [tipFilter, setTipFilter] = useState("");
 
-  const {
-    data,
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ["notificari", userId],
+  // Fetch notificari - Enable when session is authenticated, key depends on destinatar_id
+  const { data, isLoading: isLoadingNotificari, error, refetch } = useQuery({
+    // The query will only run when destinatar_id has a value.
+    queryKey: ["notificari", destinatar_id],
     queryFn: async () => {
-      if (!userId) return [];
-      const res = await fetch(`/api/notificari?destinatar_id=${userId}`);
-      if (!res.ok) throw new Error("Eroare la încărcare notificări");
-      return (await res.json()).notificari;
+      // No need to check destinatar_id here, query won't run if it's undefined.
+      const res = await axios.get(`/api/notificari?destinatar_id=${destinatar_id}`);
+      return res.data.notificari || [];
     },
-    enabled: !!userId,
+    // Enable the query as soon as the session is authenticated.
+    // React Query will wait for destinatar_id to be defined due to the queryKey.
+    enabled: sessionStatus === "authenticated",
   });
 
-  useEffect(() => {
-    if (data) {
-      const necitite = data.filter(n => !n.citita).length;
-      setNotificariCount(necitite);
-    }
-  }, [data, setNotificariCount]);
+  const notificari = Array.isArray(data) ? data : [];
+  // Filtrare/căutare locală
+  const notificariFiltrate = notificari.filter((n) => {
+    const lowerSearch = search.toLowerCase();
+    const matchesSearch = search === "" ||
+                          n.mesaj?.toLowerCase().includes(lowerSearch) ||
+                          n.documente?.numar_document?.toLowerCase().includes(lowerSearch) ||
+                          n.documente?.rezumat?.toLowerCase().includes(lowerSearch);
+    const matchesStatus = !statusFilter || n.status === statusFilter;
+    const matchesTip = !tipFilter || n.tip === tipFilter;
+    return matchesSearch && matchesStatus && matchesTip;
+  }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-  // Filtering (simulate, backend can be extended for real filters)
-  let filtered = data || [];
-  if (tip !== "all") filtered = filtered.filter(n => n.mesaj?.toLowerCase().includes("document") ? tip === "document" : tip === "procesare");
-  if (status !== "all") filtered = filtered.filter(n => status === "citita" ? n.citita : !n.citita);
-  // Period filter (simulate week/month)
-  if (period !== "all") {
-    const now = new Date();
-    filtered = filtered.filter(n => {
-      if (!n.created_at) return false;
-      const d = new Date(n.created_at);
-      if (period === "week") return (now - d) / (1000 * 60 * 60 * 24) <= 7;
-      if (period === "month") return (now - d) / (1000 * 60 * 60 * 24) <= 31;
-      return true;
-    });
+  // Marcare ca citit
+  const markReadMutation = useMutation({
+    mutationFn: async (id) => {
+      await axios.patch("/api/notificari", { id, citita: true });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["notificari", destinatar_id]);
+    },
+    onError: () => toast.error("Eroare la marcarea notificării ca citită"),
+  });
+
+  // Stergere notificare
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      await axios.delete("/api/notificari", { data: { id } });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["notificari", destinatar_id]);
+    },
+    onError: () => toast.error("Eroare la ștergerea notificării"),
+  });
+
+  // Marchează toate ca citite
+  const markAllReadMutation = useMutation({
+    mutationFn: async () => {
+      await axios.patch("/api/notificari", { destinatar_id, citita: true });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["notificari", destinatar_id]);
+    },
+    onError: () => toast.error("Eroare la marcarea tuturor ca citite"),
+  });
+
+  // Șterge toate notificările
+  const deleteAllMutation = useMutation({
+    mutationFn: async () => {
+      await axios.delete("/api/notificari", { data: { destinatar_id } });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["notificari", destinatar_id]);
+    },
+    onError: () => toast.error("Eroare la ștergerea tuturor notificărilor"),
+  });
+
+  // Accept Notification Mutation - Updated Logic
+  const acceptMutation = useMutation({
+    mutationFn: async (notif) => {
+      // Send notification ID, document ID, and current user ID
+      await axios.patch("/api/notificari", {
+        id: notif.id,
+        document_id: notif.document_id, // Make sure document_id is available on the notif object
+        preluat_de: destinatar_id, // The current user accepts it
+        citita: true,
+        status: 'atribuit' // Explicitly set status to atribuit
+      });
+      toast.success("Document preluat și notificare actualizată.");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notificari", destinatar_id] });
+      // Optionally invalidate document queries if needed elsewhere
+      // queryClient.invalidateQueries({ queryKey: ['documente'] });
+    },
+    onError: (error) => {
+        console.error("Eroare la acceptarea notificării:", error);
+        toast.error(`Eroare la preluarea documentului: ${error.response?.data?.message || error.message}`);
+    },
+  });
+
+  if (sessionStatus === "loading") {
+    return (
+      <div className="w-full p-6">
+        <Skeleton className="h-8 w-1/4 mb-6" />
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 w-full">
+          <Skeleton className="h-10 w-full md:w-1/3" />
+          <div className="flex flex-col md:flex-row gap-2 items-stretch md:items-center">
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-10 w-24" />
+            </div>
+            <div className="flex gap-2 mt-2 md:mt-0">
+              <Skeleton className="h-9 w-48" />
+              <Skeleton className="h-9 w-32" />
+            </div>
+          </div>
+        </div>
+        <div className="space-y-4 w-full">
+          <Skeleton className="h-24 w-full rounded-lg" />
+          <Skeleton className="h-24 w-full rounded-lg" />
+          <Skeleton className="h-24 w-full rounded-lg" />
+        </div>
+      </div>
+    );
   }
-  const totalPages = Math.ceil(filtered.length / pageSize);
-  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  if (sessionStatus === "unauthenticated" || !destinatar_id) {
+    return <div className="p-8 text-center text-gray-500">Trebuie să fii autentificat pentru a vedea notificările.</div>;
+  }
 
   return (
-    <div className="w-full ">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-2">
-      </div>
-      <div className="bg-white rounded-xl border p-4 flex flex-col md:flex-row gap-4 items-center mb-4">
-        <div className="flex-1 flex gap-4">
-          <div>
-            <div className="text-xs text-gray-500 mb-1">Tip notificare</div>
-            <Select value={tip} onValueChange={setTip}>
-              <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {NOTIF_TYPES.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
+    <div className="w-full">
+      <div className="">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 w-full">
+          <div className="relative flex-grow md:flex-grow-0 md:w-1/3">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Caută notificări..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-9"
+            />
           </div>
-          <div>
-            <div className="text-xs text-gray-500 mb-1">Status</div>
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {STATUS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <div className="text-xs text-gray-500 mb-1">Perioadă</div>
-            <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {PERIODS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="flex gap-2 items-center mt-4 md:mt-0">
-          <Button variant="ghost" className="text-gray-700 flex gap-1 items-center"
-            onClick={async () => {
-              if (!window.confirm("Sigur vrei să ștergi toate notificările?")) return;
-              await axios.delete("/api/notificari", { data: { destinatar_id: userId } });
-              window.dispatchEvent(new Event("notificari-updated"));
-            }}
-          >
-            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-            Șterge toate
-          </Button>
-          <Button variant="ghost" className="text-gray-700 flex gap-1 items-center"
-            onClick={() => setMarkAllModalOpen(true)}
-          >
-            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-            Marchează toate ca citite
-          </Button>
-        </div>
-      </div>
-      <div className="space-y-2 mb-8">
-        {isLoading && (
-          <div className="space-y-2">
-            {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-20 w-full" />)}
-          </div>
-        )}
-        {!isLoading && paginated.length === 0 && (
-          <div className="text-gray-400 text-center py-8">Nu ai notificări pentru filtrele selectate.</div>
-        )}
-        {paginated.map((notif) => (
-          <Card key={notif.id} className={`flex flex-col md:flex-row items-start md:items-center gap-2 px-4 py-3 border ${!notif.citita ? 'bg-blue-50 border-blue-100' : ''}`}>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                {notif.mesaj?.toLowerCase().includes("document") ? (
-                  <span className="inline-flex items-center gap-1 text-blue-700 font-semibold">
-                    <svg width="20" height="20" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                    Document nou inregistrat
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 text-gray-700 font-semibold">
-                    <svg width="20" height="20" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    Cerere procesată
-                  </span>
-                )}
-              </div>
-              <div className="text-gray-700 text-sm">
-                {notif.mesaj}
-              </div>
-              {notif.documente?.rezumat && (
-                <div className="text-xs text-gray-500 mt-1">{notif.documente.rezumat}</div>
-              )}
+          <div className="flex flex-col md:flex-row gap-2 items-stretch md:items-center">
+            <div className="flex gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full md:w-auto justify-between">
+                    {statusFilter ? (statusFilter === 'atribuit' ? 'Atribuit' : 'Neatribuit') : "Toate statusurile"}
+                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setStatusFilter("")}>Toate statusurile</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setStatusFilter("atribuit")}>Atribuit</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setStatusFilter("neatribuit")}>Neatribuit</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full md:w-auto justify-between">
+                    {tipFilter ? (tipFilter === 'document' ? 'Document' : 'Sistem') : "Toate"}
+                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setTipFilter("")}>Toate</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTipFilter("document")}>Document</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTipFilter("sistem")}>Sistem</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-            <div className="flex flex-col items-end gap-2 min-w-[110px]">
-              <span className="text-xs text-gray-400">
-                {notif.created_at ?
-                  (formatDistanceToNow(new Date(notif.created_at), { addSuffix: true, locale: undefined })) : ""}
-              </span>
-              <div className="flex gap-2">
-                <Button variant="ghost" size="icon" className={notif.citita ? "text-gray-400 hover:text-blue-600" : "text-gray-400 hover:text-blue-600"}
-                  onClick={async () => {
-                    try {
-                      await axios.patch('/api/notificari', { id: notif.id, citita: !notif.citita });
-                      toast.success(`Notificarea a fost marcată ca ${notif.citita ? 'necitată' : 'citită'}!`);
-                      queryClient.invalidateQueries(["notificari", userId]);
-                    } catch (err) {
-                      toast.error('Eroare la actualizare notificare!');
-                    }
-                  }}
-                >
+            <div className="flex gap-2 mt-2 md:mt-0">
+              <Button
+                size="sm"
+                variant="default"
+                onClick={() => markAllReadMutation.mutate()}
+                disabled={markAllReadMutation.isPending || isLoadingNotificari || notificari.filter(n => !n.citita).length === 0}
+                className="bg-gray-800 hover:bg-gray-700 text-white flex items-center gap-1.5"
+              >
+                <CheckSquare className="w-4 h-4" /> Marchează toate ca citite
+              </Button>
+              <Button
+                size="sm"
+                variant="default"
+                onClick={() => deleteAllMutation.mutate()}
+                disabled={deleteAllMutation.isPending || isLoadingNotificari || notificari.length === 0}
+                className="bg-gray-800 hover:bg-gray-700 text-white flex items-center gap-1.5"
+              >
+                <Trash2 className="w-4 h-4" /> Șterge toate
+              </Button>
+            </div>
+          </div>
+        </div>
+        {isLoadingNotificari ? (
+          <div className="text-center text-gray-400">Se încarcă notificările...</div>
+        ) : error ? (
+          <div className="text-center text-red-500">Eroare la încărcarea notificărilor.</div>
+        ) : notificariFiltrate.length === 0 ? (
+          <div className="text-center text-gray-400">Nu există notificări.</div>
+        ) : (
+          <ul className="space-y-4 w-full">
+            {notificariFiltrate.map((notif) => (
+              <li
+                key={notif.id}
+                className={`relative p-4 rounded-lg border bg-white flex items-start gap-4 shadow-sm transition hover:shadow-md w-full ${notif.citita ? 'opacity-70' : ''}`}
+              >
+                <div className="mt-1">
                   {notif.citita ? (
-                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    <Circle className="w-2.5 h-2.5 text-gray-400 fill-current" />
                   ) : (
-                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    <Circle className="w-2.5 h-2.5 text-blue-600 fill-current" />
                   )}
-                </Button>
-                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-red-600"
-                  onClick={() => {
-                    setNotifToDelete(notif);
-                    setDeleteModalOpen(true);
-                  }}
-                >
-                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ))}
-        {/* Modal confirmare ștergere notificare */}
-        <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-          <DialogContent>
-            <DialogTitle>Șterge notificarea?</DialogTitle>
-            <div className="mb-4">Ești sigur că vrei să ștergi această notificare?</div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>Anulează</Button>
-              <Button variant="destructive" onClick={async () => {
-                try {
-                  await axios.delete('/api/notificari', {
-                    data: { id: notifToDelete.id }
-                  });
-                  setDeleteModalOpen(false);
-                  toast.success('Notificarea a fost ștearsă cu succes!');
-                  queryClient.invalidateQueries(["notificari", userId]);
-                } catch (err) {
-                  toast.error('Eroare la ștergerea notificării!');
-                }
-              }}>Șterge</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-        {/* Modal confirmare marchează toate ca citite */}
-        <Dialog open={markAllModalOpen} onOpenChange={setMarkAllModalOpen}>
-          <DialogContent>
-            <DialogTitle>Marchează toate notificările ca citite?</DialogTitle>
-            <div className="mb-4">Ești sigur că vrei să marchezi toate notificările ca citite?</div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setMarkAllModalOpen(false)}>Anulează</Button>
-              <Button variant="default" onClick={async () => {
-                try {
-                  await axios.patch("/api/notificari", { destinatar_id: userId, citita: true });
-                  toast.success("Toate notificările au fost marcate ca citite!");
-                  queryClient.invalidateQueries(["notificari", userId]);
-                  setMarkAllModalOpen(false);
-                } catch (err) {
-                  toast.error("Eroare la marcarea tuturor notificărilor ca citite!");
-                }
-              }}>Marchează toate</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-        {totalPages > 1 && (
-          <div className="flex justify-center gap-2 mt-4">
-            <Button variant="outline" size="sm" onClick={() => setPage(page - 1)} disabled={page === 1}>&lt;</Button>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <Button key={i} variant={page === i + 1 ? "default" : "outline"} size="sm" onClick={() => setPage(i + 1)}>{i + 1}</Button>
+                </div>
+                <div className="flex-1 flex flex-col gap-1">
+                  <span className="font-medium text-gray-800">{notif.mesaj || 'Notificare'}</span>
+                  {notif.documente?.rezumat && (
+                    <p className="text-sm text-gray-600">{notif.documente.rezumat}</p>
+                  )}
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>{new Date(notif.created_at).toLocaleString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                    {notif.status && (
+                      <>
+                        <span className="mx-1">·</span>
+                        <Badge variant={notif.status === 'atribuit' ? 'outline' : 'secondary'} className="capitalize text-xs px-1.5 py-0.5 font-normal">
+                          {notif.status === 'atribuit' ? 'Atribuit' : 'Neatribuit'}
+                        </Badge>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {!notif.citita ? (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-500 hover:text-gray-700 h-8 w-8"
+                        onClick={() => markReadMutation.mutate(notif.id)}
+                        disabled={markReadMutation.isPending}
+                        title="Marchează ca citită"
+                      >
+                        <Check className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-500 hover:text-red-600 h-8 w-8"
+                        onClick={() => deleteMutation.mutate(notif.id)}
+                        disabled={deleteMutation.isPending}
+                        title="Șterge"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+
+                      {notif.tip === 'document' && notif.status === 'neatribuit' && notif.document_id && (
+                         <Button
+                           size="sm"
+                           className="bg-gray-800 hover:bg-gray-700 text-white h-8 px-3"
+                           onClick={() => acceptMutation.mutate({ id: notif.id, document_id: notif.document_id })}
+                           disabled={acceptMutation.isPending}
+                         >
+                           Acceptă
+                         </Button>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-400 hover:text-gray-600 h-8 w-8"
+                        onClick={() => {/* TODO: Implement mark as unread */}}
+                        title="Marchează ca necitită (TODO)"
+                      >
+                        <CircleDot className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-400 hover:text-red-600 h-8 w-8"
+                        onClick={() => deleteMutation.mutate(notif.id)}
+                        disabled={deleteMutation.isPending}
+                        title="Șterge"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </li>
             ))}
-            <Button variant="outline" size="sm" onClick={() => setPage(page + 1)} disabled={page === totalPages}>&gt;</Button>
-          </div>
+          </ul>
         )}
       </div>
-      
     </div>
   );
 }

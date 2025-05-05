@@ -12,11 +12,12 @@ import {
   SidebarSeparator
   } from "./ui/sidebar";
 import { useSession, signOut } from "next-auth/react";
-import { useAtomValue } from "jotai";
-import { notificariCountAtom } from "@/lib/notificariCountAtom";
-  
-  // Example sidebar content, you can customize this
-  const AppSidebar = () => {
+import { useNotificariCount } from "@/hooks/useNotificariCount";
+import { useNotificationSSE } from "@/hooks/useNotificationSSE";
+import { useEffect, useRef, useState } from "react";
+
+// Example sidebar content, you can customize this
+const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -25,8 +26,22 @@ import { notificariCountAtom } from "@/lib/notificariCountAtom";
     rol: "-",
     avatar: "/window.svg"
   };
-  // Exemplu static pentru notificări și user (poți integra date reale din context/session)
-  const notificariCount = useAtomValue(notificariCountAtom);
+  const userId = user?.id;
+  useNotificationSSE(userId);
+  const { data: notificariCount = 0 } = useNotificariCount(userId);
+
+  const [animateNotif, setAnimateNotif] = useState(false);
+  const prevCount = useRef(notificariCount);
+
+  useEffect(() => {
+    if (notificariCount !== prevCount.current) {
+      setAnimateNotif(true);
+      const timeout = setTimeout(() => setAnimateNotif(false), 500);
+      prevCount.current = notificariCount;
+      return () => clearTimeout(timeout);
+    }
+  }, [notificariCount]);
+
   return (
     <Sidebar className="flex flex-col h-full w-[250px] border-r bg-white justify-between p-0">
       {/* Logo și titlu */}
@@ -63,7 +78,12 @@ import { notificariCountAtom } from "@/lib/notificariCountAtom";
               <svg width="18" height="18" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
               <span>Notificări</span>
               {notificariCount > 0 && (
-                <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-semibold absolute right-2 top-1">{notificariCount}</span>
+                <span className={
+                  `ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-semibold absolute right-2 top-1 transition-all duration-500
+                  ${animateNotif ? 'animate-pulse ring-2 ring-red-400 shadow-lg' : ''}`
+                }>
+                  {notificariCount}
+                </span>
               )}
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -86,6 +106,6 @@ import { notificariCountAtom } from "@/lib/notificariCountAtom";
       </SidebarFooter>
     </Sidebar>
   );
-  };
-  
-  export { SidebarProvider, AppSidebar };
+};
+
+export { SidebarProvider, AppSidebar };

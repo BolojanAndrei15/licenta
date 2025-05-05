@@ -20,7 +20,7 @@ export default function PDFPreviewModal({ open, onClose, url, document, viewer }
         if (!o) onClose?.()
       }}
     >
-      <DialogContent className="sm:max-w-[80%] md:max-w-[80%] lg:max-w-[80%] w-full p-0 max-h-[90vh] overflow-hidden">
+      <DialogContent className="sm:max-w-[80%] md:max-w-[80%] lg:max-w-[80%] w-full p-0 max-h-[100vh] overflow-hidden">
         <DialogHeader className="px-4 py-3 border-b border-gray-200">
           <DialogTitle className="text-base font-semibold text-gray-900">Previzualizare Document</DialogTitle>
           <Button
