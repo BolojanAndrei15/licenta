@@ -86,12 +86,7 @@ const Header = ({ pageTitle, breadcrumbs, departmentName }) => {
           </>
         )}
       </div>
-      <div className="flex items-center gap-4 mt-2 md:mt-0">
-        <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Notificări">
-          <Bell className="w-6 h-6 text-gray-700" />
-          <span className="absolute top-1 right-1 bg-blue-600 text-white text-xs rounded-full px-1.5 py-0.5">5</span>
-        </button>
-      </div>
+      
     </header>
   );
 };

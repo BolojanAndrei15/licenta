@@ -12,6 +12,8 @@ import {
   SidebarSeparator
   } from "./ui/sidebar";
 import { useSession, signOut } from "next-auth/react";
+import { useAtomValue } from "jotai";
+import { notificariCountAtom } from "@/lib/notificariCountAtom";
   
   // Example sidebar content, you can customize this
   const AppSidebar = () => {
@@ -24,7 +26,7 @@ import { useSession, signOut } from "next-auth/react";
     avatar: "/window.svg"
   };
   // Exemplu static pentru notificări și user (poți integra date reale din context/session)
-  const notificariCount = 3;
+  const notificariCount = useAtomValue(notificariCountAtom);
   return (
     <Sidebar className="flex flex-col h-full w-[250px] border-r bg-white justify-between p-0">
       {/* Logo și titlu */}
